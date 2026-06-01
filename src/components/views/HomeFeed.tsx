@@ -47,6 +47,12 @@ import gaiJatraImg from "@/assets/events/gai-jatra.jpg";
 import tiharDeusiImg from "@/assets/events/tihar-deusi.jpg";
 
 import { calculateDistance, getUserLocation } from "@/lib/location";
+import {
+  LOCAL_ALERTS,
+  type AlertSeverity,
+  type AlertType,
+  type LocalAlert,
+} from "@/lib/local-alerts";
 import { useUserInterests } from "@/hooks/use-interests";
 import { sortByInterests, INTEREST_LABELS } from "@/lib/interests";
 import {
@@ -81,35 +87,6 @@ const BADGE_COLORS: Record<string, string> = {
   "Eco Certified": "bg-teal-50   text-teal-700  border-teal-200",
   "Heritage Craft": "bg-violet-50 text-violet-700 border-violet-200",
 };
-
-// ── Mock Data for Dashboard ─────────────────────────────────────────────────
-
-type AlertSeverity = "info" | "warning" | "critical";
-type AlertType = "weather" | "trail" | "closure" | "health";
-type LocalAlert = {
-  id: number;
-  type: AlertType;
-  severity: AlertSeverity;
-  location: string;
-  message: string;
-};
-
-const LOCAL_ALERTS: LocalAlert[] = [
-  {
-    id: 1,
-    type: "weather",
-    severity: "info",
-    location: "Langtang",
-    message: "Clear skies expected for the next 48 hours in Langtang valley.",
-  },
-  {
-    id: 2,
-    type: "trail",
-    severity: "warning",
-    location: "Syabrubesi",
-    message: "Minor trail washout reported 2km past Syabrubesi. Proceed with caution.",
-  },
-];
 
 const ALERT_ICONS: Record<AlertType, LucideIcon> = {
   weather: Sun,
