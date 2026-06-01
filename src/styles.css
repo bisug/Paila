@@ -223,7 +223,7 @@ select {
   font: inherit;
 }
 
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 900px) {
   .landscape-hide {
     display: none !important;
   }

@@ -6,6 +6,7 @@ import { Compass, MapPin, BadgeCheck, Loader2, Bookmark, BookmarkCheck } from "l
 import { supabase } from "@/integrations/supabase/client";
 import { guides as mockGuides } from "@/lib/data";
 import { useGuideBookmarks } from "@/hooks/use-guide-bookmarks";
+import { PageFrame, PageHeader, Surface } from "@/components/ui/page";
 
 type GuideRow = {
   id: string;
@@ -91,31 +92,29 @@ export default function GuidesIndex() {
       (!usingMock && guides !== null && visibleVerified.length === 0));
 
   return (
-    <div className="px-4 md:px-6 py-6">
-      <div className="flex items-center gap-3 mb-1">
-        <div className="h-9 w-9 rounded-xl bg-terracotta/10 flex items-center justify-center">
-          <Compass size={18} className="text-terracotta" />
-        </div>
-        <h1 className="text-2xl font-bold text-stone-900">Verified Guides</h1>
-        {count > 0 && (
-          <span
-            className="ml-auto inline-flex items-center gap-1 rounded-full bg-terracotta/10 text-terracotta px-2.5 py-1 text-xs font-bold"
-            aria-label={`${count} saved guide${count === 1 ? "" : "s"}`}
-          >
-            <BookmarkCheck size={12} />
-            {count} saved
-          </span>
-        )}
-      </div>
-      <p className="text-sm text-stone-500 mb-5">
-        Licensed local guides ready to take you off the beaten path.
-      </p>
+    <PageFrame className="md:px-6">
+      <PageHeader
+        title="Verified Guides"
+        description="Licensed local guides ready to take you off the beaten path."
+        icon={<Compass size={18} />}
+        action={
+          count > 0 ? (
+            <span
+              className="inline-flex items-center gap-1 rounded-full bg-terracotta/10 text-terracotta px-2.5 py-1 text-xs font-bold"
+              aria-label={`${count} saved guide${count === 1 ? "" : "s"}`}
+            >
+              <BookmarkCheck size={12} />
+              {count} saved
+            </span>
+          ) : null
+        }
+      />
 
       <div role="status" aria-live="polite" className="sr-only">
         {count === 0 ? "No guides saved" : `${count} guide${count === 1 ? "" : "s"} saved`}
       </div>
 
-      <div className="mb-5 rounded-2xl border border-terracotta/20 bg-terracotta/5 p-4 flex items-start gap-3">
+      <Surface tone="brand" className="mb-5 flex items-start gap-3">
         <BadgeCheck size={18} className="text-terracotta shrink-0 mt-0.5" />
         <div className="text-sm">
           <p className="font-semibold text-stone-900">Are you a licensed guide?</p>
@@ -127,7 +126,7 @@ export default function GuidesIndex() {
             Get verified →
           </Link>
         </div>
-      </div>
+      </Surface>
 
       <div className="mb-4 inline-flex rounded-xl border border-stone-200 bg-white p-1 text-xs font-semibold">
         <button
@@ -283,6 +282,6 @@ export default function GuidesIndex() {
           })}
         </ul>
       )}
-    </div>
+    </PageFrame>
   );
 }

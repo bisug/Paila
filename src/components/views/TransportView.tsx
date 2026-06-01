@@ -33,6 +33,7 @@ import {
   type TrekOption,
   type TransportMode,
 } from "@/lib/data";
+import { PageHeader, SectionHeader } from "@/components/ui/page";
 
 type Bookable = RoadOption | FlightOption;
 
@@ -410,11 +411,13 @@ export function TransportView() {
 
   return (
     <div className="min-h-screen bg-stone-50 pb-28 pt-4">
-      <div className="px-4 md:px-8 mb-6 flex justify-between items-end">
-        <div>
-          <h1 className="text-2xl font-bold text-stone-900">Transit & Route</h1>
-          <p className="text-sm text-stone-500 mt-1">Road, air, and trekking options.</p>
-        </div>
+      <div className="px-4 md:px-8">
+        <PageHeader
+          title="Transit & Route"
+          description="Road, air, and trekking options."
+          icon={<Bus size={18} />}
+          className="mb-6"
+        />
       </div>
 
       <a
@@ -557,8 +560,11 @@ export function TransportView() {
         </div>
       </div>
 
-      {/* List */}
       <div className="px-4 md:px-8">
+        <SectionHeader
+          title="Available options"
+          description="Compare community transport, flights, and trail segments."
+        />
         <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
           {filtered.length === 0 ? (
             <div className="text-center py-12 px-6 border-2 border-dashed border-stone-200 rounded-2xl md:col-span-2">
