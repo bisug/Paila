@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { checkRateLimit, fetchWithTimeout, getClientKey } from "@/lib/server/guardrails";
+import { checkRateLimit, getClientKey } from "@/lib/server/guardrails";
+import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
 
 const Body = z.object({
   sourceText: z.string().min(1).max(2000),
@@ -28,8 +29,7 @@ export async function POST(request: Request) {
   }
   const { sourceText, sourceLang, targetLang } = parsed;
 
-  const apiKey = process.env.LOVABLE_API_KEY;
-  if (!apiKey) {
+  if (!hasAiProvider()) {
     return Response.json({
       translatedText: `[${targetLang}] ${sourceText}`,
       mock: true,
@@ -37,50 +37,33 @@ export async function POST(request: Request) {
   }
 
   try {
-    const res = await fetchWithTimeout(
-      "https://ai.gateway.lovable.dev/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
+    const result = await createChatCompletion({
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a translator. Return ONLY the translated text, with no quotes, explanations, or formatting.",
         },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a translator. Return ONLY the translated text, with no quotes, explanations, or formatting.",
-            },
-            {
-              role: "user",
-              content: `Translate the following from ${sourceLang} to ${targetLang}:\n\n${sourceText}`,
-            },
-          ],
-          temperature: 0.2,
-        }),
-      },
-      12_000,
-    );
+        {
+          role: "user",
+          content: `Translate the following from ${sourceLang} to ${targetLang}:\n\n${sourceText}`,
+        },
+      ],
+      temperature: 0.2,
+      timeoutMs: 12_000,
+    });
 
-    if (res.status === 429) {
+    if (result.status === 429) {
       return Response.json({ error: "Rate limit reached. Try again shortly." }, { status: 429 });
     }
-    if (res.status === 402) {
-      return Response.json(
-        { error: "AI credits exhausted. Add credits in Lovable Cloud." },
-        { status: 402 },
-      );
+    if (result.status === 402) {
+      return Response.json({ error: "AI provider quota exhausted." }, { status: 402 });
     }
-    if (!res.ok) {
-      const t = await res.text();
-      console.error("AI gateway error", res.status, t);
+    if (result.error) {
+      console.error("AI provider error", result.status, result.error);
       return Response.json({ error: "Translation service failed" }, { status: 500 });
     }
-    const data = await res.json();
-    const translatedText: string = data.choices?.[0]?.message?.content?.trim() ?? "";
-    return Response.json({ translatedText });
+    return Response.json({ translatedText: result.content ?? "" });
   } catch (err) {
     console.error("translate error", err);
     return Response.json({ error: "Translation failed" }, { status: 500 });

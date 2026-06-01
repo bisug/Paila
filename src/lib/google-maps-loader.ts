@@ -6,6 +6,6 @@ const LIBRARIES: Libraries = ["geometry"];
 
 export const GOOGLE_MAPS_LOADER_OPTIONS = {
   id: "google-map-script",
-  googleMapsApiKey: process.env.NEXT_PUBLIC_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY ?? "",
+  googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
   libraries: LIBRARIES,
 } as const;

@@ -1,19 +1,10 @@
 "use server";
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_maps";
+import { fetchGoogleMapsUrl } from "@/lib/server/google-maps";
 
 export async function reverseGeocode({ data }: { data: { lat: number; lng: number } }) {
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const gmKey = process.env.GOOGLE_MAPS_API_KEY;
-  if (!lovableKey) throw new Error("Missing LOVABLE_API_KEY");
-  if (!gmKey) throw new Error("Missing GOOGLE_MAPS_API_KEY");
-
-  const url = `${GATEWAY_URL}/maps/api/geocode/json?latlng=${data.lat},${data.lng}`;
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${lovableKey}`,
-      "X-Connection-Api-Key": gmKey,
-    },
+  const res = await fetchGoogleMapsUrl("https://maps.googleapis.com/maps/api/geocode/json", {
+    latlng: `${data.lat},${data.lng}`,
   });
 
   if (!res.ok) {

@@ -1,8 +1,9 @@
 "use server";
 
 import { fetchWithTimeout } from "@/lib/server/guardrails";
+import { fetchGoogleMapsJson, getGoogleMapsServerKey } from "@/lib/server/google-maps";
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_maps";
+const NEARBY_URL = "https://places.googleapis.com/v1/places:searchNearby";
 
 export type NearbyPlace = {
   id: string;
@@ -19,20 +20,16 @@ const EXPLORE_TYPES = ["tourist_attraction", "museum", "hindu_temple", "buddhist
 const HOTSPOT_TYPES = ["restaurant", "cafe", "bar", "lodging"];
 
 async function searchNearby(
-  lovableKey: string,
-  gmKey: string,
   lat: number,
   lng: number,
   includedTypes: string[],
   radiusMeters: number,
 ): Promise<NearbyPlace[]> {
-  const res = await fetchWithTimeout(
-    `${GATEWAY_URL}/places/v1/places:searchNearby`,
+  const res = await fetchGoogleMapsJson(
+    NEARBY_URL,
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": gmKey,
         "Content-Type": "application/json",
         "X-Goog-FieldMask":
           "places.id,places.displayName,places.formattedAddress,places.location,places.types,places.rating,places.userRatingCount",
@@ -46,7 +43,6 @@ async function searchNearby(
         },
       }),
     },
-    8_000,
   );
   if (!res.ok) return [];
   const j = (await res.json()) as {
@@ -80,15 +76,13 @@ export async function getNearbyPlaces({
   data: { lat: number; lng: number; radiusMeters?: number };
 }): Promise<{ explore: NearbyPlace[]; hotspots: NearbyPlace[]; error: string | null }> {
   const radius = data.radiusMeters || 8000;
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const gmKey = process.env.GOOGLE_MAPS_API_KEY;
-  if (!lovableKey || !gmKey) {
+  if (!getGoogleMapsServerKey()) {
     return { explore: [], hotspots: [], error: "Missing Google Maps credentials" };
   }
   try {
     const [explore, hotspots] = await Promise.all([
-      searchNearby(lovableKey, gmKey, data.lat, data.lng, EXPLORE_TYPES, radius),
-      searchNearby(lovableKey, gmKey, data.lat, data.lng, HOTSPOT_TYPES, radius),
+      searchNearby(data.lat, data.lng, EXPLORE_TYPES, radius),
+      searchNearby(data.lat, data.lng, HOTSPOT_TYPES, radius),
     ]);
     return { explore, hotspots, error: null };
   } catch (e) {

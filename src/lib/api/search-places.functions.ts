@@ -1,8 +1,9 @@
 "use server";
 
 import { fetchWithTimeout } from "@/lib/server/guardrails";
+import { fetchGoogleMapsJson } from "@/lib/server/google-maps";
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_maps";
+const PLACES_URL = "https://places.googleapis.com/v1/places:searchText";
 
 export async function searchPlaces({
   data,
@@ -13,11 +14,6 @@ export async function searchPlaces({
     rankByDistance?: boolean;
   };
 }) {
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const gmKey = process.env.GOOGLE_MAPS_API_KEY;
-  if (!lovableKey) throw new Error("Missing LOVABLE_API_KEY");
-  if (!gmKey) throw new Error("Missing GOOGLE_MAPS_API_KEY");
-
   const body: Record<string, unknown> = { textQuery: data.query, maxResultCount: 10 };
   if (data.bias) {
     body.locationBias = {
@@ -31,20 +27,17 @@ export async function searchPlaces({
     }
   }
 
-  const res = await fetchWithTimeout(
-    `${GATEWAY_URL}/places/v1/places:searchText`,
+  const res = await fetchGoogleMapsJson(
+    PLACES_URL,
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": gmKey,
         "Content-Type": "application/json",
         "X-Goog-FieldMask":
           "places.id,places.displayName,places.formattedAddress,places.location,places.types,places.rating,places.userRatingCount,places.priceLevel",
       },
       body: JSON.stringify(body),
     },
-    8_000,
   );
 
   if (!res.ok) {

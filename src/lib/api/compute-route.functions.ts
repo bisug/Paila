@@ -1,8 +1,9 @@
 "use server";
 
 import { fetchWithTimeout } from "@/lib/server/guardrails";
+import { fetchGoogleMapsJson } from "@/lib/server/google-maps";
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_maps";
+const ROUTES_URL = "https://routes.googleapis.com/directions/v2:computeRoutes";
 
 export async function computeRoute({
   data,
@@ -14,18 +15,11 @@ export async function computeRoute({
   };
 }) {
   const travelMode = data.travelMode || "WALK";
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const gmKey = process.env.GOOGLE_MAPS_API_KEY;
-  if (!lovableKey) throw new Error("Missing LOVABLE_API_KEY");
-  if (!gmKey) throw new Error("Missing GOOGLE_MAPS_API_KEY");
-
-  const res = await fetchWithTimeout(
-    `${GATEWAY_URL}/routes/directions/v2:computeRoutes`,
+  const res = await fetchGoogleMapsJson(
+    ROUTES_URL,
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": gmKey,
         "Content-Type": "application/json",
         "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
       },
@@ -38,7 +32,6 @@ export async function computeRoute({
         polylineEncoding: "ENCODED_POLYLINE",
       }),
     },
-    8_000,
   );
 
   if (!res.ok) {

@@ -1,8 +1,8 @@
 "use server";
 
 import { fetchWithTimeout } from "@/lib/server/guardrails";
-
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/google_maps";
+import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
+import { fetchGoogleMapsUrl } from "@/lib/server/google-maps";
 
 export type PlaceContext = {
   elevationMeters: number | null;
@@ -19,24 +19,13 @@ export async function getPlaceContext({
 }: {
   data: { lat: number; lng: number; name: string };
 }): Promise<{ context: PlaceContext | null; error: string | null }> {
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const gmKey = process.env.GOOGLE_MAPS_API_KEY;
-  if (!lovableKey) return { context: null, error: "Missing LOVABLE_API_KEY" };
-
   // 1) Elevation (best-effort)
   let elevationMeters: number | null = null;
-  if (gmKey) {
+  if (process.env.GOOGLE_MAPS_API_KEY) {
     try {
-      const res = await fetchWithTimeout(
-        `${GATEWAY_URL}/maps/api/elevation/json?locations=${data.lat},${data.lng}`,
-        {
-          headers: {
-            Authorization: `Bearer ${lovableKey}`,
-            "X-Connection-Api-Key": gmKey,
-          },
-        },
-        8_000,
-      );
+      const res = await fetchGoogleMapsUrl("https://maps.googleapis.com/maps/api/elevation/json", {
+        locations: `${data.lat},${data.lng}`,
+      });
       if (res.ok) {
         const j = (await res.json()) as { results?: Array<{ elevation?: number }> };
         if (typeof j.results?.[0]?.elevation === "number") {
@@ -46,6 +35,21 @@ export async function getPlaceContext({
     } catch {
       /* ignore elevation failures */
     }
+  }
+
+  if (!hasAiProvider()) {
+    return {
+      context: {
+        elevationMeters,
+        topography: "AI place context is not configured.",
+        climate: "Add OPENAI_API_KEY to enable generated climate notes.",
+        culture: "Add OPENAI_API_KEY to enable generated cultural context.",
+        languages: [],
+        food: [],
+        funFact: "",
+      },
+      error: null,
+    };
   }
 
   // 2) AI-generated location context (structured JSON)
@@ -66,36 +70,23 @@ Return ONLY a JSON object matching this exact shape:
 }`;
 
   try {
-    const aiRes = await fetchWithTimeout(
-      "https://ai.gateway.lovable.dev/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${lovableKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            { role: "system", content: "You return only valid JSON, no markdown, no preamble." },
-            { role: "user", content: prompt },
-          ],
-          response_format: { type: "json_object" },
-        }),
-      },
-      12_000,
-    );
+    const aiRes = await createChatCompletion({
+      messages: [
+        { role: "system", content: "You return only valid JSON, no markdown, no preamble." },
+        { role: "user", content: prompt },
+      ],
+      responseFormat: { type: "json_object" },
+      timeoutMs: 12_000,
+    });
 
-    if (!aiRes.ok) {
-      const txt = await aiRes.text();
+    if (aiRes.error) {
       if (aiRes.status === 429)
         return { context: null, error: "Rate limit reached. Try again in a moment." };
-      if (aiRes.status === 402) return { context: null, error: "AI credits exhausted." };
-      return { context: null, error: `AI error ${aiRes.status}: ${txt.slice(0, 160)}` };
+      if (aiRes.status === 402) return { context: null, error: "AI provider quota exhausted." };
+      return { context: null, error: `AI error ${aiRes.status}: ${aiRes.error.slice(0, 160)}` };
     }
 
-    const j = (await aiRes.json()) as { choices?: Array<{ message?: { content?: string } }> };
-    const content = j.choices?.[0]?.message?.content;
+    const content = aiRes.content;
     if (!content) return { context: null, error: "Empty AI response" };
 
     let parsed: Partial<PlaceContext>;
