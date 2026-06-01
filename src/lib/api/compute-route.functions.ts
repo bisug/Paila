@@ -1,6 +1,7 @@
 "use server";
 
 import { fetchGoogleMapsJson } from "@/lib/server/google-maps";
+import { assertLatLng, enforceMapRateLimit } from "@/lib/server/maps-guardrails";
 
 const ROUTES_URL = "https://routes.googleapis.com/directions/v2:computeRoutes";
 
@@ -13,6 +14,10 @@ export async function computeRoute({
     travelMode?: "WALK" | "DRIVE" | "BICYCLE";
   };
 }) {
+  await enforceMapRateLimit("maps:route", 30, 60_000);
+
+  const origin = assertLatLng(data.origin);
+  const destination = assertLatLng(data.destination);
   const travelMode = data.travelMode || "WALK";
   const res = await fetchGoogleMapsJson(ROUTES_URL, {
     method: "POST",
@@ -21,9 +26,9 @@ export async function computeRoute({
       "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
     },
     body: JSON.stringify({
-      origin: { location: { latLng: { latitude: data.origin.lat, longitude: data.origin.lng } } },
+      origin: { location: { latLng: { latitude: origin.lat, longitude: origin.lng } } },
       destination: {
-        location: { latLng: { latitude: data.destination.lat, longitude: data.destination.lng } },
+        location: { latLng: { latitude: destination.lat, longitude: destination.lng } },
       },
       travelMode: travelMode,
       polylineEncoding: "ENCODED_POLYLINE",

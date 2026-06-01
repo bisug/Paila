@@ -2,6 +2,7 @@
 
 import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
 import { fetchGoogleMapsUrl } from "@/lib/server/google-maps";
+import { assertLatLng, enforceMapRateLimit, sanitizePlaceName } from "@/lib/server/maps-guardrails";
 
 export type PlaceContext = {
   elevationMeters: number | null;
@@ -18,12 +19,17 @@ export async function getPlaceContext({
 }: {
   data: { lat: number; lng: number; name: string };
 }): Promise<{ context: PlaceContext | null; error: string | null }> {
+  await enforceMapRateLimit("maps:place-context", 20, 60_000);
+
+  const coords = assertLatLng(data);
+  const name = sanitizePlaceName(data.name);
+
   // 1) Elevation (best-effort)
   let elevationMeters: number | null = null;
   if (process.env.GOOGLE_MAPS_API_KEY) {
     try {
       const res = await fetchGoogleMapsUrl("https://maps.googleapis.com/maps/api/elevation/json", {
-        locations: `${data.lat},${data.lng}`,
+        locations: `${coords.lat},${coords.lng}`,
       });
       if (res.ok) {
         const j = (await res.json()) as { results?: Array<{ elevation?: number }> };
@@ -54,8 +60,8 @@ export async function getPlaceContext({
   // 2) AI-generated location context (structured JSON)
   const prompt = `You are a knowledgeable Nepal travel guide. For the location below, return a JSON object describing it for a curious traveler. Be concise, factual, and specific to the region (not generic).
 
-Location: "${data.name}"
-Coordinates: ${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}
+Location: "${name}"
+Coordinates: ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}
 ${elevationMeters !== null ? `Elevation: ${elevationMeters} m` : ""}
 
 Return ONLY a JSON object matching this exact shape:

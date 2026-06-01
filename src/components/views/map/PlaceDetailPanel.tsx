@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Mountain,
@@ -127,9 +127,11 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
   // Quantize coords to ~1km to keep cache stable on minor pans
   const keyLat = place.lat.toFixed(2);
   const keyLng = place.lng.toFixed(2);
+  const placeContextKey = place.placeId ?? place.id ?? `${keyLat}:${keyLng}:${place.name}`;
+  const [eventCutoff] = useState(() => Date.now());
 
   const ctxQuery = useQuery({
-    queryKey: ["place-context", keyLat, keyLng],
+    queryKey: ["place-context", placeContextKey, keyLat, keyLng],
     queryFn: () =>
       getPlaceContextFn({ data: { lat: place.lat, lng: place.lng, name: place.name } }),
     staleTime: Infinity,
@@ -144,15 +146,14 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
   });
 
   const upcomingEvents = useMemo(() => {
-    const now = Date.now();
     return LOCAL_EVENTS.map((e) => ({
       ...e,
       distance: calculateDistance({ lat: place.lat, lng: place.lng }, { lat: e.lat, lng: e.lng }),
     }))
-      .filter((e) => new Date(e.date).getTime() >= now && e.distance <= 60)
+      .filter((e) => new Date(e.date).getTime() >= eventCutoff && e.distance <= 60)
       .sort((a, b) => a.distance - b.distance)
       .slice(0, 5);
-  }, [place.lat, place.lng]);
+  }, [eventCutoff, place.lat, place.lng]);
 
   const ctx = ctxQuery.data?.context;
 
@@ -347,6 +348,8 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
           <div className="flex items-center gap-2 text-stone-400 text-sm">
             <Loader2 size={14} className="animate-spin" /> Finding nearby attractions…
           </div>
+        ) : nearbyQuery.data?.error ? (
+          <p className="text-xs text-red-600">{nearbyQuery.data.error}</p>
         ) : (nearbyQuery.data?.explore?.length ?? 0) === 0 ? (
           <p className="text-xs text-stone-400">No notable attractions found within 8 km.</p>
         ) : (
@@ -365,6 +368,8 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
           <div className="flex items-center gap-2 text-stone-400 text-sm">
             <Loader2 size={14} className="animate-spin" /> Loading hotspots…
           </div>
+        ) : nearbyQuery.data?.error ? (
+          <p className="text-xs text-red-600">{nearbyQuery.data.error}</p>
         ) : (nearbyQuery.data?.hotspots?.length ?? 0) === 0 ? (
           <p className="text-xs text-stone-400">No hotspots found nearby.</p>
         ) : (

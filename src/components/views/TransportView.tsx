@@ -34,6 +34,7 @@ import {
   type TransportMode,
 } from "@/lib/data";
 import { PageHeader, SectionHeader } from "@/components/ui/page";
+import { GOOGLE_MAPS_LOADER_OPTIONS } from "@/lib/google-maps-loader";
 
 type Bookable = RoadOption | FlightOption;
 
@@ -47,7 +48,6 @@ const iconMap = {
 
 const mapContainerStyle = { width: "100%", height: "100%" };
 const defaultCenter = { lat: 27.7172, lng: 85.324 };
-import { GOOGLE_MAPS_LOADER_OPTIONS } from "@/lib/google-maps-loader";
 
 type FilterTab = "all" | "road" | "flight" | "trek";
 
@@ -354,6 +354,7 @@ export function TransportView() {
     null,
   );
   const [isSearchingRoute, setIsSearchingRoute] = useState(false);
+  const [routeError, setRouteError] = useState<string | null>(null);
   const [buying, setBuying] = useState<Bookable | null>(null);
   const [purchasedIds, setPurchasedIds] = useState<Set<string>>(new Set());
   const [localNotice, setLocalNotice] = useState<string | null>(null);
@@ -365,7 +366,11 @@ export function TransportView() {
       window.scrollTo({ top: window.innerHeight * 0.4, behavior: "smooth" });
   }, []);
 
-  const { isLoaded } = useJsApiLoader(GOOGLE_MAPS_LOADER_OPTIONS);
+  const { isLoaded, loadError } = useJsApiLoader(GOOGLE_MAPS_LOADER_OPTIONS);
+  const mapLoadError =
+    loadError || !GOOGLE_MAPS_LOADER_OPTIONS.googleMapsApiKey
+      ? "Google Maps is not configured or failed to load."
+      : null;
 
   const filtered = useMemo(() => {
     const f = from.trim().toLowerCase();
@@ -392,14 +397,24 @@ export function TransportView() {
     return c;
   }, []);
 
-  const directionsCallback = useCallback((res: google.maps.DirectionsResult | null) => {
-    if (res && res.routes?.length) setDirectionsResponse(res);
-    setIsSearchingRoute(false);
-  }, []);
+  const directionsCallback = useCallback(
+    (res: google.maps.DirectionsResult | null, status: google.maps.DirectionsStatus) => {
+      if (status === google.maps.DirectionsStatus.OK && res?.routes?.length) {
+        setDirectionsResponse(res);
+        setRouteError(null);
+      } else {
+        setDirectionsResponse(null);
+        setRouteError(`Could not calculate this route (${status}).`);
+      }
+      setIsSearchingRoute(false);
+    },
+    [],
+  );
 
   function searchRoute() {
     if (!from || !to) return;
     setDirectionsResponse(null);
+    setRouteError(null);
     setIsSearchingRoute(true);
   }
 
@@ -407,6 +422,7 @@ export function TransportView() {
     setFrom(to);
     setTo(from);
     setDirectionsResponse(null);
+    setRouteError(null);
   }
 
   return (
@@ -486,9 +502,16 @@ export function TransportView() {
       </div>
 
       {/* Map */}
-      {(isSearchingRoute || directionsResponse) && (
+      {(isSearchingRoute || directionsResponse || routeError) && (
         <div className="mx-4 md:mx-8 mb-6 rounded-2xl overflow-hidden shadow-card-md border border-stone-100 bg-stone-100 h-[300px] md:h-[400px] relative">
-          {!isLoaded ? (
+          {mapLoadError ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-stone-50 p-6 text-center">
+              <div>
+                <p className="text-sm font-bold text-stone-800">Map unavailable</p>
+                <p className="mt-1 text-xs text-stone-500">{mapLoadError}</p>
+              </div>
+            </div>
+          ) : !isLoaded ? (
             <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
               <p className="text-xs font-semibold text-stone-400 animate-pulse">Loading Map...</p>
             </div>
@@ -518,6 +541,11 @@ export function TransportView() {
                 />
               )}
             </GoogleMap>
+          )}
+          {routeError && (
+            <div className="absolute bottom-4 left-4 right-4 z-10 rounded-xl border border-red-100 bg-white/95 p-3 text-xs font-semibold text-red-700 shadow-md">
+              {routeError}
+            </div>
           )}
           {directionsResponse && directionsResponse.routes[0] && (
             <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-md border border-stone-100 flex items-center justify-between z-10">

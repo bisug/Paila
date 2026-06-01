@@ -13,9 +13,28 @@ const MAX_POINTS = 500;
 const MAX_ACCURACY_M = 50;
 const MIN_MOVE_KM = 0.01;
 
+function readSavedPath(): Coordinates[] {
+  if (typeof window === "undefined") return [];
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return [];
+  try {
+    const parsed = JSON.parse(saved);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (p): p is Coordinates =>
+        typeof p?.lat === "number" &&
+        typeof p?.lng === "number" &&
+        typeof p?.timestamp === "number",
+    );
+  } catch (e) {
+    console.error("Failed to parse saved path", e);
+    return [];
+  }
+}
+
 export function useGeolocationTracker() {
   const [location, setLocation] = useState<Coordinates | null>(null);
-  const [path, setPath] = useState<Coordinates[]>([]);
+  const [path, setPath] = useState<Coordinates[]>(() => readSavedPath());
   const [error, setError] = useState<string | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const watchIdRef = useRef<number | null>(null);
@@ -88,15 +107,6 @@ export function useGeolocationTracker() {
   }, [startWatch]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setPath(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to parse saved path", e);
-      }
-    }
-
     startWatch();
 
     // Auto-recover when the user toggles permission in browser settings.

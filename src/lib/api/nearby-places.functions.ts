@@ -1,6 +1,11 @@
 "use server";
 
 import { fetchGoogleMapsJson, getGoogleMapsServerKey } from "@/lib/server/google-maps";
+import {
+  assertLatLng,
+  enforceMapRateLimit,
+  normalizeRadiusMeters,
+} from "@/lib/server/maps-guardrails";
 
 const NEARBY_URL = "https://places.googleapis.com/v1/places:searchNearby";
 
@@ -71,14 +76,17 @@ export async function getNearbyPlaces({
 }: {
   data: { lat: number; lng: number; radiusMeters?: number };
 }): Promise<{ explore: NearbyPlace[]; hotspots: NearbyPlace[]; error: string | null }> {
-  const radius = data.radiusMeters || 8000;
+  await enforceMapRateLimit("maps:nearby", 30, 60_000);
+
+  const center = assertLatLng(data);
+  const radius = normalizeRadiusMeters(data.radiusMeters, 8000, 20000);
   if (!getGoogleMapsServerKey()) {
     return { explore: [], hotspots: [], error: "Missing Google Maps credentials" };
   }
   try {
     const [explore, hotspots] = await Promise.all([
-      searchNearby(data.lat, data.lng, EXPLORE_TYPES, radius),
-      searchNearby(data.lat, data.lng, HOTSPOT_TYPES, radius),
+      searchNearby(center.lat, center.lng, EXPLORE_TYPES, radius),
+      searchNearby(center.lat, center.lng, HOTSPOT_TYPES, radius),
     ]);
     return { explore, hotspots, error: null };
   } catch (e) {

@@ -59,8 +59,14 @@ type PendingTap = {
   loading: boolean;
 };
 
+type PoiMapMouseEvent = google.maps.MapMouseEvent & {
+  placeId?: string;
+  stop?: () => void;
+};
+
 const mapContainerStyle = { width: "100%", height: "100%" };
 const DEFAULT_CENTER = { lat: 28.3949, lng: 84.124 }; // Nepal centroid
+const EMPTY_CHECKPOINTS: Checkpoint[] = [];
 
 // Bearing in degrees from point A to point B
 function bearing(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
@@ -83,6 +89,8 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
   const mapRef = useRef<google.maps.Map | null>(null);
   const fittedRef = useRef(false);
   const journeyFittedRef = useRef(false);
+  const searchRequestRef = useRef(0);
+  const tapRequestRef = useRef(0);
 
   const [viewMode, setViewMode] = useState<"pins" | "journey">(defaultView);
   const [activeStageId, setActiveStageId] = useState<string | null>(null);
@@ -106,7 +114,11 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
   const reverseGeocodeFn = reverseGeocode;
   const queryClient = useQueryClient();
 
-  const { isLoaded } = useJsApiLoader(GOOGLE_MAPS_LOADER_OPTIONS);
+  const { isLoaded, loadError } = useJsApiLoader(GOOGLE_MAPS_LOADER_OPTIONS);
+  const mapLoadError =
+    loadError || !GOOGLE_MAPS_LOADER_OPTIONS.googleMapsApiKey
+      ? "Google Maps is not configured or failed to load."
+      : null;
 
   const { location, permissionDenied, retry: retryLocation } = useGeolocationTracker();
   const [permBannerDismissed, setPermBannerDismissed] = useState(false);
@@ -127,7 +139,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     queryFn: () => listCheckpointsFn(),
     enabled: isAuthed === true,
   });
-  const checkpoints: Checkpoint[] = checkpointsQuery.data?.checkpoints ?? [];
+  const checkpoints: Checkpoint[] = checkpointsQuery.data?.checkpoints ?? EMPTY_CHECKPOINTS;
 
   // Optimistic add
   const addMut = useMutation({
@@ -190,7 +202,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     if (!isLoaded || !mapRef.current || fittedRef.current) return;
     if (checkpoints.length === 0) return;
     fittedRef.current = true;
-    const bounds = new (window as any).google.maps.LatLngBounds();
+    const bounds = new window.google.maps.LatLngBounds();
     checkpoints.forEach((c) => bounds.extend({ lat: c.lat, lng: c.lng }));
     if (location) bounds.extend({ lat: location.lat, lng: location.lng });
     mapRef.current.fitBounds(bounds, 80);
@@ -205,7 +217,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     }
     if (journeyFittedRef.current) return;
     journeyFittedRef.current = true;
-    const bounds = new (window as any).google.maps.LatLngBounds();
+    const bounds = new window.google.maps.LatLngBounds();
     journeyStages.forEach((s) => bounds.extend({ lat: s.lat, lng: s.lng }));
     mapRef.current.fitBounds(bounds, 60);
   }, [isLoaded, viewMode]);
@@ -263,8 +275,11 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
       const lat = e.latLng.lat();
       const lng = e.latLng.lng();
       // If user tapped a Google POI, prefer its placeId for nicer name
-      const placeId = (e as any).placeId as string | undefined;
-      if (placeId && (e as any).stop) (e as any).stop();
+      const poiEvent = e as PoiMapMouseEvent;
+      const placeId = poiEvent.placeId;
+      if (placeId) poiEvent.stop?.();
+
+      const requestId = ++tapRequestRef.current;
 
       setPendingTap({
         lat,
@@ -276,6 +291,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
       });
       try {
         const res = await reverseGeocodeFn({ data: { lat, lng } });
+        if (requestId !== tapRequestRef.current) return;
         setPendingTap({
           lat,
           lng,
@@ -285,6 +301,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
           loading: false,
         });
       } catch {
+        if (requestId !== tapRequestRef.current) return;
         setPendingTap({
           lat,
           lng,
@@ -307,8 +324,14 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
       lat: pendingTap.lat,
       lng: pendingTap.lng,
     });
+    tapRequestRef.current += 1;
     setPendingTap(null);
     setTapMode(false);
+  };
+
+  const clearPendingTap = () => {
+    tapRequestRef.current += 1;
+    setPendingTap(null);
   };
 
   const addCurrentLocation = async () => {
@@ -343,11 +366,13 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
       setSearchLoading(true);
       setSearchError(null);
       setShowResults(true);
+      const requestId = ++searchRequestRef.current;
       try {
         const bias = location
           ? { lat: location.lat, lng: location.lng, radiusMeters: 50000 }
           : { lat: DEFAULT_CENTER.lat, lng: DEFAULT_CENTER.lng, radiusMeters: 50000 };
         const res = await searchPlacesFn({ data: { query, bias, rankByDistance: !!location } });
+        if (requestId !== searchRequestRef.current) return;
         if (res.error) {
           setSearchError(res.error);
           setSearchResults([]);
@@ -355,11 +380,12 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
           setSearchResults(res.places);
           if (res.places.length === 0) setSearchError("No places found");
         }
-      } catch (e: any) {
-        setSearchError(e?.message ?? "Search failed");
+      } catch (e: unknown) {
+        if (requestId !== searchRequestRef.current) return;
+        setSearchError(e instanceof Error ? e.message : "Search failed");
         setSearchResults([]);
       } finally {
-        setSearchLoading(false);
+        if (requestId === searchRequestRef.current) setSearchLoading(false);
       }
     },
     [location, searchPlacesFn],
@@ -377,6 +403,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
   };
 
   const clearSearch = () => {
+    searchRequestRef.current += 1;
     setSearchQuery("");
     setSearchResults([]);
     setSearchError(null);
@@ -426,11 +453,14 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
       : null;
 
   // Compass: bearing from user's location to currently focused point (selected place / active checkpoint / map center)
-  const compassTarget = selectedPlace
-    ? { lat: selectedPlace.lat, lng: selectedPlace.lng, label: selectedPlace.name }
-    : activeCheckpoint
-      ? { lat: activeCheckpoint.lat, lng: activeCheckpoint.lng, label: activeCheckpoint.name }
-      : null;
+  const compassTarget = useMemo(() => {
+    if (selectedPlace)
+      return { lat: selectedPlace.lat, lng: selectedPlace.lng, label: selectedPlace.name };
+    if (activeCheckpoint) {
+      return { lat: activeCheckpoint.lat, lng: activeCheckpoint.lng, label: activeCheckpoint.name };
+    }
+    return null;
+  }, [selectedPlace, activeCheckpoint]);
 
   const compass = useMemo(() => {
     if (!location || !compassTarget) return null;
@@ -498,7 +528,14 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                   onDismiss={() => setPermBannerDismissed(true)}
                 />
               )}
-              {!isLoaded ? (
+              {mapLoadError ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-stone-50 p-6 text-center">
+                  <div>
+                    <p className="text-sm font-bold text-stone-800">Map unavailable</p>
+                    <p className="mt-1 text-xs text-stone-500">{mapLoadError}</p>
+                  </div>
+                </div>
+              ) : !isLoaded ? (
                 <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
                   <p className="text-xs font-semibold text-stone-400 animate-pulse">
                     Loading Google Maps...
@@ -571,7 +608,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                               fontWeight: "700",
                             }}
                             icon={{
-                              path: (window as any).google.maps.SymbolPath.CIRCLE,
+                              path: window.google.maps.SymbolPath.CIRCLE,
                               scale: active ? 15 : 12,
                               fillColor: visited ? terracotta : pine,
                               fillOpacity: 1,
@@ -590,7 +627,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                           position={{ lat: c.lat, lng: c.lng }}
                           onClick={() => pickCheckpoint(c)}
                           icon={{
-                            path: (window as any).google.maps.SymbolPath.CIRCLE,
+                            path: window.google.maps.SymbolPath.CIRCLE,
                             scale: activeCheckpointId === c.id ? 13 : 10,
                             fillColor: activeCheckpointId === c.id ? terracotta : pine,
                             fillOpacity: 1,
@@ -604,7 +641,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       <Marker
                         position={{ lat: location.lat, lng: location.lng }}
                         icon={{
-                          path: (window as any).google.maps.SymbolPath.CIRCLE,
+                          path: window.google.maps.SymbolPath.CIRCLE,
                           scale: 8,
                           fillColor: "#3b82f6",
                           fillOpacity: 1,
@@ -619,7 +656,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       <Marker
                         position={{ lat: selectedPlace.lat, lng: selectedPlace.lng }}
                         icon={{
-                          path: (window as any).google.maps.SymbolPath.CIRCLE,
+                          path: window.google.maps.SymbolPath.CIRCLE,
                           scale: 11,
                           fillColor: "#7c3aed",
                           fillOpacity: 1,
@@ -634,7 +671,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       <Marker
                         position={{ lat: pendingTap.lat, lng: pendingTap.lng }}
                         icon={{
-                          path: (window as any).google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                          path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                           scale: 6,
                           fillColor: terracotta,
                           fillOpacity: 1,
@@ -741,7 +778,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                         </div>
                         <button
                           type="button"
-                          onClick={() => setPendingTap(null)}
+                          onClick={clearPendingTap}
                           className="shrink-0 p-1 text-stone-400 hover:text-stone-600"
                           aria-label="Cancel"
                         >
@@ -759,7 +796,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                         </button>
                         <button
                           type="button"
-                          onClick={() => setPendingTap(null)}
+                          onClick={clearPendingTap}
                           className="rounded-full bg-stone-100 text-stone-700 text-xs font-bold py-2 px-3 hover:bg-stone-200"
                         >
                           Cancel
@@ -774,7 +811,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       type="button"
                       onClick={() => {
                         setTapMode((v) => !v);
-                        setPendingTap(null);
+                        clearPendingTap();
                       }}
                       className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold shadow-card-md transition-colors ${
                         tapMode

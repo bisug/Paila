@@ -1,6 +1,12 @@
 "use server";
 
 import { fetchGoogleMapsJson } from "@/lib/server/google-maps";
+import {
+  assertLatLng,
+  enforceMapRateLimit,
+  normalizeRadiusMeters,
+  sanitizePlaceSearchQuery,
+} from "@/lib/server/maps-guardrails";
 
 const PLACES_URL = "https://places.googleapis.com/v1/places:searchText";
 
@@ -13,12 +19,16 @@ export async function searchPlaces({
     rankByDistance?: boolean;
   };
 }) {
-  const body: Record<string, unknown> = { textQuery: data.query, maxResultCount: 10 };
+  await enforceMapRateLimit("maps:search", 30, 60_000);
+
+  const query = sanitizePlaceSearchQuery(data.query);
+  const body: Record<string, unknown> = { textQuery: query, maxResultCount: 10 };
   if (data.bias) {
+    const center = assertLatLng(data.bias);
     body.locationBias = {
       circle: {
-        center: { latitude: data.bias.lat, longitude: data.bias.lng },
-        radius: data.bias.radiusMeters || 50000,
+        center: { latitude: center.lat, longitude: center.lng },
+        radius: normalizeRadiusMeters(data.bias.radiusMeters, 50000, 50000),
       },
     };
     if (data.rankByDistance) {

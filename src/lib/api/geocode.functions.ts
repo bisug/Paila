@@ -1,15 +1,19 @@
 "use server";
 
 import { fetchGoogleMapsUrl } from "@/lib/server/google-maps";
+import { assertLatLng, enforceMapRateLimit } from "@/lib/server/maps-guardrails";
 
 export async function reverseGeocode({ data }: { data: { lat: number; lng: number } }) {
+  await enforceMapRateLimit("maps:reverse-geocode", 60, 60_000);
+
+  const coords = assertLatLng(data);
   const res = await fetchGoogleMapsUrl("https://maps.googleapis.com/maps/api/geocode/json", {
-    latlng: `${data.lat},${data.lng}`,
+    latlng: `${coords.lat},${coords.lng}`,
   });
 
   if (!res.ok) {
     return {
-      name: `Pin ${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}`,
+      name: `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`,
       address: null as string | null,
       placeId: null as string | null,
       error: `Geocode ${res.status}`,
@@ -26,7 +30,7 @@ export async function reverseGeocode({ data }: { data: { lat: number; lng: numbe
   const top = json.results?.[0];
   if (!top) {
     return {
-      name: `Pin ${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}`,
+      name: `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`,
       address: null,
       placeId: null,
       error: null,
@@ -45,7 +49,7 @@ export async function reverseGeocode({ data }: { data: { lat: number; lng: numbe
     pick("locality") ||
     pick("administrative_area_level_2") ||
     pick("administrative_area_level_1") ||
-    `Pin ${data.lat.toFixed(4)}, ${data.lng.toFixed(4)}`;
+    `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`;
 
   return {
     name,
