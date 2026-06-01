@@ -207,18 +207,18 @@ export type Database = {
           created_at: string;
           first_name: string | null;
           full_name: string | null;
-          gender: string;
+          gender: string | null;
           last_name: string | null;
           updated_at: string;
           user_id: string;
         };
         Insert: {
-          account_type: string;
+          account_type?: string;
           business_type?: string | null;
           created_at?: string;
           first_name?: string | null;
           full_name?: string | null;
-          gender: string;
+          gender?: string | null;
           last_name?: string | null;
           updated_at?: string;
           user_id: string;
@@ -229,7 +229,7 @@ export type Database = {
           created_at?: string;
           first_name?: string | null;
           full_name?: string | null;
-          gender?: string;
+          gender?: string | null;
           last_name?: string | null;
           updated_at?: string;
           user_id?: string;

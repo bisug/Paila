@@ -58,6 +58,10 @@ Use npm for dependency management. The canonical lockfile is `package-lock.json`
 ## Security Notes
 
 - Never commit `.env`.
+- Add your deployed origin and `/auth/callback` to the Supabase Auth redirect allow list.
+- Enable the Google provider in Supabase Auth for Gmail/Google sign-in.
+- Enable Phone Auth and configure a production SMS provider before using phone signup.
+- Configure custom SMTP for production email confirmations and password recovery.
 - Restrict `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` by HTTP referrer in Google Cloud.
 - Restrict `GOOGLE_MAPS_API_KEY` by server/IP where possible.
 - Keep `SUPABASE_SERVICE_ROLE_KEY` server-only.
