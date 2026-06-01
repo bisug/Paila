@@ -532,7 +532,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
         <img
           src="https://images.unsplash.com/photo-1544634076-a90160ddf44e?auto=format&fit=crop&w=800&q=80"
           alt="Annapurna range"
-          className="object-cover opacity-20"
+          className="h-full w-full object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-linear-to-r from-sky-50/90 to-blue-50/90 backdrop-blur-[2px]" />
       </div>
@@ -1459,9 +1459,13 @@ function FeaturedCard({
   onBook: (e: Experience) => void;
 }) {
   return (
-    <article className="overflow-hidden rounded-2xl bg-white shadow-sm border border-stone-100 md:flex md:flex-row">
+    <article className="overflow-hidden rounded-2xl bg-white shadow-card border border-stone-100 md:flex md:flex-row transition-shadow hover:shadow-card-md">
       <div className="relative h-44 xs:h-48 sm:h-52 md:h-auto md:w-5/12 w-full md:min-h-[220px]">
-        <img src={imageSrc(experience.image)} alt={experience.title} className="object-cover" />
+        <img
+          src={imageSrc(experience.image)}
+          alt={experience.title}
+          className="h-full w-full object-cover"
+        />
         <div className="absolute top-3 left-3">
           <BadgeChip label={experience.badge} />
         </div>
@@ -1499,7 +1503,7 @@ function FeaturedCard({
           <button
             type="button"
             onClick={() => onBook(experience)}
-            className="rounded-xl bg-terracotta px-5 py-2.5 md:px-6 md:py-3 text-sm md:text-base font-semibold text-white shadow-sm transition-transform active:scale-[0.97]"
+            className="rounded-xl bg-terracotta px-5 py-2.5 md:px-6 md:py-3 text-sm md:text-base font-semibold text-white shadow-sm transition-all hover:bg-terracotta/90 active:scale-[0.97]"
           >
             Book now
           </button>
@@ -1523,10 +1527,14 @@ function ExperienceCard({
     <button
       type="button"
       onClick={() => onBook(experience)}
-      className="overflow-hidden rounded-2xl bg-white shadow-sm border border-stone-100 text-left w-full transition-shadow hover:shadow-card-md active:scale-[0.97]"
+      className="overflow-hidden rounded-2xl bg-white shadow-card border border-stone-100 text-left w-full transition-all hover:-translate-y-0.5 hover:shadow-card-md active:scale-[0.97]"
     >
       <div className="relative aspect-4/3 w-full">
-        <img src={imageSrc(experience.image)} alt={experience.title} className="object-cover" />
+        <img
+          src={imageSrc(experience.image)}
+          alt={experience.title}
+          className="h-full w-full object-cover"
+        />
         {visitCount !== undefined && (
           <span
             className={`absolute top-2 left-2 rounded-full border px-2 py-0.5 text-[10px] font-bold ${
@@ -1539,7 +1547,7 @@ function ExperienceCard({
           </span>
         )}
       </div>
-      <div className="p-3">
+      <div className="p-3.5">
         <div className="flex items-start gap-1">
           <p className="flex-1 text-[13px] font-semibold text-stone-900 leading-snug line-clamp-2">
             {experience.title}
@@ -1681,9 +1689,26 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
       {/* ── Modals ──────────────────────────────────────────────────────── */}
       {/* Modals removed — essentials now expand inline */}
 
+      <section className="border-b border-stone-100 bg-white">
+        <div className="px-4 md:px-8 py-5 md:py-7">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-widest text-terracotta">
+              Local travel network
+            </p>
+            <h1 className="mt-2 text-2xl md:text-4xl font-bold tracking-tight text-stone-950">
+              Plan the next step around {currentLocation.name}
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm md:text-base leading-6 text-stone-600">
+              Find verified guides, nearby stays, local events, route help, and community-run
+              experiences in one place.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ── Sticky search + filter bar ─────────────────────────────────── */}
-      <div className="sticky top-14 md:top-16 z-20 bg-stone-50/95 backdrop-blur-sm border-b border-stone-100 px-4 md:px-8 pt-3 pb-3 shadow-sm">
-        <div className="relative mb-3 flex items-center gap-2">
+      <div className="sticky top-14 md:top-16 z-20 bg-white/95 backdrop-blur-sm border-b border-stone-100 px-4 md:px-8 py-3 shadow-sm">
+        <div className="relative flex items-center gap-2">
           <div className="relative flex-1">
             <Search
               size={15}
@@ -1722,16 +1747,13 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
           </span>
 
           <div
-            className="overflow-hidden flex-1 relative h-6 group"
+            className="min-w-0 flex-1 overflow-x-auto no-scrollbar"
             role="region"
             aria-label="Local alerts"
           >
-            <div className="absolute inset-0 flex items-center animate-marquee whitespace-nowrap gap-4 pl-2 group-hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]">
+            <div className="flex items-center whitespace-nowrap gap-2 pl-2">
               {LOCAL_ALERTS.map((alert) => (
                 <AlertChip key={alert.id} alert={alert} onOpen={setOpenAlert} />
-              ))}
-              {LOCAL_ALERTS.map((alert) => (
-                <AlertChip key={`${alert.id}-dup`} alert={alert} onOpen={setOpenAlert} />
               ))}
             </div>
           </div>
@@ -1781,27 +1803,51 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
 
       {/* ── Dashboard Widgets (Only show when not searching) ──────────── */}
       {!search && (
-        <div className="px-4 md:px-8 py-5 border-b border-stone-100 bg-white/50">
-          <WeatherWidget location={currentLocation} />
-          <div className="mt-5">
-            <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-stone-500">
-              Essential Tools
-            </h2>
-            <EssentialsSection rates={rates} />
+        <div className="px-4 md:px-8 py-6 md:py-8 border-b border-stone-100 bg-stone-50">
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-start">
+            <div className="min-w-0">
+              <div className="mb-3 flex items-end justify-between gap-3">
+                <div>
+                  <h2 className="text-sm md:text-base font-bold text-stone-900">Today near you</h2>
+                  <p className="mt-0.5 text-xs text-stone-500">
+                    Weather, elevation, and quick safety context.
+                  </p>
+                </div>
+              </div>
+              <WeatherWidget location={currentLocation} />
+            </div>
+
+            <div className="min-w-0">
+              <div className="mb-3 flex items-end justify-between gap-3">
+                <div>
+                  <h2 className="text-sm md:text-base font-bold text-stone-900">Essential tools</h2>
+                  <p className="mt-0.5 text-xs text-stone-500">
+                    Currency, permits, and emergency help.
+                  </p>
+                </div>
+              </div>
+              <EssentialsSection rates={rates} />
+            </div>
+
+            <div className="min-w-0 xl:col-span-2">
+              <LocalEventsSection currentLocation={currentLocation} />
+            </div>
           </div>
-          <LocalEventsSection currentLocation={currentLocation} />
         </div>
       )}
 
       {/* ── Feed content ───────────────────────────────────────────────── */}
-      <div className="px-4 md:px-8 py-6 space-y-6">
+      <div className="px-4 md:px-8 py-7 md:py-9 space-y-8">
         {!search && recommendations.length > 0 && (
           <section>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-stone-400">
-                Picked for your next visit
-              </h2>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">
+            <div className="flex items-end justify-between gap-4 mb-4">
+              <div>
+                <h2 className="text-lg font-bold text-stone-900">Picked for your next visit</h2>
+                <p className="mt-0.5 text-sm text-stone-500">
+                  Suggestions adapt as you mark places visited.
+                </p>
+              </div>
+              <span className="hidden sm:inline text-[11px] font-semibold uppercase tracking-wider text-stone-400">
                 Based on where you've been
               </span>
             </div>
@@ -1809,7 +1855,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
               {recommendations.map((rec) => (
                 <article
                   key={rec.spotId}
-                  className="overflow-hidden rounded-2xl bg-white shadow-sm border border-stone-100 flex"
+                  className="overflow-hidden rounded-2xl bg-white shadow-card border border-stone-100 flex transition-all hover:-translate-y-0.5 hover:shadow-card-md"
                 >
                   <button
                     type="button"
@@ -1867,18 +1913,28 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
         ) : (
           <>
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-xs font-bold uppercase tracking-wider text-stone-400">
-                  {interests.length ? "Recommended for you" : "Recommended nearby"}
-                </h2>
-                {interests.length > 0 && (
-                  <Link
-                    href="/onboarding/interests"
-                    className="text-[10px] font-semibold uppercase tracking-wider text-terracotta hover:underline"
-                  >
-                    Edit interests
-                  </Link>
-                )}
+              <div className="flex items-end justify-between gap-4 mb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-stone-900">
+                    {interests.length ? "Recommended for you" : "Recommended nearby"}
+                  </h2>
+                  <p className="mt-0.5 text-sm text-stone-500">
+                    Verified experiences from local hosts and guides.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="hidden md:inline text-xs font-semibold text-stone-400">
+                    {filtered.length} matches
+                  </span>
+                  {interests.length > 0 && (
+                    <Link
+                      href="/onboarding/interests"
+                      className="text-[11px] font-bold uppercase tracking-wider text-terracotta hover:underline"
+                    >
+                      Edit interests
+                    </Link>
+                  )}
+                </div>
               </div>
               {interests.length > 0 && (
                 <div className="mb-3 flex flex-wrap gap-1.5">
@@ -1897,9 +1953,14 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
 
             {rest.length > 0 && (
               <section>
-                <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-stone-400">
-                  More experiences
-                </h2>
+                <div className="mb-4 flex items-end justify-between gap-4">
+                  <div>
+                    <h2 className="text-lg font-bold text-stone-900">More experiences</h2>
+                    <p className="mt-0.5 text-sm text-stone-500">
+                      Compare nearby options by place, rating, and price.
+                    </p>
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                   {rest.map((exp) => (
                     <ExperienceCard

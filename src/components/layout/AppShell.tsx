@@ -305,7 +305,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* ── Page content ──────────────────────────────────────────────────── */}
         <main className="flex-1 pb-20 md:pb-6 min-h-0">
           {/* On desktop, constrain content width for readability */}
-          <div className="w-full h-full md:max-w-3xl md:mx-auto">{children}</div>
+          <div className="w-full h-full md:max-w-5xl xl:max-w-6xl md:mx-auto">{children}</div>
         </main>
       </div>
 
