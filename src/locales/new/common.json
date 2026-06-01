@@ -1,0 +1,49 @@
+{
+  "app": { "name": "पाइला", "tagline": "सगुं यात्रा एक कदम्ब खने थ्वने" },
+  "status": { "online": "अनलाइन", "offline": "अफलाइन" },
+  "nav": {
+    "home": "छें",
+    "map": "नक्सा",
+    "scan": "स्क्यान",
+    "talk": "खँग्वः",
+    "transport": "यातायात",
+    "impact": "प्रभाव",
+    "profile": "प्रोफाइल"
+  },
+  "actions": {
+    "sos": "आपतकालीन SOS",
+    "menu": "मेनू",
+    "close": "बन्द",
+    "continue": "न्ह्यःने",
+    "skip": "थौंयात त्वःते",
+    "save": "तयेगु",
+    "cancel": "रद्द",
+    "retry": "ल्ह्वंगु",
+    "goHome": "छेंय् वने"
+  },
+  "language": { "label": "भाय्", "change": "भाय् लिसः" },
+  "onboarding": {
+    "title": "नेपालं छिगु मनसः गथे कनः?",
+    "subtitle": "जुलिमि {{count}} व्यनादिसँ — झी मिलत स्थानीय अनुभवयात प्राथमिकता बियेगु जुइ।",
+    "needMore": "न्ह्यःने वंगुलि {{count}} व्यनादिसँ, वा त्वःतादिसँ।",
+    "selectedCount": "({{count}} व्यनातगु)"
+  },
+  "interests": {
+    "trekking": "ट्रेकिङ",
+    "temples": "देगः",
+    "monasteries": "गुम्बा",
+    "historical": "ऐतिहासिक स्थल",
+    "food": "नसा",
+    "wellness": "स्वास्थ्य व योग",
+    "wildlife": "वन्यजन्तु",
+    "villages": "गाँ व होमस्टे",
+    "festivals": "नखः व संस्कृति",
+    "handicrafts": "हस्तकला"
+  },
+  "sync": { "title": "अफलाइन व सिंक", "subtitle": "अफलाइन स्थानीय भण्डारण व्यवस्थापन" },
+  "errors": {
+    "notFound": "पुचः मखुसे",
+    "notFoundBody": "छिं मालागु लँ मदु।",
+    "generic": "छु गल्ती जुल"
+  }
+}

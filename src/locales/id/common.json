@@ -1,0 +1,49 @@
+{
+  "app": { "name": "Paila", "tagline": "Setiap perjalanan dimulai dengan satu langkah" },
+  "status": { "online": "Daring", "offline": "Luring" },
+  "nav": {
+    "home": "Beranda",
+    "map": "Peta",
+    "scan": "Pindai",
+    "talk": "Bicara",
+    "transport": "Transportasi",
+    "impact": "Dampak",
+    "profile": "Profil"
+  },
+  "actions": {
+    "sos": "SOS Darurat",
+    "menu": "Menu",
+    "close": "Tutup",
+    "continue": "Lanjutkan",
+    "skip": "Lewati",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "retry": "Coba lagi",
+    "goHome": "Ke beranda"
+  },
+  "language": { "label": "Bahasa", "change": "Ubah bahasa" },
+  "onboarding": {
+    "title": "Apa yang menarik Anda ke Nepal?",
+    "subtitle": "Pilih minimal {{count}} — kami prioritaskan pengalaman lokal yang cocok.",
+    "needMore": "Pilih {{count}} lagi untuk melanjutkan, atau lewati.",
+    "selectedCount": "({{count}} dipilih)"
+  },
+  "interests": {
+    "trekking": "Trekking",
+    "temples": "Kuil",
+    "monasteries": "Biara",
+    "historical": "Situs sejarah",
+    "food": "Makanan",
+    "wellness": "Kesehatan & yoga",
+    "wildlife": "Satwa liar & alam",
+    "villages": "Desa & homestay",
+    "festivals": "Festival & budaya",
+    "handicrafts": "Kerajinan tangan"
+  },
+  "sync": { "title": "Luring & sinkron", "subtitle": "Kelola penyimpanan luring lokal" },
+  "errors": {
+    "notFound": "Halaman tidak ditemukan",
+    "notFoundBody": "Jalur yang Anda cari tidak ada.",
+    "generic": "Terjadi kesalahan"
+  }
+}

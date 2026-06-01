@@ -1,0 +1,49 @@
+{
+  "app": { "name": "पाइला", "tagline": "हर यात्रा एक गोड़ सँ शुरू होला" },
+  "status": { "online": "ऑनलाइन", "offline": "ऑफलाइन" },
+  "nav": {
+    "home": "घर",
+    "map": "नक्सा",
+    "scan": "स्क्यान",
+    "talk": "गपशप",
+    "transport": "यातायात",
+    "impact": "प्रभाव",
+    "profile": "प्रोफाइल"
+  },
+  "actions": {
+    "sos": "आपतकालीन SOS",
+    "menu": "मेनू",
+    "close": "बन्द",
+    "continue": "आगे बढ़",
+    "skip": "अभी छोड़",
+    "save": "सेव",
+    "cancel": "रद्द",
+    "retry": "फिर कोसिस",
+    "goHome": "घर जा"
+  },
+  "language": { "label": "भाषा", "change": "भाषा बदल" },
+  "onboarding": {
+    "title": "नेपाल तोहार के दिस तानेला?",
+    "subtitle": "कम से कम {{count}} चुन — हम मिलत स्थानीय अनुभव कs प्राथमिकता देब।",
+    "needMore": "आगे बढ़े के लागि {{count}} अउर चुन, या छोड़।",
+    "selectedCount": "({{count}} चुनल)"
+  },
+  "interests": {
+    "trekking": "ट्रेकिङ",
+    "temples": "मंदिर",
+    "monasteries": "मठ",
+    "historical": "ऐतिहासिक स्थल",
+    "food": "खाना",
+    "wellness": "स्वास्थ्य आ योग",
+    "wildlife": "वन्यजन्तु",
+    "villages": "गाउँ आ होमस्टे",
+    "festivals": "त्यौहार आ संस्कृति",
+    "handicrafts": "हस्तकला"
+  },
+  "sync": { "title": "ऑफलाइन आ सिंक", "subtitle": "ऑफलाइन स्थानीय भण्डारण व्यवस्थापन" },
+  "errors": {
+    "notFound": "पन्ना नइ मिलल",
+    "notFoundBody": "तू जे बाट खोजत बाड़, ऊ नइखे।",
+    "generic": "कुछ गलत भइल"
+  }
+}

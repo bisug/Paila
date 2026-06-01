@@ -1,0 +1,52 @@
+{
+  "app": { "name": "Paila", "tagline": "Toda jornada começa com um passo" },
+  "status": { "online": "Online", "offline": "Offline" },
+  "nav": {
+    "home": "Início",
+    "map": "Mapa",
+    "scan": "Escanear",
+    "talk": "Falar",
+    "transport": "Transporte",
+    "impact": "Impacto",
+    "profile": "Perfil"
+  },
+  "actions": {
+    "sos": "SOS de emergência",
+    "menu": "Menu",
+    "close": "Fechar",
+    "continue": "Continuar",
+    "skip": "Pular por enquanto",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "retry": "Tentar novamente",
+    "goHome": "Ir para início"
+  },
+  "language": { "label": "Idioma", "change": "Mudar idioma" },
+  "onboarding": {
+    "title": "O que te atrai ao Nepal?",
+    "subtitle": "Escolha pelo menos {{count}} — priorizaremos experiências locais que combinem.",
+    "needMore": "Escolha mais {{count}} para continuar, ou pule.",
+    "selectedCount": "({{count}} selecionado)"
+  },
+  "interests": {
+    "trekking": "Trilhas",
+    "temples": "Templos",
+    "monasteries": "Mosteiros",
+    "historical": "Sítios históricos",
+    "food": "Comida e culinária",
+    "wellness": "Bem-estar e yoga",
+    "wildlife": "Vida selvagem e natureza",
+    "villages": "Vilas e hospedagens locais",
+    "festivals": "Festivais e cultura",
+    "handicrafts": "Artesanato"
+  },
+  "sync": {
+    "title": "Offline e sincronização",
+    "subtitle": "Gerenciar armazenamento local offline"
+  },
+  "errors": {
+    "notFound": "Página não encontrada",
+    "notFoundBody": "A trilha que você procura não existe.",
+    "generic": "Algo deu errado"
+  }
+}

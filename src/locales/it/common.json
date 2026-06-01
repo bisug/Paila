@@ -1,0 +1,52 @@
+{
+  "app": { "name": "Paila", "tagline": "Ogni viaggio inizia con un passo" },
+  "status": { "online": "Online", "offline": "Offline" },
+  "nav": {
+    "home": "Home",
+    "map": "Mappa",
+    "scan": "Scansiona",
+    "talk": "Parla",
+    "transport": "Trasporti",
+    "impact": "Impatto",
+    "profile": "Profilo"
+  },
+  "actions": {
+    "sos": "SOS emergenza",
+    "menu": "Menu",
+    "close": "Chiudi",
+    "continue": "Continua",
+    "skip": "Salta",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "retry": "Riprova",
+    "goHome": "Home"
+  },
+  "language": { "label": "Lingua", "change": "Cambia lingua" },
+  "onboarding": {
+    "title": "Cosa ti attira del Nepal?",
+    "subtitle": "Scegli almeno {{count}} — daremo priorità alle esperienze locali corrispondenti.",
+    "needMore": "Scegline altre {{count}} per continuare, oppure salta.",
+    "selectedCount": "({{count}} selezionati)"
+  },
+  "interests": {
+    "trekking": "Trekking",
+    "temples": "Templi",
+    "monasteries": "Monasteri",
+    "historical": "Siti storici",
+    "food": "Cibo e cucina",
+    "wellness": "Benessere e yoga",
+    "wildlife": "Fauna e natura",
+    "villages": "Villaggi e homestay",
+    "festivals": "Feste e cultura",
+    "handicrafts": "Artigianato"
+  },
+  "sync": {
+    "title": "Offline e sincronizzazione",
+    "subtitle": "Gestisci archiviazione locale offline"
+  },
+  "errors": {
+    "notFound": "Pagina non trovata",
+    "notFoundBody": "Il sentiero che cerchi non esiste.",
+    "generic": "Qualcosa è andato storto"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "app": { "name": "Paila", "tagline": "每一次旅程都从一步开始" },
+  "status": { "online": "在线", "offline": "离线" },
+  "nav": {
+    "home": "首页",
+    "map": "地图",
+    "scan": "扫描",
+    "talk": "对话",
+    "transport": "交通",
+    "impact": "影响",
+    "profile": "个人"
+  },
+  "actions": {
+    "sos": "紧急求助",
+    "menu": "菜单",
+    "close": "关闭",
+    "continue": "继续",
+    "skip": "暂时跳过",
+    "save": "保存",
+    "cancel": "取消",
+    "retry": "重试",
+    "goHome": "返回首页"
+  },
+  "language": { "label": "语言", "change": "更改语言" },
+  "onboarding": {
+    "title": "尼泊尔的哪些方面吸引你?",
+    "subtitle": "至少选择 {{count}} 项 — 我们将优先推荐匹配的本地体验。",
+    "needMore": "再选 {{count}} 项以继续,或跳过。",
+    "selectedCount": "(已选 {{count}})"
+  },
+  "interests": {
+    "trekking": "徒步",
+    "temples": "寺庙",
+    "monasteries": "修道院",
+    "historical": "历史遗址",
+    "food": "美食",
+    "wellness": "健康与瑜伽",
+    "wildlife": "野生动物与自然",
+    "villages": "村庄与民宿",
+    "festivals": "节庆与文化",
+    "handicrafts": "手工艺"
+  },
+  "sync": { "title": "离线与同步", "subtitle": "管理离线本地存储" },
+  "errors": {
+    "notFound": "页面未找到",
+    "notFoundBody": "您寻找的路径不存在。",
+    "generic": "出现错误"
+  }
+}

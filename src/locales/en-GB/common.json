@@ -1,0 +1,49 @@
+{
+  "app": { "name": "Paila", "tagline": "Every Journey Begins with a Step" },
+  "status": { "online": "Online", "offline": "Offline" },
+  "nav": {
+    "home": "Home",
+    "map": "Map",
+    "scan": "Scan",
+    "talk": "Talk",
+    "transport": "Transport",
+    "impact": "Impact",
+    "profile": "Profile"
+  },
+  "actions": {
+    "sos": "Emergency SOS",
+    "menu": "Menu",
+    "close": "Close",
+    "continue": "Continue",
+    "skip": "Skip for now",
+    "save": "Save",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "goHome": "Go home"
+  },
+  "language": { "label": "Language", "change": "Change language" },
+  "onboarding": {
+    "title": "What draws you to Nepal?",
+    "subtitle": "Pick at least {{count}} — we'll prioritise local experiences that match.",
+    "needMore": "Pick {{count}} more to continue, or skip.",
+    "selectedCount": "({{count}} selected)"
+  },
+  "interests": {
+    "trekking": "Trekking",
+    "temples": "Temples",
+    "monasteries": "Monasteries",
+    "historical": "Historical Sites",
+    "food": "Food & Cuisine",
+    "wellness": "Wellness & Yoga",
+    "wildlife": "Wildlife & Nature",
+    "villages": "Villages & Homestays",
+    "festivals": "Festivals & Culture",
+    "handicrafts": "Handicrafts"
+  },
+  "sync": { "title": "Offline & Sync", "subtitle": "Manage offline local storage" },
+  "errors": {
+    "notFound": "Page not found",
+    "notFoundBody": "The trail you're looking for doesn't exist.",
+    "generic": "Something went wrong"
+  }
+}

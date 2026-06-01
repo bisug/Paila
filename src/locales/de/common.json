@@ -1,0 +1,49 @@
+{
+  "app": { "name": "Paila", "tagline": "Jede Reise beginnt mit einem Schritt" },
+  "status": { "online": "Online", "offline": "Offline" },
+  "nav": {
+    "home": "Start",
+    "map": "Karte",
+    "scan": "Scannen",
+    "talk": "Sprechen",
+    "transport": "Verkehr",
+    "impact": "Wirkung",
+    "profile": "Profil"
+  },
+  "actions": {
+    "sos": "Notruf",
+    "menu": "Menü",
+    "close": "Schließen",
+    "continue": "Weiter",
+    "skip": "Überspringen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "retry": "Erneut versuchen",
+    "goHome": "Zur Startseite"
+  },
+  "language": { "label": "Sprache", "change": "Sprache ändern" },
+  "onboarding": {
+    "title": "Was zieht dich nach Nepal?",
+    "subtitle": "Wähle mindestens {{count}} — wir priorisieren passende lokale Erlebnisse.",
+    "needMore": "Wähle {{count}} weitere zum Fortfahren oder überspringe.",
+    "selectedCount": "({{count}} ausgewählt)"
+  },
+  "interests": {
+    "trekking": "Trekking",
+    "temples": "Tempel",
+    "monasteries": "Klöster",
+    "historical": "Historische Stätten",
+    "food": "Essen & Küche",
+    "wellness": "Wellness & Yoga",
+    "wildlife": "Wildtiere & Natur",
+    "villages": "Dörfer & Homestays",
+    "festivals": "Feste & Kultur",
+    "handicrafts": "Kunsthandwerk"
+  },
+  "sync": { "title": "Offline & Sync", "subtitle": "Lokalen Offline-Speicher verwalten" },
+  "errors": {
+    "notFound": "Seite nicht gefunden",
+    "notFoundBody": "Der gesuchte Pfad existiert nicht.",
+    "generic": "Etwas ist schiefgelaufen"
+  }
+}

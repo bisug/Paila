@@ -1,0 +1,52 @@
+{
+  "app": { "name": "Paila", "tagline": "Cada viaje comienza con un paso" },
+  "status": { "online": "En línea", "offline": "Sin conexión" },
+  "nav": {
+    "home": "Inicio",
+    "map": "Mapa",
+    "scan": "Escanear",
+    "talk": "Hablar",
+    "transport": "Transporte",
+    "impact": "Impacto",
+    "profile": "Perfil"
+  },
+  "actions": {
+    "sos": "SOS de emergencia",
+    "menu": "Menú",
+    "close": "Cerrar",
+    "continue": "Continuar",
+    "skip": "Omitir por ahora",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "retry": "Reintentar",
+    "goHome": "Ir al inicio"
+  },
+  "language": { "label": "Idioma", "change": "Cambiar idioma" },
+  "onboarding": {
+    "title": "¿Qué te atrae de Nepal?",
+    "subtitle": "Elige al menos {{count}} — priorizaremos experiencias locales que coincidan.",
+    "needMore": "Elige {{count}} más para continuar, u omite.",
+    "selectedCount": "({{count}} seleccionado)"
+  },
+  "interests": {
+    "trekking": "Senderismo",
+    "temples": "Templos",
+    "monasteries": "Monasterios",
+    "historical": "Sitios históricos",
+    "food": "Comida y gastronomía",
+    "wellness": "Bienestar y yoga",
+    "wildlife": "Fauna y naturaleza",
+    "villages": "Pueblos y alojamientos locales",
+    "festivals": "Festivales y cultura",
+    "handicrafts": "Artesanía"
+  },
+  "sync": {
+    "title": "Sin conexión y sincronización",
+    "subtitle": "Gestionar almacenamiento local"
+  },
+  "errors": {
+    "notFound": "Página no encontrada",
+    "notFoundBody": "El sendero que buscas no existe.",
+    "generic": "Algo salió mal"
+  }
+}

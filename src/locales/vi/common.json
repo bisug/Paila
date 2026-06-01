@@ -1,0 +1,49 @@
+{
+  "app": { "name": "Paila", "tagline": "Mỗi hành trình bắt đầu bằng một bước chân" },
+  "status": { "online": "Trực tuyến", "offline": "Ngoại tuyến" },
+  "nav": {
+    "home": "Trang chủ",
+    "map": "Bản đồ",
+    "scan": "Quét",
+    "talk": "Trò chuyện",
+    "transport": "Giao thông",
+    "impact": "Tác động",
+    "profile": "Hồ sơ"
+  },
+  "actions": {
+    "sos": "SOS khẩn cấp",
+    "menu": "Menu",
+    "close": "Đóng",
+    "continue": "Tiếp tục",
+    "skip": "Bỏ qua",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "retry": "Thử lại",
+    "goHome": "Về trang chủ"
+  },
+  "language": { "label": "Ngôn ngữ", "change": "Đổi ngôn ngữ" },
+  "onboarding": {
+    "title": "Điều gì thu hút bạn đến Nepal?",
+    "subtitle": "Chọn ít nhất {{count}} — chúng tôi sẽ ưu tiên trải nghiệm địa phương phù hợp.",
+    "needMore": "Chọn thêm {{count}} để tiếp tục, hoặc bỏ qua.",
+    "selectedCount": "(đã chọn {{count}})"
+  },
+  "interests": {
+    "trekking": "Trekking",
+    "temples": "Đền",
+    "monasteries": "Tu viện",
+    "historical": "Di tích lịch sử",
+    "food": "Ẩm thực",
+    "wellness": "Sức khỏe & yoga",
+    "wildlife": "Động vật & thiên nhiên",
+    "villages": "Làng & homestay",
+    "festivals": "Lễ hội & văn hóa",
+    "handicrafts": "Thủ công mỹ nghệ"
+  },
+  "sync": { "title": "Ngoại tuyến & đồng bộ", "subtitle": "Quản lý lưu trữ ngoại tuyến" },
+  "errors": {
+    "notFound": "Không tìm thấy trang",
+    "notFoundBody": "Đường dẫn bạn tìm không tồn tại.",
+    "generic": "Đã xảy ra lỗi"
+  }
+}

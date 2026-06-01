@@ -1,0 +1,49 @@
+{
+  "app": { "name": "パイラ", "tagline": "すべての旅は一歩から始まる" },
+  "status": { "online": "オンライン", "offline": "オフライン" },
+  "nav": {
+    "home": "ホーム",
+    "map": "地図",
+    "scan": "スキャン",
+    "talk": "会話",
+    "transport": "交通",
+    "impact": "影響",
+    "profile": "プロフィール"
+  },
+  "actions": {
+    "sos": "緊急SOS",
+    "menu": "メニュー",
+    "close": "閉じる",
+    "continue": "続ける",
+    "skip": "今はスキップ",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "retry": "再試行",
+    "goHome": "ホームへ"
+  },
+  "language": { "label": "言語", "change": "言語を変更" },
+  "onboarding": {
+    "title": "ネパールのどこに惹かれますか?",
+    "subtitle": "少なくとも{{count}}個選んでください — 一致する地元の体験を優先します。",
+    "needMore": "続けるにはあと{{count}}個選ぶか、スキップしてください。",
+    "selectedCount": "({{count}}個選択)"
+  },
+  "interests": {
+    "trekking": "トレッキング",
+    "temples": "寺院",
+    "monasteries": "僧院",
+    "historical": "歴史的名所",
+    "food": "料理",
+    "wellness": "ウェルネスとヨガ",
+    "wildlife": "野生動物と自然",
+    "villages": "村とホームステイ",
+    "festivals": "祭りと文化",
+    "handicrafts": "手工芸"
+  },
+  "sync": { "title": "オフラインと同期", "subtitle": "オフラインローカルストレージの管理" },
+  "errors": {
+    "notFound": "ページが見つかりません",
+    "notFoundBody": "お探しの道は存在しません。",
+    "generic": "問題が発生しました"
+  }
+}

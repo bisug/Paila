@@ -1,0 +1,49 @@
+{
+  "app": { "name": "Paila", "tagline": "Chaque voyage commence par un pas" },
+  "status": { "online": "En ligne", "offline": "Hors ligne" },
+  "nav": {
+    "home": "Accueil",
+    "map": "Carte",
+    "scan": "Scanner",
+    "talk": "Parler",
+    "transport": "Transport",
+    "impact": "Impact",
+    "profile": "Profil"
+  },
+  "actions": {
+    "sos": "SOS urgence",
+    "menu": "Menu",
+    "close": "Fermer",
+    "continue": "Continuer",
+    "skip": "Passer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "retry": "Réessayer",
+    "goHome": "Accueil"
+  },
+  "language": { "label": "Langue", "change": "Changer de langue" },
+  "onboarding": {
+    "title": "Qu'est-ce qui vous attire au Népal ?",
+    "subtitle": "Choisissez au moins {{count}} — nous prioriserons les expériences locales correspondantes.",
+    "needMore": "Choisissez {{count}} de plus pour continuer, ou passez.",
+    "selectedCount": "({{count}} sélectionné)"
+  },
+  "interests": {
+    "trekking": "Trekking",
+    "temples": "Temples",
+    "monasteries": "Monastères",
+    "historical": "Sites historiques",
+    "food": "Cuisine",
+    "wellness": "Bien-être et yoga",
+    "wildlife": "Faune et nature",
+    "villages": "Villages et hébergements locaux",
+    "festivals": "Festivals et culture",
+    "handicrafts": "Artisanat"
+  },
+  "sync": { "title": "Hors ligne et synchro", "subtitle": "Gérer le stockage local" },
+  "errors": {
+    "notFound": "Page introuvable",
+    "notFoundBody": "Le sentier que vous cherchez n'existe pas.",
+    "generic": "Une erreur est survenue"
+  }
+}

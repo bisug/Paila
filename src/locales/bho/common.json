@@ -1,0 +1,49 @@
+{
+  "app": { "name": "पाइला", "tagline": "हर यात्रा एक कदम से शुरू होला" },
+  "status": { "online": "ऑनलाइन", "offline": "ऑफलाइन" },
+  "nav": {
+    "home": "घर",
+    "map": "नक्शा",
+    "scan": "स्कैन",
+    "talk": "बात",
+    "transport": "परिवहन",
+    "impact": "प्रभाव",
+    "profile": "प्रोफाइल"
+  },
+  "actions": {
+    "sos": "आपातकालीन SOS",
+    "menu": "मेनू",
+    "close": "बन्द",
+    "continue": "आगे बढ़ीं",
+    "skip": "अबहीं छोड़ीं",
+    "save": "सेव",
+    "cancel": "रद्द",
+    "retry": "फेर कोशिश",
+    "goHome": "घरे जाईं"
+  },
+  "language": { "label": "भाषा", "change": "भाषा बदलीं" },
+  "onboarding": {
+    "title": "नेपाल रउरा के केसे खींचेला?",
+    "subtitle": "कम से कम {{count}} चुनीं — हमनी के मिलत स्थानीय अनुभव के प्राथमिकता दीहल जाई।",
+    "needMore": "आगे बढ़े खातिर {{count}} आउर चुनीं, भा छोड़ीं।",
+    "selectedCount": "({{count}} चुनल)"
+  },
+  "interests": {
+    "trekking": "ट्रेकिंग",
+    "temples": "मंदिर",
+    "monasteries": "मठ",
+    "historical": "ऐतिहासिक स्थल",
+    "food": "खाना",
+    "wellness": "स्वास्थ्य आ योग",
+    "wildlife": "वन्यजीव",
+    "villages": "गाँव आ होमस्टे",
+    "festivals": "तिहार आ संस्कृति",
+    "handicrafts": "हस्तकला"
+  },
+  "sync": { "title": "ऑफलाइन आ सिंक", "subtitle": "ऑफलाइन स्थानीय भण्डारण के व्यवस्था" },
+  "errors": {
+    "notFound": "पन्ना ना मिलल",
+    "notFoundBody": "रउरा जे बाट खोजत बानी ऊ नइखे।",
+    "generic": "कुछ गलत भइल"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "app": { "name": "पाइला", "tagline": "प्रत्येक यात्रा एक कदम सँ सुरु भएत अछि" },
+  "status": { "online": "अनलाइन", "offline": "अफलाइन" },
+  "nav": {
+    "home": "घर",
+    "map": "नक्सा",
+    "scan": "स्क्यान",
+    "talk": "गप्प",
+    "transport": "यातायात",
+    "impact": "प्रभाव",
+    "profile": "प्रोफाइल"
+  },
+  "actions": {
+    "sos": "आपातकालीन SOS",
+    "menu": "मेनू",
+    "close": "बन्द",
+    "continue": "आगू बढ़ू",
+    "skip": "अखन छोड़ू",
+    "save": "सुरक्षित",
+    "cancel": "रद्द",
+    "retry": "फेर प्रयास",
+    "goHome": "घर जाउ"
+  },
+  "language": { "label": "भाषा", "change": "भाषा बदलू" },
+  "onboarding": {
+    "title": "नेपाल अहाँकेँ की दिस तानै अछि?",
+    "subtitle": "कमसँ कम {{count}} चुनू — हम मेल खाइत स्थानीय अनुभवकेँ प्राथमिकता देब।",
+    "needMore": "आगू बढ़बाक लेल {{count}} आओर चुनू, वा छोड़ू।",
+    "selectedCount": "({{count}} चुनल)"
+  },
+  "interests": {
+    "trekking": "ट्रेकिङ",
+    "temples": "मन्दिर",
+    "monasteries": "गुम्बा",
+    "historical": "ऐतिहासिक स्थल",
+    "food": "खाना",
+    "wellness": "स्वास्थ्य आ योग",
+    "wildlife": "वन्यजन्तु",
+    "villages": "गाम आ होमस्टे",
+    "festivals": "पाबनि आ संस्कृति",
+    "handicrafts": "हस्तकला"
+  },
+  "sync": { "title": "अफलाइन आ सिंक", "subtitle": "अफलाइन स्थानीय भण्डारण व्यवस्थापन" },
+  "errors": {
+    "notFound": "पन्ना नहि भेटल",
+    "notFoundBody": "अहाँ जे बाटो ताकि रहल छी से नहि अछि।",
+    "generic": "किछु गलत भेल"
+  }
+}

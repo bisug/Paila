@@ -1,0 +1,49 @@
+{
+  "app": { "name": "파일라", "tagline": "모든 여정은 한 걸음부터 시작된다" },
+  "status": { "online": "온라인", "offline": "오프라인" },
+  "nav": {
+    "home": "홈",
+    "map": "지도",
+    "scan": "스캔",
+    "talk": "대화",
+    "transport": "교통",
+    "impact": "영향",
+    "profile": "프로필"
+  },
+  "actions": {
+    "sos": "긴급 SOS",
+    "menu": "메뉴",
+    "close": "닫기",
+    "continue": "계속",
+    "skip": "건너뛰기",
+    "save": "저장",
+    "cancel": "취소",
+    "retry": "다시 시도",
+    "goHome": "홈으로"
+  },
+  "language": { "label": "언어", "change": "언어 변경" },
+  "onboarding": {
+    "title": "네팔의 무엇이 끌리나요?",
+    "subtitle": "최소 {{count}}개 선택 — 일치하는 현지 경험을 우선합니다.",
+    "needMore": "계속하려면 {{count}}개 더 선택하거나 건너뛰세요.",
+    "selectedCount": "({{count}}개 선택됨)"
+  },
+  "interests": {
+    "trekking": "트레킹",
+    "temples": "사원",
+    "monasteries": "수도원",
+    "historical": "역사 유적",
+    "food": "음식",
+    "wellness": "웰빙과 요가",
+    "wildlife": "야생과 자연",
+    "villages": "마을과 홈스테이",
+    "festivals": "축제와 문화",
+    "handicrafts": "수공예"
+  },
+  "sync": { "title": "오프라인 및 동기화", "subtitle": "로컬 오프라인 저장소 관리" },
+  "errors": {
+    "notFound": "페이지를 찾을 수 없음",
+    "notFoundBody": "찾는 경로가 존재하지 않습니다.",
+    "generic": "문제가 발생했습니다"
+  }
+}
