@@ -1,6 +1,5 @@
 "use server";
 
-import { fetchWithTimeout } from "@/lib/server/guardrails";
 import { fetchGoogleMapsJson, getGoogleMapsServerKey } from "@/lib/server/google-maps";
 
 const NEARBY_URL = "https://places.googleapis.com/v1/places:searchNearby";
@@ -25,25 +24,22 @@ async function searchNearby(
   includedTypes: string[],
   radiusMeters: number,
 ): Promise<NearbyPlace[]> {
-  const res = await fetchGoogleMapsJson(
-    NEARBY_URL,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-FieldMask":
-          "places.id,places.displayName,places.formattedAddress,places.location,places.types,places.rating,places.userRatingCount",
-      },
-      body: JSON.stringify({
-        includedTypes,
-        maxResultCount: 10,
-        rankPreference: "POPULARITY",
-        locationRestriction: {
-          circle: { center: { latitude: lat, longitude: lng }, radius: radiusMeters },
-        },
-      }),
+  const res = await fetchGoogleMapsJson(NEARBY_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-FieldMask":
+        "places.id,places.displayName,places.formattedAddress,places.location,places.types,places.rating,places.userRatingCount",
     },
-  );
+    body: JSON.stringify({
+      includedTypes,
+      maxResultCount: 10,
+      rankPreference: "POPULARITY",
+      locationRestriction: {
+        circle: { center: { latitude: lat, longitude: lng }, radius: radiusMeters },
+      },
+    }),
+  });
   if (!res.ok) return [];
   const j = (await res.json()) as {
     places?: Array<{

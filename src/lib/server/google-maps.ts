@@ -8,7 +8,7 @@ export function missingGoogleMapsKeyMessage() {
   return "Missing GOOGLE_MAPS_API_KEY";
 }
 
-export async function fetchGoogleMapsJson<T>(
+export async function fetchGoogleMapsJson(
   endpoint: string,
   init: RequestInit = {},
   timeoutMs = 8_000,

@@ -1,6 +1,5 @@
 "use server";
 
-import { fetchWithTimeout } from "@/lib/server/guardrails";
 import { fetchGoogleMapsJson } from "@/lib/server/google-maps";
 
 const ROUTES_URL = "https://routes.googleapis.com/directions/v2:computeRoutes";
@@ -15,24 +14,21 @@ export async function computeRoute({
   };
 }) {
   const travelMode = data.travelMode || "WALK";
-  const res = await fetchGoogleMapsJson(
-    ROUTES_URL,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
-      },
-      body: JSON.stringify({
-        origin: { location: { latLng: { latitude: data.origin.lat, longitude: data.origin.lng } } },
-        destination: {
-          location: { latLng: { latitude: data.destination.lat, longitude: data.destination.lng } },
-        },
-        travelMode: travelMode,
-        polylineEncoding: "ENCODED_POLYLINE",
-      }),
+  const res = await fetchGoogleMapsJson(ROUTES_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
     },
-  );
+    body: JSON.stringify({
+      origin: { location: { latLng: { latitude: data.origin.lat, longitude: data.origin.lng } } },
+      destination: {
+        location: { latLng: { latitude: data.destination.lat, longitude: data.destination.lng } },
+      },
+      travelMode: travelMode,
+      polylineEncoding: "ENCODED_POLYLINE",
+    }),
+  });
 
   if (!res.ok) {
     const body = await res.text();

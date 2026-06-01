@@ -1,6 +1,5 @@
 "use server";
 
-import { fetchWithTimeout } from "@/lib/server/guardrails";
 import { fetchGoogleMapsJson } from "@/lib/server/google-maps";
 
 const PLACES_URL = "https://places.googleapis.com/v1/places:searchText";
@@ -27,18 +26,15 @@ export async function searchPlaces({
     }
   }
 
-  const res = await fetchGoogleMapsJson(
-    PLACES_URL,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-FieldMask":
-          "places.id,places.displayName,places.formattedAddress,places.location,places.types,places.rating,places.userRatingCount,places.priceLevel",
-      },
-      body: JSON.stringify(body),
+  const res = await fetchGoogleMapsJson(PLACES_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-FieldMask":
+        "places.id,places.displayName,places.formattedAddress,places.location,places.types,places.rating,places.userRatingCount,places.priceLevel",
     },
-  );
+    body: JSON.stringify(body),
+  });
 
   if (!res.ok) {
     const text = await res.text();

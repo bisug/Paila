@@ -1,6 +1,5 @@
 "use server";
 
-import { fetchWithTimeout } from "@/lib/server/guardrails";
 import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
 import { fetchGoogleMapsUrl } from "@/lib/server/google-maps";
 

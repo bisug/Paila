@@ -2,22 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ShieldCheck, AlertCircle, Loader2, Check, X, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-
-type Submission = {
-  id: string;
-  user_id: string;
-  full_name: string;
-  guide_id_number: string;
-  place: string;
-  phone: string;
-  id_card_path: string;
-  status: "pending" | "approved" | "rejected";
-  review_note: string | null;
-  created_at: string;
-};
+import {
+  listGuideVerificationReviewData,
+  reviewGuideVerification,
+  saveAdminNotificationEmail,
+  type GuideVerificationSubmission as Submission,
+} from "@/lib/api/admin-guide-verifications.functions";
 
 export default function AdminGuidesPage() {
   const router = useRouter();
@@ -29,90 +22,76 @@ export default function AdminGuidesPage() {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+
+  const loadReviewData = useCallback(async (token: string) => {
+    const data = await listGuideVerificationReviewData({ data: { token } });
+    setSubs(data.submissions);
+    setImageUrls(data.imageUrls);
+    setAdminEmail(data.adminEmail);
+  }, []);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.user) {
         router.push("/login");
         return;
       }
-      const { data: role } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userData.user.id)
-        .eq("role", "admin")
-        .maybeSingle();
-      if (!role) {
+      if (cancelled) return;
+
+      setAccessToken(session.access_token);
+      try {
+        await loadReviewData(session.access_token);
+        if (cancelled) return;
+        setIsAdmin(true);
+      } catch (err) {
+        if (cancelled) return;
         setIsAdmin(false);
-        setLoading(false);
-        return;
+        if (err instanceof Error && err.message !== "Forbidden") {
+          setError(err.message);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      setIsAdmin(true);
-      await Promise.all([loadSubmissions(), loadAdminEmail()]);
-      setLoading(false);
     })();
-  }, [router]);
-
-  async function loadSubmissions() {
-    const { data, error } = await supabase
-      .from("guide_verifications")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    const list = (data ?? []) as Submission[];
-    setSubs(list);
-    const urls: Record<string, string> = {};
-    await Promise.all(
-      list.map(async (s) => {
-        const { data: signed } = await supabase.storage
-          .from("guide-ids")
-          .createSignedUrl(s.id_card_path, 60 * 30);
-        if (signed?.signedUrl) urls[s.id] = signed.signedUrl;
-      }),
-    );
-    setImageUrls(urls);
-  }
-
-  async function loadAdminEmail() {
-    const { data } = await supabase
-      .from("admin_settings")
-      .select("admin_email")
-      .eq("id", 1)
-      .maybeSingle();
-    setAdminEmail(data?.admin_email ?? "");
-  }
+    return () => {
+      cancelled = true;
+    };
+  }, [loadReviewData, router]);
 
   async function saveAdminEmail() {
     setError("");
-    const { error } = await supabase
-      .from("admin_settings")
-      .update({ admin_email: adminEmail.trim() || null, updated_at: new Date().toISOString() })
-      .eq("id", 1);
-    if (error) setError(error.message);
+    if (!accessToken) return;
+    try {
+      await saveAdminNotificationEmail({ data: { token: accessToken, adminEmail } });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save admin email");
+    }
   }
 
   async function decide(sub: Submission, status: "approved" | "rejected") {
+    if (!accessToken) return;
     setBusy(sub.id);
     setError("");
-    const { error } = await supabase
-      .from("guide_verifications")
-      .update({
-        status,
-        review_note: notes[sub.id] ?? sub.review_note ?? null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", sub.id);
-    if (error) {
-      setError(error.message);
+    try {
+      await reviewGuideVerification({
+        data: {
+          token: accessToken,
+          id: sub.id,
+          status,
+          reviewNote: notes[sub.id] ?? sub.review_note ?? null,
+        },
+      });
+      await loadReviewData(accessToken);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to review submission");
+    } finally {
       setBusy(null);
-      return;
     }
-    await loadSubmissions();
-    setBusy(null);
   }
 
   if (loading) {
