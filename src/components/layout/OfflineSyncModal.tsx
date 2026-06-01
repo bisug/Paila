@@ -32,6 +32,11 @@ const cachedItems = [
     desc: "Ama Sita & Council records stored",
     size: "15 KB",
   },
+  {
+    label: "Emergency SOS Queue",
+    desc: "Checkpoint timer and prepared SOS messages stored locally",
+    size: "Local",
+  },
 ];
 
 export function OfflineSyncModal({

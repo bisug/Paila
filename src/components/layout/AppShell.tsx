@@ -110,7 +110,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      {sosOpen && <SosPanel onClose={() => setSosOpen(false)} />}
+      {sosOpen && <SosPanel isOffline={isOffline} onClose={() => setSosOpen(false)} />}
 
       {syncModalOpen && (
         <OfflineSyncModal

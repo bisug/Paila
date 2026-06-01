@@ -47,6 +47,7 @@ import gaiJatraImg from "@/assets/events/gai-jatra.jpg";
 import tiharDeusiImg from "@/assets/events/tihar-deusi.jpg";
 
 import { calculateDistance, getUserLocation } from "@/lib/location";
+import { emergencyContacts, sanitizePhoneNumber } from "@/lib/sos";
 import {
   LOCAL_ALERTS,
   type AlertSeverity,
@@ -606,15 +607,6 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
 
   const liveRate = rates?.["NPR"] || null;
 
-  const sosNumbers = [
-    { label: "Tourist Police", num: "1144", desc: "Tourist emergencies & disputes" },
-    { label: "Police Control", num: "100", desc: "General police emergency" },
-    { label: "Himalayan Rescue", num: "+977-1-4440292", desc: "Mountain search & rescue" },
-    { label: "Ambulance", num: "102", desc: "Medical emergencies" },
-    { label: "Fire Brigade", num: "101", desc: "Fire emergencies" },
-    { label: "Women's Helpline", num: "1145", desc: "Support for women" },
-  ];
-
   return (
     <div className="space-y-2">
       {/* Currency */}
@@ -662,18 +654,18 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
         </button>
         {openId === "sos" && (
           <div className="px-3 pb-3 space-y-2">
-            {sosNumbers.map((item, i) => (
+            {emergencyContacts.map((item) => (
               <a
-                key={i}
-                href={`tel:${item.num}`}
+                key={item.id}
+                href={`tel:${sanitizePhoneNumber(item.number)}`}
                 className="flex items-center justify-between p-3 rounded-xl bg-red-50/50 border border-red-100 active:bg-red-100 transition-colors"
               >
                 <div>
                   <p className="text-sm font-bold text-stone-900">{item.label}</p>
-                  <p className="text-[10px] text-stone-500">{item.desc}</p>
+                  <p className="text-[10px] text-stone-500">{item.description}</p>
                 </div>
                 <span className="bg-red-100 text-red-700 px-2.5 py-1 rounded-full font-bold text-xs tracking-wide">
-                  {item.num}
+                  {item.number}
                 </span>
               </a>
             ))}
@@ -1230,19 +1222,6 @@ function LocalEventsSection({
 // ── Modals ──────────────────────────────────────────────────────────────────
 
 function SOSModal({ onClose }: { onClose: () => void }) {
-  const numbers = [
-    { label: "Tourist Police", num: "1144", desc: "For all tourist emergencies & disputes" },
-    { label: "Police Control", num: "100", desc: "General nationwide police emergency" },
-    {
-      label: "Himalayan Rescue (HRA)",
-      num: "+977-1-4440292",
-      desc: "Mountain search & rescue dispatch",
-    },
-    { label: "Ambulance", num: "102", desc: "Medical emergencies" },
-    { label: "Fire Brigade", num: "101", desc: "Fire emergencies" },
-    { label: "Women's Helpline", num: "1145", desc: "Support for women" },
-  ];
-
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end animate-fade-in">
       <div className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" onClick={onClose} />
@@ -1264,18 +1243,18 @@ function SOSModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="space-y-3 max-h-[50vh] overflow-y-auto no-scrollbar pb-4">
-          {numbers.map((item, i) => (
+          {emergencyContacts.map((item) => (
             <a
-              key={i}
-              href={`tel:${item.num}`}
+              key={item.id}
+              href={`tel:${sanitizePhoneNumber(item.number)}`}
               className="flex items-center justify-between p-4 rounded-2xl bg-stone-50 border border-stone-100 active:bg-stone-100 transition-colors"
             >
               <div>
                 <p className="text-base font-bold text-stone-900">{item.label}</p>
-                <p className="text-xs text-stone-500 mt-0.5">{item.desc}</p>
+                <p className="text-xs text-stone-500 mt-0.5">{item.description}</p>
               </div>
               <div className="bg-red-100 text-red-700 px-3 py-1.5 rounded-full font-bold text-sm tracking-wide">
-                {item.num}
+                {item.number}
               </div>
             </a>
           ))}
