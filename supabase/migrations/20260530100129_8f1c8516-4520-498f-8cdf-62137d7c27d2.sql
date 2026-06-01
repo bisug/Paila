@@ -1,1 +1,0 @@
-REVOKE EXECUTE ON FUNCTION public.prevent_account_type_change_if_guide_submitted() FROM PUBLIC, anon, authenticated;

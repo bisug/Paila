@@ -1,1 +1,0 @@
-ALTER TABLE public.profiles ALTER COLUMN gender DROP NOT NULL;
