@@ -12,7 +12,7 @@ export default function AccountPage() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(({ data }: { data: { user: User | null } }) => {
       if (!data.user) router.push("/login");
       else setUser(data.user);
     });
