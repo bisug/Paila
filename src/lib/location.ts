@@ -32,27 +32,9 @@ export function calculateDistance(coord1: Coordinates, coord2: Coordinates): num
  * Helper to fetch the user's current location via browser Geolocation API.
  */
 export function getUserLocation(): Promise<Coordinates> {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error("Geolocation is not supported by your browser."));
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        resolve({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      (error) => {
-        reject(error);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      },
-    );
+  // Demo Mode: Always return a static location (Pokhara Lakeside) without prompting the browser
+  return Promise.resolve({
+    lat: 28.2096,
+    lng: 83.9586,
   });
 }
