@@ -44,10 +44,17 @@ function createMockSupabaseClient() {
               if (prop === "then") return undefined; // allow async/await to work correctly if they await .select()
               // Stub all methods like select, insert, update, eq, order etc.
               return (...args: any[]) => {
-                // If it's a finalizing method like select, delete, upsert, we might want to return data
-                if (prop === "select" || prop === "delete" || prop === "upsert" || prop === "update" || prop === "insert" || prop === "maybeSingle" || prop === "single") {
+                // Return null instead of array for single objects
+                if (prop === "maybeSingle" || prop === "single") {
                   return {
-                    then: (res: any) => res({ data: [], error: null }), // always return empty data for now
+                    then: (res: any) => res({ data: null, error: null }),
+                    ...chain
+                  };
+                }
+                // If it's a finalizing method like select, delete, upsert, we might want to return data
+                if (prop === "select" || prop === "delete" || prop === "upsert" || prop === "update" || prop === "insert") {
+                  return {
+                    then: (res: any) => res({ data: [], error: null, count: 0 }), // always return empty data for now
                     ...chain
                   };
                 }
