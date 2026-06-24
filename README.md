@@ -32,6 +32,7 @@
   - [Post-Deployment Checklist](#post-deployment-checklist)
 - [Available Scripts](#available-scripts)
 - [Security Guidelines](#security-guidelines)
+- [License](#license)
 
 ---
 
@@ -228,6 +229,10 @@ When deploying to production, please adhere to these security practices:
 - Restrict Google Maps API keys by HTTP referrer or IP address.
 - Keep `SUPABASE_SERVICE_ROLE_KEY` strictly on the server-side.
 - Use verified payment provider SDKs; **do not** collect sensitive card credentials directly.
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 *Built by **Runtime Terrors**.*
