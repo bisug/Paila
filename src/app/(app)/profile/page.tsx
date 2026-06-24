@@ -27,29 +27,40 @@ export default function ProfileMenu() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) {
-        router.push("/login");
-        return;
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error || !data?.user) {
+          router.push("/login");
+          return;
+        }
+        if (!mounted) return;
+        setUser(data.user);
+
+        const [notificationsRes, rolesRes] = await Promise.all([
+          supabase
+            .from("notifications")
+            .select("id", { count: "exact", head: true })
+            .eq("read", false),
+          supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", data.user.id)
+            .eq("role", "admin")
+            .maybeSingle(),
+        ]);
+        
+        if (!mounted) return;
+        setUnread(notificationsRes.count ?? 0);
+        setIsAdmin(!!rolesRes.data);
+      } catch (err) {
+        console.error("Profile load error:", err);
+      } finally {
+        if (mounted) setLoading(false);
       }
-      setUser(data.user);
-      const [{ count }, { data: role }] = await Promise.all([
-        supabase
-          .from("notifications")
-          .select("id", { count: "exact", head: true })
-          .eq("read", false),
-        supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", data.user.id)
-          .eq("role", "admin")
-          .maybeSingle(),
-      ]);
-      setUnread(count ?? 0);
-      setIsAdmin(!!role);
-      setLoading(false);
     })();
+    return () => { mounted = false; };
   }, [router]);
 
   async function handleLogout() {
