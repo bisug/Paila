@@ -6,7 +6,7 @@
 
 > **A seamless travel and community platform bridging the gap between tourists and local communities in Nepal.**
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 [![Hackathon](https://img.shields.io/badge/JunctionX-Kathmandu_2026-blue?style=for-the-badge)](https://junctionxkathmandu.com/past-events/2026)
 [![Status](https://img.shields.io/badge/Status-Prototype-orange?style=for-the-badge)]()
@@ -114,22 +114,24 @@ The platform emphasizes performance, localized user experiences (multi-language 
 The project follows a scalable, domain-driven structure within the `src/` directory.
 
 ```text
-src/
-├── app/                  # Next.js App Router root
-│   ├── (admin)/          # Route group: Admin dashboard and management features
-│   ├── (app)/            # Route group: Main authenticated user experience (bookings, maps)
-│   ├── (onboarding)/     # Route group: User registration and profile setup flows
-│   ├── (public)/         # Route group: Publicly accessible pages (landing, about)
-│   ├── api/              # Next.js API routes (serverless functions)
-│   ├── layout.tsx        # Global HTML/Root layout
-│   └── providers.tsx     # Global React context providers (QueryClient, Theme, Auth)
-├── assets/               # Static assets (SVGs, Images, like logo.svg)
-├── components/           # Reusable UI components (buttons, inputs, cards)
-├── hooks/                # Custom React hooks (e.g., useAuth, useGeolocation)
-├── integrations/         # Third-party SDK initializations (Supabase, OpenAI)
-├── lib/                  # Utility functions, helpers, and constants
-├── locales/              # Translation JSON files for i18next
-├── styles.css            # Global CSS and Tailwind directives
+paila/
+├── scripts/              # Utility scripts (database seeding, migrations, etc.)
+├── src/
+│   ├── app/              # Next.js App Router root
+│   │   ├── (admin)/      # Route group: Admin dashboard and management features
+│   │   ├── (app)/        # Route group: Main authenticated user experience (bookings, maps)
+│   │   ├── (onboarding)/ # Route group: User registration and profile setup flows
+│   │   ├── (public)/     # Route group: Publicly accessible pages (landing, about)
+│   │   ├── api/          # Next.js API routes (serverless functions)
+│   │   ├── layout.tsx    # Global HTML/Root layout
+│   │   └── providers.tsx # Global React context providers (QueryClient, Theme, Auth)
+│   ├── assets/           # Static assets (SVGs, Images, like logo.svg)
+│   ├── components/       # Reusable UI components (buttons, inputs, cards)
+│   ├── hooks/            # Custom React hooks (e.g., useAuth, useGeolocation)
+│   ├── integrations/     # Third-party SDK initializations (Supabase, OpenAI)
+│   ├── lib/              # Utility functions, helpers, and constants
+│   ├── locales/          # Translation JSON files for i18next
+│   └── styles.css        # Global CSS and Tailwind directives
 ```
 
 ### Authentication Flow
@@ -158,7 +160,52 @@ Building Paila was an adventurous process! Here is a brief timeline of our tech 
 2. **First Migration:** We then migrated the project to **Google Antigravity**.
 3. **Exploration:** Seeking rapid UI iteration, we moved the project to **Lovable**.
 4. **Return to Roots:** After exhausting our Lovable credits, we moved the codebase back to **Google Antigravity**.
-5. **Deployment Pivot:** Finally, to successfully deploy our application on Vercel, we executed a last-minute migration from Tanstack to **Express**.
+5. **Deployment Pivot:** Finally, to successfully deploy our application on Vercel, we replaced TanStack Router (client-side routing) with **Next.js App Router** as our primary routing layer, while retaining TanStack React Query for server-state management.
+
+---
+
+## Getting Started (Local Development)
+
+Follow these steps to run Paila on your local machine.
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) v22 or later
+- [npm](https://www.npmjs.com/) v10 or later
+- A [Supabase](https://supabase.com/) project with Auth configured
+- API keys for Google Maps and (optionally) OpenAI
+
+### Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/<your-org>/paila.git
+cd paila
+
+# 2. Install dependencies
+npm install
+
+# 3. Configure environment variables
+cp .env.example .env
+# Open .env and fill in the required values (see table below)
+
+# 4. Start the development server
+npm run dev
+```
+
+The app will be available at [http://localhost:3000](http://localhost:3000).
+
+### Required Environment Variables (Local)
+
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Your Supabase anon/publishable key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key — **server-side only** |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key |
+| `OPENAI_API_KEY` | OpenAI API key (for AI features) |
+| `OPENAI_BASE_URL` | OpenAI-compatible base URL (optional, defaults to OpenAI) |
+| `OPENAI_MODEL` | Model name to use (e.g., `gpt-4o`) |
+| `ENABLE_DEMO_SCAN` | Set to `true` locally only to enable the demo scanner |
 
 ---
 
@@ -192,9 +239,12 @@ Before deploying, you must configure your environment variables. In the **Enviro
 
 *Crucial Variables:*
 - `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY` (Ensure this is kept secure and never exposed to the client)
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
+- `OPENAI_API_KEY`
+- `OPENAI_BASE_URL`
+- `OPENAI_MODEL`
 
 #### Step 4: Deploy
 1. Click the **Deploy** button.
@@ -228,6 +278,7 @@ When deploying to production, please adhere to these security practices:
 - Enable the Google provider in Supabase Auth for Gmail/Google sign-in.
 - Restrict Google Maps API keys by HTTP referrer or IP address.
 - Keep `SUPABASE_SERVICE_ROLE_KEY` strictly on the server-side.
+- **Never set `ENABLE_DEMO_SCAN=true` in production.** This flag enables a mock scanner with no real verification and must remain unset unless a legitimate recognition provider is integrated.
 - Use verified payment provider SDKs; **do not** collect sensitive card credentials directly.
 
 ## License
