@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { useTranslation } from "react-i18next";
 import { Loader2, Check, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,7 +20,7 @@ export default function InterestsOnboarding() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(({ data }: { data: { user: User | null } }) => {
       if (!data.user) {
         router.push("/login");
         return;
@@ -30,7 +31,7 @@ export default function InterestsOnboarding() {
         .select("interests")
         .eq("user_id", data.user.id)
         .maybeSingle()
-        .then(({ data: row }) => {
+        .then(({ data: row }: { data: { interests: string[] | null } | null }) => {
           if (row?.interests?.length) setSelected(new Set(row.interests as InterestId[]));
         });
     });
