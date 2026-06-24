@@ -619,11 +619,12 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                   <MapSearchOverlay location={location} onPlaceSelected={pickPlace} />
 
                   {tapMode && !pendingTap && (
-                      <p className="mt-2 rounded-full bg-terracotta/95 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 inline-flex items-center gap-1.5 shadow-card-md">
+                    <div className="absolute top-[68px] left-3 z-20 pointer-events-none">
+                      <p className="rounded-full bg-terracotta/95 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 inline-flex items-center gap-1.5 shadow-card-md pointer-events-auto">
                         <Crosshair size={12} /> Tap map to drop pin
                       </p>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   {/* Demo Control Overlay */}
                   <div className="absolute top-16 left-3 z-20">
