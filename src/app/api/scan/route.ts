@@ -1,9 +1,31 @@
 import { checkRateLimit, getClientKey, isDemoEnabled } from "@/lib/server/guardrails";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!checkRateLimit(getClientKey(request, "scan"), 10, 60_000)) {
     return Response.json({ error: "Too many scan requests." }, { status: 429 });
   }

@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { checkRateLimit, getClientKey } from "@/lib/server/guardrails";
 import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
 const Body = z.object({
   sourceText: z.string().min(1).max(2000),
@@ -17,6 +19,26 @@ const Body = z.object({
 });
 
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!checkRateLimit(getClientKey(request, "translate"), 20, 60_000)) {
     return Response.json({ error: "Too many translation requests." }, { status: 429 });
   }

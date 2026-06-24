@@ -14,13 +14,13 @@ import {
 } from "lucide-react";
 import { pine, terracotta } from "@/lib/data";
 import { useGeolocationTracker } from "@/hooks/use-geolocation";
-import { searchPlaces } from "@/lib/api/search-places.functions";
 import { listCheckpoints, addCheckpoint, removeCheckpoint } from "@/lib/api/checkpoints.functions";
 import { reverseGeocode } from "@/lib/api/geocode.functions";
 // removed useServerFn
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PlaceDetailPanel, type FocusedPlace } from "@/components/views/map/PlaceDetailPanel";
 import { LocationPermissionBanner } from "@/components/views/map/LocationPermissionBanner";
+import { MapSearchOverlay, type PlaceResult } from "@/components/views/map/MapSearchOverlay";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { journeyStages, journeyTitle, journeySubtitle, type JourneyStage } from "@/lib/journey";
@@ -28,17 +28,7 @@ import { useVisitTracker } from "@/hooks/use-visit-tracker";
 import { JourneyStageList } from "@/components/views/JourneyStageList";
 import { GOOGLE_MAPS_LOADER_OPTIONS } from "@/lib/google-maps-loader";
 
-type PlaceResult = {
-  id: string;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  types: string[];
-  rating?: number | null;
-  userRatingCount?: number | null;
-  priceLevel?: string | null;
-};
+
 
 type Checkpoint = {
   id: string;
@@ -97,18 +87,11 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
   const { hasVisited, markVisited, resetVisits } = useVisitTracker();
   const [showDemoMenu, setShowDemoMenu] = useState(false);
 
-  // Search state
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<PlaceResult[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
-  const [showResults, setShowResults] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
   const [activeCheckpointId, setActiveCheckpointId] = useState<string | null>(null);
   const [tapMode, setTapMode] = useState(false);
   const [pendingTap, setPendingTap] = useState<PendingTap | null>(null);
 
-  const searchPlacesFn = searchPlaces;
   const listCheckpointsFn = listCheckpoints;
   const addCheckpointFn = addCheckpoint;
   const removeCheckpointFn = removeCheckpoint;
@@ -352,56 +335,13 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     addMut.mutate({ placeId, name, address, lat, lng });
   };
 
-  const runSearch = useCallback(
-    async (q: string) => {
-      const query = q.trim();
-      if (!query) return;
-      setSearchLoading(true);
-      setSearchError(null);
-      setShowResults(true);
-      const requestId = ++searchRequestRef.current;
-      try {
-        const bias = location
-          ? { lat: location.lat, lng: location.lng, radiusMeters: 50000 }
-          : { lat: DEFAULT_CENTER.lat, lng: DEFAULT_CENTER.lng, radiusMeters: 50000 };
-        const res = await searchPlacesFn({ data: { query, bias, rankByDistance: !!location } });
-        if (requestId !== searchRequestRef.current) return;
-        if (res.error) {
-          setSearchError(res.error);
-          setSearchResults([]);
-        } else {
-          setSearchResults(res.places);
-          if (res.places.length === 0) setSearchError("No places found");
-        }
-      } catch (e: unknown) {
-        if (requestId !== searchRequestRef.current) return;
-        setSearchError(e instanceof Error ? e.message : "Search failed");
-        setSearchResults([]);
-      } finally {
-        if (requestId === searchRequestRef.current) setSearchLoading(false);
-      }
-    },
-    [location, searchPlacesFn],
-  );
-
   const pickPlace = (p: PlaceResult) => {
     setSelectedPlace(p);
     setActiveCheckpointId(null);
-    setShowResults(false);
-    setSearchQuery(p.name);
     if (mapRef.current) {
       mapRef.current.panTo({ lat: p.lat, lng: p.lng });
       mapRef.current.setZoom(14);
     }
-  };
-
-  const clearSearch = () => {
-    searchRequestRef.current += 1;
-    setSearchQuery("");
-    setSearchResults([]);
-    setSearchError(null);
-    setShowResults(false);
-    setSelectedPlace(null);
   };
 
   const pickCheckpoint = (c: Checkpoint) => {
@@ -676,76 +616,9 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                     )}
                   </GoogleMap>
 
-                  {/* Search overlay */}
-                  <div className="absolute top-3 left-3 right-3 z-20 max-w-md">
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        runSearch(searchQuery);
-                      }}
-                      className="flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-card-md"
-                    >
-                      <Search size={16} className="text-stone-400 shrink-0" />
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setSearchQuery(val);
-                          if (!val.trim()) {
-                            setSearchResults([]);
-                            setSearchError(null);
-                            setShowResults(false);
-                          }
-                        }}
-                        onFocus={() => {
-                          if (searchResults.length > 0) setShowResults(true);
-                        }}
-                        placeholder="Search places, temples, hotels..."
-                        className="flex-1 bg-transparent text-sm text-stone-800 placeholder:text-stone-400 outline-none"
-                      />
-                      {searchLoading && (
-                        <Loader2 size={14} className="animate-spin text-stone-400" />
-                      )}
-                      {searchQuery && !searchLoading && (
-                        <button
-                          type="button"
-                          onClick={clearSearch}
-                          className="text-stone-400 hover:text-stone-600"
-                          aria-label="Clear search"
-                        >
-                          <X size={14} />
-                        </button>
-                      )}
-                    </form>
+                  <MapSearchOverlay location={location} onPlaceSelected={pickPlace} />
 
-                    {showResults && (searchResults.length > 0 || searchError) && (
-                      <div className="mt-2 max-h-72 overflow-y-auto rounded-2xl bg-white shadow-card-md border border-stone-100">
-                        {searchError && searchResults.length === 0 && (
-                          <p className="px-3 py-3 text-xs text-stone-500">{searchError}</p>
-                        )}
-                        {searchResults.map((p) => (
-                          <button
-                            key={p.id}
-                            type="button"
-                            onClick={() => pickPlace(p)}
-                            className="w-full text-left px-3 py-2.5 hover:bg-stone-50 border-b border-stone-100 last:border-b-0 flex items-start gap-2"
-                          >
-                            <MapPin size={14} className="text-terracotta shrink-0 mt-0.5" />
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-stone-800 truncate">
-                                {p.name}
-                              </p>
-                              {p.address && (
-                                <p className="text-xs text-stone-500 truncate">{p.address}</p>
-                              )}
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    {tapMode && !pendingTap && (
+                  {tapMode && !pendingTap && (
                       <p className="mt-2 rounded-full bg-terracotta/95 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 inline-flex items-center gap-1.5 shadow-card-md">
                         <Crosshair size={12} /> Tap map to drop pin
                       </p>
