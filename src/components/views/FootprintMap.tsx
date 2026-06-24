@@ -125,7 +125,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
 
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session));
+    supabase.auth.getSession().then(({ data }: { data: { session: import("@supabase/supabase-js").Session | null } }) => setIsAuthed(!!data.session));
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_e, session) => {

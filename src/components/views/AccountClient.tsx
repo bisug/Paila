@@ -44,7 +44,7 @@ export function AccountClient({ user }: { user: User }) {
       .select("gender")
       .eq("user_id", user.id)
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data }: { data: { gender: string | null } | null }) => {
         if (data?.gender === "male" || data?.gender === "female") {
           setGender(data.gender);
         }
