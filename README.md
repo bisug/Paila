@@ -363,9 +363,7 @@ Paila was built during **[JunctionX Kathmandu 2026 & FinnoFest](https://junction
 | **Dates** | May 29–31, 2026 |
 | **Venue** | AITM College, Khumaltar, Lalitpur, Nepal |
 | **Challenge Track** | Hospitality & Heritage (Smart Cities & Tourism) |
-| **Organisers** | SUMS Nepal · Cogknit Oy · HackJunction Finland |
-| **Institution** | [Lincoln International College](https://licnepal.edu.np) |
-| **Team Name** | Runtime Terrors |
+| **Organisers** | SUMS Nepal · Cogknit · HackJunction Finland |
 
 ### The Challenge
 
@@ -396,7 +394,7 @@ Paila directly addresses:
 
 ## Team
 
-Built with ❤️ by **Runtime Terrors** from [Lincoln International College](https://licnepal.edu.np), Nepal.
+Built with ❤️ by **Runtime Terrors** from [Lincoln International College](https://licnepal.edu.np), Nepal. We would like to thank the college for providing us the opportunity to participate in this hackathon.
 
 | Name | Role | Certificate |
 |---|---|---|
