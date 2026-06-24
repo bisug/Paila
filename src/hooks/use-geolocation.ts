@@ -36,5 +36,11 @@ export function useGeolocationTracker() {
     startWatch();
   }, [startWatch]);
 
-  return { location, path, error, permissionDenied, retry };
+  const simulateLocation = useCallback((lat: number, lng: number) => {
+    const newLoc = { lat, lng, timestamp: Date.now(), accuracy: 10 };
+    setLocation(newLoc);
+    setPath((p) => [...p, newLoc]);
+  }, []);
+
+  return { location, path, error, permissionDenied, retry, simulateLocation };
 }

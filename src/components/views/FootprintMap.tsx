@@ -94,7 +94,8 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
 
   const [viewMode, setViewMode] = useState<"pins" | "journey">(defaultView);
   const [activeStageId, setActiveStageId] = useState<string | null>(null);
-  const { hasVisited } = useVisitTracker();
+  const { hasVisited, markVisited, resetVisits } = useVisitTracker();
+  const [showDemoMenu, setShowDemoMenu] = useState(false);
 
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,7 +121,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
       ? "Google Maps is not configured or failed to load."
       : null;
 
-  const { location, permissionDenied, retry: retryLocation } = useGeolocationTracker();
+  const { location, permissionDenied, retry: retryLocation, simulateLocation } = useGeolocationTracker();
   const [permBannerDismissed, setPermBannerDismissed] = useState(false);
 
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
@@ -128,7 +129,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     supabase.auth.getSession().then(({ data }: { data: { session: import("@supabase/supabase-js").Session | null } }) => setIsAuthed(!!data.session));
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_e, session) => {
+    } = supabase.auth.onAuthStateChange((_e: import("@supabase/supabase-js").AuthChangeEvent, session) => {
       setIsAuthed(!!session);
     });
     return () => subscription.unsubscribe();
@@ -186,7 +187,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
       queryClient.setQueryData<{ checkpoints: Checkpoint[] }>(["checkpoints"], (old) => ({
         checkpoints: (old?.checkpoints ?? []).filter((c) => c.id !== id),
       }));
-      setActiveCheckpointId(null);
+      setActiveCheckpointId((current) => (current === id ? null : current));
       return { prev };
     },
     onError: (e: Error, _v, ctx) => {
@@ -245,17 +246,9 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     };
   }, [hasVisited]);
 
-  const mapCenter = useMemo(() => {
-    if (viewMode === "journey") {
-      const active = journeyStages.find((s) => s.id === activeStageId);
-      if (active) return { lat: active.lat, lng: active.lng };
-      return { lat: journeyStages[2].lat, lng: journeyStages[2].lng };
-    }
-    if (selectedPlace) return { lat: selectedPlace.lat, lng: selectedPlace.lng };
-    if (location) return { lat: location.lat, lng: location.lng };
-    if (checkpoints[0]) return { lat: checkpoints[0].lat, lng: checkpoints[0].lng };
-    return DEFAULT_CENTER;
-  }, [viewMode, activeStageId, selectedPlace, location, checkpoints]);
+  // Use a stable default center and zoom to prevent declarative props from fighting imperative panTo/fitBounds calls.
+  const [defaultCenter] = useState(DEFAULT_CENTER);
+  const [defaultZoom] = useState(5);
 
   const recenterOnUser = () => {
     if (location && mapRef.current) {
@@ -545,8 +538,8 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                 <>
                   <GoogleMap
                     mapContainerStyle={mapContainerStyle}
-                    center={mapCenter}
-                    zoom={location || checkpoints.length ? 10 : 5}
+                    center={defaultCenter}
+                    zoom={defaultZoom}
                     onLoad={(m) => {
                       mapRef.current = m;
                     }}
@@ -696,7 +689,15 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       <input
                         type="text"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setSearchQuery(val);
+                          if (!val.trim()) {
+                            setSearchResults([]);
+                            setSearchError(null);
+                            setShowResults(false);
+                          }
+                        }}
                         onFocus={() => {
                           if (searchResults.length > 0) setShowResults(true);
                         }}
@@ -748,6 +749,45 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       <p className="mt-2 rounded-full bg-terracotta/95 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 inline-flex items-center gap-1.5 shadow-card-md">
                         <Crosshair size={12} /> Tap map to drop pin
                       </p>
+                    )}
+                  </div>
+
+                  {/* Demo Control Overlay */}
+                  <div className="absolute top-16 left-3 z-20">
+                    <button
+                      type="button"
+                      onClick={() => setShowDemoMenu(!showDemoMenu)}
+                      className="rounded-full bg-stone-900 text-white text-[10px] font-bold px-3 py-1.5 shadow-card-md hover:bg-stone-800 transition-colors"
+                    >
+                      Demo Navigation
+                    </button>
+                    {showDemoMenu && (
+                      <div className="mt-2 w-56 rounded-2xl bg-white shadow-card-md border border-stone-100 overflow-hidden flex flex-col">
+                        <div className="bg-stone-100 px-3 py-2 border-b border-stone-200 flex justify-between items-center">
+                          <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Teleport & Visit</span>
+                          <button onClick={() => { resetVisits(); toast.success("Visits reset"); }} className="text-[10px] text-terracotta hover:underline font-bold">Reset</button>
+                        </div>
+                        <div className="max-h-56 overflow-y-auto p-1.5 space-y-1">
+                          {journeyStages.map((stage) => (
+                            <button
+                              key={stage.id}
+                              type="button"
+                              onClick={() => {
+                                simulateLocation(stage.lat, stage.lng);
+                                if (stage.spotId) {
+                                  markVisited(stage.spotId);
+                                  toast.success(`Visited ${stage.name}`);
+                                }
+                                mapRef.current?.panTo({ lat: stage.lat, lng: stage.lng });
+                                setShowDemoMenu(false);
+                              }}
+                              className="w-full text-left px-2.5 py-2 rounded-md hover:bg-stone-50 text-xs font-semibold text-stone-700 truncate"
+                            >
+                              {stage.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     )}
                   </div>
 
