@@ -129,7 +129,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     supabase.auth.getSession().then(({ data }: { data: { session: import("@supabase/supabase-js").Session | null } }) => setIsAuthed(!!data.session));
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_e: import("@supabase/supabase-js").AuthChangeEvent, session) => {
+    } = supabase.auth.onAuthStateChange((_e: import("@supabase/supabase-js").AuthChangeEvent, session: import("@supabase/supabase-js").Session | null) => {
       setIsAuthed(!!session);
     });
     return () => subscription.unsubscribe();
