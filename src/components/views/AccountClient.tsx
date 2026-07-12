@@ -158,7 +158,7 @@ export function AccountClient({ user }: { user: User }) {
                   type="url"
                   value={avatarUrl}
                   onChange={(e) => setAvatarUrl(e.target.value)}
-                  className="w-full rounded-lg border border-stone-200 bg-stone-50 p-2.5 text-sm outline-none focus:border-terracotta"
+                  className="input"
                 />
               </div>
 
@@ -171,7 +171,7 @@ export function AccountClient({ user }: { user: User }) {
                     type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full rounded-lg border border-stone-200 bg-stone-50 p-2.5 text-sm outline-none focus:border-terracotta"
+                    className="input"
                   />
                 </div>
                 <div>
@@ -182,7 +182,7 @@ export function AccountClient({ user }: { user: User }) {
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="w-full rounded-lg border border-stone-200 bg-stone-50 p-2.5 text-sm outline-none focus:border-terracotta"
+                    className="input"
                   />
                 </div>
               </div>
@@ -196,7 +196,7 @@ export function AccountClient({ user }: { user: User }) {
                     type="text"
                     value={middleName}
                     onChange={(e) => setMiddleName(e.target.value)}
-                    className="w-full rounded-lg border border-stone-200 bg-stone-50 p-2.5 text-sm outline-none focus:border-terracotta"
+                    className="input"
                   />
                 </div>
                 <div>
@@ -205,7 +205,7 @@ export function AccountClient({ user }: { user: User }) {
                     type="number"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
-                    className="w-full rounded-lg border border-stone-200 bg-stone-50 p-2.5 text-sm outline-none focus:border-terracotta"
+                    className="input"
                   />
                 </div>
               </div>
@@ -241,7 +241,7 @@ export function AccountClient({ user }: { user: User }) {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 py-2.5 rounded-lg bg-pine text-white text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="flex-1 py-2.5 rounded-lg bg-terracotta text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-terracotta/90 disabled:opacity-70"
                 >
                   <Check size={16} /> {saving ? "Saving..." : "Save"}
                 </button>

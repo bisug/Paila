@@ -305,7 +305,7 @@ export default function GuideVerifyPage() {
         <button
           type="submit"
           disabled={locked || submitting}
-          className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-pine text-white font-semibold py-2.5 disabled:opacity-50"
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-terracotta text-white font-semibold py-2.5 hover:bg-terracotta/90 disabled:opacity-50"
         >
           {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
           {locked
@@ -319,20 +319,6 @@ export default function GuideVerifyPage() {
           Your ID image is stored privately. Only you and our reviewers can access it.
         </p>
       </form>
-
-      <style>{`
-        .input {
-          width: 100%;
-          border: 1px solid rgb(214 211 209);
-          background: white;
-          border-radius: 0.5rem;
-          padding: 0.5rem 0.75rem;
-          font-size: 0.875rem;
-          color: rgb(41 37 36);
-        }
-        .input:focus { outline: 2px solid rgb(42 92 67); outline-offset: 1px; }
-        .input:disabled { background: rgb(245 245 244); color: rgb(120 113 108); }
-      `}</style>
     </div>
   );
 }

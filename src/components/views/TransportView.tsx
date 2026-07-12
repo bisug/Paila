@@ -157,14 +157,14 @@ function RoadCard({
         ) : canBuyTicket ? (
           <button
             onClick={() => onBuy(o)}
-            className="flex items-center gap-2 bg-stone-900 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-stone-800 transition-colors"
+            className="flex items-center gap-2 bg-terracotta text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-terracotta/90 transition-colors"
           >
             <Ticket size={14} /> {purchased ? "Buy Again" : "Buy Ticket"}
           </button>
         ) : (
           <a
             href={`tel:${o.contact}`}
-            className="flex items-center gap-2 bg-stone-900 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-stone-800 transition-colors"
+            className="flex items-center gap-2 bg-terracotta text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-terracotta/90 transition-colors"
           >
             <Phone size={14} /> Request Ride
           </a>
@@ -282,7 +282,7 @@ function FlightCard({
           {canBuy ? (
             <button
               onClick={() => onBuy(o)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-colors bg-blue-600 text-white hover:bg-blue-700"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-colors bg-terracotta text-white hover:bg-terracotta/90"
             >
               <Ticket size={13} /> {purchased ? "Buy Again" : "Buy Ticket"}
             </button>
@@ -494,7 +494,7 @@ export function TransportView() {
           <button
             onClick={searchRoute}
             disabled={!from || !to}
-            className="flex items-center gap-2 bg-pine text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-pine/90 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 bg-terracotta text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-terracotta/90 transition-colors disabled:opacity-50"
           >
             <Search size={16} /> Get Directions
           </button>

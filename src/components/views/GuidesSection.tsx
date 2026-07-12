@@ -61,7 +61,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
                     <h3 className="font-bold text-stone-900 truncate">{g.name}</h3>
                     {g.verified && (
                       <BadgeCheck
-                        className="w-4 h-4 text-sky-500 shrink-0"
+                        className="w-4 h-4 text-pine shrink-0"
                         aria-label="Verified guide"
                       />
                     )}

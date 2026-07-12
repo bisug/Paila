@@ -1192,7 +1192,7 @@ function LocalEventsSection({
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackInteraction(ev.category, 3)}
-                      className="mt-1 flex items-center justify-center gap-1.5 rounded-xl bg-pine text-white py-2 text-xs font-bold active:scale-[0.98] transition-transform"
+                      className="mt-1 flex items-center justify-center gap-1.5 rounded-xl bg-terracotta text-white py-2 text-xs font-bold hover:bg-terracotta/90 active:scale-[0.98] transition-transform"
                     >
                       <Navigation size={12} /> Get Directions
                     </a>

@@ -219,7 +219,7 @@ export default function GuideProfile() {
           {mock?.phone && (
             <a
               href={`tel:${mock.phone}`}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-terracotta text-white text-sm font-semibold hover:bg-terracotta/90 focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2"
             >
               <Phone size={14} />
               Call
@@ -227,7 +227,7 @@ export default function GuideProfile() {
           )}
           <button
             type="button"
-            className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-terracotta text-white text-sm font-semibold hover:bg-terracotta/90"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-pine text-white text-sm font-semibold hover:bg-pine/90 focus-visible:ring-2 focus-visible:ring-pine focus-visible:ring-offset-2"
           >
             <MessageCircle size={14} />
             Message
@@ -366,7 +366,7 @@ function BookingSlotPicker({
           setBooked(true);
           toast.success(`Slot requested: ${dayLabels[dayIdx]} · ${slot}`);
         }}
-        className="w-full h-10 rounded-xl bg-pine text-white text-sm font-semibold hover:bg-pine/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-pine focus-visible:ring-offset-2"
+        className="w-full h-10 rounded-xl bg-terracotta text-white text-sm font-semibold hover:bg-terracotta/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2"
       >
         {slot ? `Request ${dayLabels[dayIdx]} · ${slot}` : "Request slot"}
       </button>
