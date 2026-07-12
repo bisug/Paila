@@ -28,8 +28,6 @@ import { useVisitTracker } from "@/hooks/use-visit-tracker";
 import { JourneyStageList } from "@/components/views/JourneyStageList";
 import { GOOGLE_MAPS_LOADER_OPTIONS } from "@/lib/google-maps-loader";
 
-
-
 type Checkpoint = {
   id: string;
   place_id: string | null;
@@ -104,17 +102,31 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
       ? "Google Maps is not configured or failed to load."
       : null;
 
-  const { location, permissionDenied, retry: retryLocation, simulateLocation } = useGeolocationTracker();
+  const {
+    location,
+    permissionDenied,
+    retry: retryLocation,
+    simulateLocation,
+  } = useGeolocationTracker();
   const [permBannerDismissed, setPermBannerDismissed] = useState(false);
 
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }: { data: { session: import("@supabase/supabase-js").Session | null } }) => setIsAuthed(!!data.session));
+    supabase.auth
+      .getSession()
+      .then(({ data }: { data: { session: import("@supabase/supabase-js").Session | null } }) =>
+        setIsAuthed(!!data.session),
+      );
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_e: import("@supabase/supabase-js").AuthChangeEvent, session: import("@supabase/supabase-js").Session | null) => {
-      setIsAuthed(!!session);
-    });
+    } = supabase.auth.onAuthStateChange(
+      (
+        _e: import("@supabase/supabase-js").AuthChangeEvent,
+        session: import("@supabase/supabase-js").Session | null,
+      ) => {
+        setIsAuthed(!!session);
+      },
+    );
     return () => subscription.unsubscribe();
   }, []);
 
@@ -638,8 +650,18 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                     {showDemoMenu && (
                       <div className="mt-2 w-56 rounded-2xl bg-white shadow-card-md border border-stone-100 overflow-hidden flex flex-col">
                         <div className="bg-stone-100 px-3 py-2 border-b border-stone-200 flex justify-between items-center">
-                          <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Teleport & Visit</span>
-                          <button onClick={() => { resetVisits(); toast.success("Visits reset"); }} className="text-[10px] text-terracotta hover:underline font-bold">Reset</button>
+                          <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+                            Teleport & Visit
+                          </span>
+                          <button
+                            onClick={() => {
+                              resetVisits();
+                              toast.success("Visits reset");
+                            }}
+                            className="text-[10px] text-terracotta hover:underline font-bold"
+                          >
+                            Reset
+                          </button>
                         </div>
                         <div className="max-h-56 overflow-y-auto p-1.5 space-y-1">
                           {journeyStages.map((stage) => (

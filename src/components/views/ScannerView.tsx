@@ -21,6 +21,7 @@ import {
   ZapOff,
   ImagePlus,
 } from "lucide-react";
+import { toast } from "sonner";
 import { type LedgerTab, pine } from "@/lib/data";
 
 // ── Verified host profile tab ──────────────────────────────────────────────
@@ -264,7 +265,7 @@ export function ScannerView() {
       setAiResult(data);
     } catch (error) {
       console.error(error);
-      alert("Error analyzing image. Please try again.");
+      toast.error("Couldn't analyze the image. Please try again.");
       setSheetOpen(false);
       startScanner();
     } finally {

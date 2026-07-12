@@ -1,4 +1,10 @@
-import { checkRateLimit, getClientKey, isDemoEnabled } from "@/lib/server/guardrails";
+import {
+  checkRateLimit,
+  getClientKey,
+  isDemoEnabled,
+  isDemoMode,
+  isSupabaseConfigured,
+} from "@/lib/server/guardrails";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
@@ -6,24 +12,28 @@ const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+  // Only enforce Supabase session auth when a real project is wired.
+  // In demo mode the app auth is client-mocked, so there is no server session cookie.
+  if (isSupabaseConfigured()) {
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value;
+          },
         },
       },
-    }
-  );
+    );
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (!session) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   if (!checkRateLimit(getClientKey(request, "scan"), 10, 60_000)) {
@@ -45,7 +55,7 @@ export async function POST(request: Request) {
         { status: 415 },
       );
     }
-    if (!isDemoEnabled("ENABLE_DEMO_SCAN")) {
+    if (!isDemoEnabled("ENABLE_DEMO_SCAN") && !isDemoMode()) {
       return Response.json(
         { error: "Image recognition is not configured for production use." },
         { status: 501 },

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { checkRateLimit, getClientKey } from "@/lib/server/guardrails";
+import { checkRateLimit, getClientKey, isSupabaseConfigured } from "@/lib/server/guardrails";
 import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
@@ -19,24 +19,27 @@ const Body = z.object({
 });
 
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+  // Only enforce Supabase session auth when a real project is wired (see /api/scan).
+  if (isSupabaseConfigured()) {
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value;
+          },
         },
       },
-    }
-  );
+    );
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (!session) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   if (!checkRateLimit(getClientKey(request, "translate"), 20, 60_000)) {

@@ -50,7 +50,7 @@ export default function ProfileMenu() {
             .eq("role", "admin")
             .maybeSingle(),
         ]);
-        
+
         if (!mounted) return;
         setUnread(notificationsRes.count ?? 0);
         setIsAdmin(!!rolesRes.data);
@@ -60,7 +60,9 @@ export default function ProfileMenu() {
         if (mounted) setLoading(false);
       }
     })();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [router]);
 
   async function handleLogout() {
@@ -80,7 +82,7 @@ export default function ProfileMenu() {
 
   const identifier = user.email || user.phone || "Traveller";
   const meta = user.user_metadata || {};
-  const isProfileIncomplete = !meta.first_name || !meta.age;
+  const isProfileIncomplete = !meta.first_name;
 
   return (
     <div className="min-h-screen bg-stone-50 px-4 pt-5 pb-28">
@@ -195,19 +197,27 @@ export default function ProfileMenu() {
             Resources
           </h2>
           <div className="rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden">
-            <div className="flex items-center gap-3 p-4 border-b border-stone-100">
+            <div className="flex items-start gap-3 p-4 border-b border-stone-100">
               <div className="h-10 w-10 rounded-xl bg-stone-100 text-stone-600 grid place-items-center shrink-0">
                 <ShieldCheck size={18} />
               </div>
-              <p className="text-sm font-bold text-stone-900 flex-1">Safety Guidelines</p>
-              <ChevronRight size={18} className="text-stone-300" />
+              <div className="flex-1">
+                <p className="text-sm font-bold text-stone-900">Safety Guidelines</p>
+                <p className="text-xs text-stone-500 mt-0.5">
+                  Tap the red SOS button anytime for emergency contacts and your live location.
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-3 p-4">
+            <div className="flex items-start gap-3 p-4">
               <div className="h-10 w-10 rounded-xl bg-stone-100 text-stone-600 grid place-items-center shrink-0">
                 <BookOpen size={18} />
               </div>
-              <p className="text-sm font-bold text-stone-900 flex-1">Offline Guide</p>
-              <ChevronRight size={18} className="text-stone-300" />
+              <div className="flex-1">
+                <p className="text-sm font-bold text-stone-900">Offline Guide</p>
+                <p className="text-xs text-stone-500 mt-0.5">
+                  Maps, bookings and phrases stay available offline once loaded.
+                </p>
+              </div>
             </div>
           </div>
         </div>

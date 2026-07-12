@@ -49,3 +49,13 @@ export async function fetchWithTimeout(
 export function isDemoEnabled(name: string): boolean {
   return process.env.NODE_ENV !== "production" && process.env[name] === "true";
 }
+
+/** True when a real Supabase project is wired (anon key present). */
+export function isSupabaseConfigured(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+}
+
+/** Demo mode: no real Supabase and not a production build. */
+export function isDemoMode(): boolean {
+  return process.env.NODE_ENV !== "production" && !isSupabaseConfigured();
+}

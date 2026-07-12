@@ -34,7 +34,15 @@ async function requireAdmin(token?: string) {
 }
 
 async function signGuideIdUrls(submissions: GuideVerificationSubmission[]) {
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return {};
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    // Demo mode: no storage credentials, so return a placeholder per submission.
+    return Object.fromEntries(
+      submissions.map((s) => [
+        s.id,
+        "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=70",
+      ]),
+    );
+  }
 
   const imageUrls: Record<string, string> = {};
   await Promise.all(

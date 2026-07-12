@@ -35,7 +35,7 @@ export default function NotificationsPage() {
         .limit(100);
       setItems((data ?? []) as Notification[]);
       setLoading(false);
-      const unreadIds = (data as Notification[] ?? []).filter((n) => !n.read).map((n) => n.id);
+      const unreadIds = ((data as Notification[]) ?? []).filter((n) => !n.read).map((n) => n.id);
       if (unreadIds.length > 0) {
         await supabase.from("notifications").update({ read: true }).in("id", unreadIds);
       }

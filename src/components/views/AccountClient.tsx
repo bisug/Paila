@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BadgeCheck,
@@ -81,6 +82,7 @@ export function AccountClient({ user }: { user: User }) {
       if (profileErr) throw profileErr;
 
       setIsEditing(false);
+      toast.success("Profile saved");
     } catch (err: any) {
       setError(err.message);
     } finally {
