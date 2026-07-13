@@ -420,7 +420,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     <div className="min-h-screen bg-parchment pt-4 pb-8 md:py-8">
       <div className="md:flex md:gap-6 md:px-8">
         <div className="md:w-2/3">
-          <div className="mx-4 md:mx-0 overflow-hidden rounded-sheet bg-white shadow-card-md">
+          <div className="mx-4 md:mx-0 overflow-hidden rounded-card bg-white shadow-card-md">
             <div className="flex items-center justify-between gap-3 px-4 py-3.5 border-b border-stone-100">
               <div className="min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-pine mb-0.5 truncate">
@@ -463,7 +463,11 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
               </div>
             </div>
 
-            <div className="relative h-[300px] xs:h-[350px] sm:h-[400px] md:h-[500px] bg-stone-100 overflow-hidden">
+            <div
+              role="region"
+              aria-label="Footprint map"
+              className="relative h-[300px] xs:h-[350px] sm:h-[400px] md:h-[500px] bg-stone-100 overflow-hidden"
+            >
               {permissionDenied && !permBannerDismissed && (
                 <LocationPermissionBanner
                   onRetry={() => {
@@ -631,7 +635,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                   <MapSearchOverlay location={location} onPlaceSelected={pickPlace} />
 
                   {tapMode && !pendingTap && (
-                    <div className="absolute top-[68px] left-3 z-20 pointer-events-none">
+                    <div className="absolute top-20 left-3 z-20 pointer-events-none">
                       <p className="rounded-full bg-terracotta/95 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 inline-flex items-center gap-1.5 shadow-card-md pointer-events-auto">
                         <Crosshair size={12} /> Tap map to drop pin
                       </p>
@@ -639,11 +643,11 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                   )}
 
                   {/* Demo Control Overlay */}
-                  <div className="absolute top-16 left-3 z-20">
+                  <div className="absolute bottom-4 left-3 z-20">
                     <button
                       type="button"
                       onClick={() => setShowDemoMenu(!showDemoMenu)}
-                      className="rounded-full bg-stone-900 text-white text-[10px] font-bold px-3 py-1.5 shadow-card-md hover:bg-stone-800 transition-colors"
+                      className="flex items-center gap-1.5 rounded-full bg-stone-900 text-white text-[10px] font-bold px-3 min-h-[44px] shadow-card-md hover:bg-stone-800 transition-colors"
                     >
                       Demo Navigation
                     </button>
@@ -726,14 +730,14 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                           type="button"
                           onClick={confirmPendingTap}
                           disabled={pendingTap.loading}
-                          className="flex-1 rounded-full bg-pine text-white text-xs font-bold py-2 hover:bg-pine/90 disabled:opacity-60 inline-flex items-center justify-center gap-1.5"
+                          className="flex-1 rounded-full bg-pine text-white text-xs font-bold py-2 min-h-[44px] hover:bg-pine/90 disabled:opacity-60 inline-flex items-center justify-center gap-1.5"
                         >
                           <Plus size={12} /> Add checkpoint
                         </button>
                         <button
                           type="button"
                           onClick={clearPendingTap}
-                          className="rounded-full bg-stone-100 text-stone-700 text-xs font-bold py-2 px-3 hover:bg-stone-200"
+                          className="rounded-full bg-stone-100 text-stone-700 text-xs font-bold py-2 min-h-[44px] px-3 hover:bg-stone-200"
                         >
                           Cancel
                         </button>
@@ -749,7 +753,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                         setTapMode((v) => !v);
                         clearPendingTap();
                       }}
-                      className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold shadow-card-md transition-colors ${
+                      className={`flex items-center gap-1.5 rounded-full px-3 py-2 min-h-[44px] text-xs font-bold shadow-card-md transition-colors ${
                         tapMode
                           ? "bg-terracotta text-white hover:bg-terracotta/90"
                           : "bg-white text-stone-800 hover:bg-stone-50"
@@ -764,7 +768,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                         type="button"
                         onClick={addCurrentLocation}
                         disabled={addMut.isPending}
-                        className="flex items-center gap-1.5 rounded-full bg-pine text-white px-3 py-2 text-xs font-bold shadow-card-md hover:bg-pine/90 disabled:opacity-60"
+                        className="flex items-center gap-1.5 rounded-full bg-pine text-white px-3 py-2 min-h-[44px] text-xs font-bold shadow-card-md hover:bg-pine/90 disabled:opacity-60"
                       >
                         <Plus size={14} /> Pin my location
                       </button>
@@ -773,7 +777,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       <button
                         type="button"
                         onClick={recenterOnUser}
-                        className="flex items-center gap-1.5 rounded-full bg-white px-3 py-2 text-xs font-bold text-stone-800 shadow-card-md hover:bg-stone-50"
+                        className="flex items-center gap-1.5 rounded-full bg-white px-3 py-2 min-h-[44px] text-xs font-bold text-stone-800 shadow-card-md hover:bg-stone-50"
                       >
                         <Navigation size={14} className="text-blue-500" />
                         Recenter

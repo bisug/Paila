@@ -528,7 +528,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
   const isWet = weather?.condition.includes("Rain") || weather?.condition.includes("Thunder");
 
   return (
-    <div className="relative overflow-hidden rounded-2xl shadow-sm border border-stone-200 bg-white min-h-[140px]">
+    <div className="relative overflow-hidden rounded-2xl shadow-card border border-stone-200 bg-white min-h-[140px]">
       <div className="absolute inset-0">
         <img
           src="https://images.unsplash.com/photo-1544634076-a90160ddf44e?auto=format&fit=crop&w=800&q=80"
@@ -610,7 +610,7 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
   return (
     <div className="space-y-2">
       {/* Currency */}
-      <div className="rounded-2xl bg-white border border-stone-200 shadow-sm overflow-hidden">
+      <div className="rounded-2xl bg-white border border-stone-200 shadow-card overflow-hidden">
         <button
           onClick={() => toggle("currency")}
           className="w-full flex items-center gap-3 p-3 text-left active:bg-stone-50 transition-colors"
@@ -634,7 +634,7 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
       </div>
 
       {/* SOS */}
-      <div className="rounded-2xl bg-white border border-red-200 shadow-sm overflow-hidden">
+      <div className="rounded-2xl bg-white border border-red-200 shadow-card overflow-hidden">
         <button
           onClick={() => toggle("sos")}
           className="w-full flex items-center gap-3 p-3 text-left active:bg-red-50/30 transition-colors"
@@ -674,7 +674,7 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
       </div>
 
       {/* Permits */}
-      <div className="rounded-2xl bg-white border border-stone-200 shadow-sm overflow-hidden">
+      <div className="rounded-2xl bg-white border border-stone-200 shadow-card overflow-hidden">
         <button
           onClick={() => toggle("permit")}
           className="w-full flex items-center gap-3 p-3 text-left active:bg-stone-50 transition-colors"
@@ -989,7 +989,7 @@ function LocalEventsSection({
                       openCard();
                     }
                   }}
-                  className="relative shrink-0 w-[180px] text-left bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden active:scale-[0.98] transition-transform cursor-pointer"
+                  className="relative shrink-0 w-[180px] text-left bg-white rounded-xl border border-stone-100 shadow-card overflow-hidden active:scale-[0.98] transition-transform cursor-pointer"
                 >
                   <button
                     type="button"
@@ -1129,7 +1129,7 @@ function LocalEventsSection({
             <article
               key={ev.id}
               id={`event-${ev.id}`}
-              className="snap-start min-w-[280px] md:min-w-0 w-[280px] md:w-full bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden shrink-0"
+              className="snap-start min-w-[280px] md:min-w-0 w-[280px] md:w-full bg-white rounded-2xl border border-stone-100 shadow-card overflow-hidden shrink-0"
             >
               <div className="relative h-32">
                 <img
@@ -1740,7 +1740,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
       </div>
 
       <Sheet open={!!openAlert} onOpenChange={(o) => !o && setOpenAlert(null)}>
-        <SheetContent side="bottom" className="rounded-t-2xl">
+        <SheetContent side="bottom" className="rounded-t-3xl">
           {openAlert &&
             (() => {
               const Icon = ALERT_ICONS[openAlert.type] ?? Info;

@@ -6,6 +6,7 @@ import {
   AlertCircle,
   ArrowRight,
   Briefcase,
+  ChevronDown,
   Compass,
   Footprints,
   Loader2,
@@ -98,7 +99,7 @@ export default function AccountTypePage() {
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col justify-center px-4 xs:px-6 py-10">
       <div className="mb-8 text-center">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-terracotta shadow-float">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-card bg-terracotta shadow-float">
           <Footprints size={28} className="text-white" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-stone-900">Tell us about you</h1>
@@ -110,7 +111,7 @@ export default function AccountTypePage() {
           type="button"
           onClick={() => save("tourist")}
           disabled={!!savingChoice}
-          className="flex w-full items-center gap-4 rounded-2xl bg-white p-4 shadow-card border border-stone-100 hover:border-terracotta/40 active:scale-[0.99] transition text-left"
+          className="flex w-full items-center gap-4 rounded-card bg-white p-4 shadow-card border border-stone-100 hover:border-terracotta/40 active:scale-[0.99] transition text-left"
         >
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-terracotta/10 text-terracotta">
             <Compass size={22} />
@@ -130,7 +131,7 @@ export default function AccountTypePage() {
           type="button"
           onClick={() => save("guide")}
           disabled={!!savingChoice}
-          className="flex w-full items-center gap-4 rounded-2xl bg-white p-4 shadow-card border border-stone-100 hover:border-terracotta/40 active:scale-[0.99] transition text-left"
+          className="flex w-full items-center gap-4 rounded-card bg-white p-4 shadow-card border border-stone-100 hover:border-terracotta/40 active:scale-[0.99] transition text-left"
         >
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-pine/10 text-pine">
             <MapPin size={22} />
@@ -148,9 +149,14 @@ export default function AccountTypePage() {
 
         <button
           type="button"
+          aria-expanded={choice === "business"}
           onClick={() => setChoice(choice === "business" ? null : "business")}
           disabled={!!savingChoice}
-          className="flex w-full items-center gap-4 rounded-2xl bg-white p-4 shadow-card border border-stone-100 hover:border-terracotta/40 active:scale-[0.99] transition text-left"
+          className={`flex w-full items-center gap-4 rounded-card bg-white p-4 shadow-card border transition text-left active:scale-[0.99] ${
+            choice === "business"
+              ? "border-terracotta bg-terracotta/5"
+              : "border-stone-100 hover:border-terracotta/40"
+          }`}
         >
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-stone-200 text-stone-700">
             <Briefcase size={22} />
@@ -159,15 +165,19 @@ export default function AccountTypePage() {
             <div className="text-sm font-bold text-stone-900">Other business</div>
             <div className="text-xs text-stone-500">Hotel, restaurant, shop, transport…</div>
           </div>
+          <ChevronDown
+            size={16}
+            className={`shrink-0 text-stone-400 transition-transform ${choice === "business" ? "rotate-180" : ""}`}
+          />
         </button>
 
         {choice === "business" && (
-          <div className="rounded-2xl bg-white p-4 shadow-card border border-stone-100 space-y-3">
+          <div className="rounded-card bg-white p-4 shadow-card border border-stone-100 space-y-3">
             <label className="block text-xs font-semibold text-stone-600">Business type</label>
             <select
               value={businessType}
               onChange={(e) => setBusinessType(e.target.value as BusinessType)}
-              className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm bg-white"
+              className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
             >
               {BUSINESS_TYPES.map((b) => (
                 <option key={b.value} value={b.value}>
@@ -179,7 +189,7 @@ export default function AccountTypePage() {
               type="button"
               onClick={() => save("business", businessType)}
               disabled={!!savingChoice}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-terracotta px-4 py-3 text-sm font-bold text-white hover:bg-terracotta/90"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-primary/90"
             >
               {isSaving("business") ? (
                 <Loader2 size={14} className="animate-spin" />

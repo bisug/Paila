@@ -68,7 +68,7 @@ function VerifiedProfile() {
 // ── Fair price ledger tab ──────────────────────────────────────────────────
 function FairPriceLedger() {
   const rows = [
-    { label: "Kathmandu factory price", value: "50 NPR", pct: 25, color: "bg-slate-400" },
+    { label: "Kathmandu factory price", value: "50 NPR", pct: 25, color: "bg-stone-400" },
     { label: "Mule & porter portage", value: "120 NPR", pct: 60, color: "bg-terracotta" },
     { label: "Host's tea house margin", value: "30 NPR", pct: 15, color: "bg-amber-400" },
   ];
@@ -349,7 +349,7 @@ export function ScannerView() {
 
         {/* Error message / Fallback UI */}
         {cameraError && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-20 gap-4 bg-stone-950/80 backdrop-blur-sm">
+          <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-20 gap-4 bg-stone-950/80 backdrop-blur-sm">
             <p className="text-sm font-semibold text-red-400 max-w-[250px]">{cameraError}</p>
             <button
               type="button"
@@ -384,7 +384,7 @@ export function ScannerView() {
             {/* Main AI Capture Button */}
             <button
               onClick={handleCaptureSite}
-              className="flex items-center gap-2 bg-terracotta text-white px-6 py-3 rounded-full font-bold shadow-lg active:scale-95 transition-transform"
+              className="flex items-center gap-2 bg-terracotta text-white px-6 py-3 rounded-full font-bold shadow-float active:scale-95 transition-transform"
             >
               <Camera size={18} /> Identify Site
             </button>
@@ -393,7 +393,8 @@ export function ScannerView() {
               {/* Gallery Upload Button */}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="grid h-12 w-12 place-items-center rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-lg active:scale-95 transition-transform"
+                aria-label="Upload image"
+                className="grid h-12 w-12 place-items-center rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-float active:scale-95 transition-transform"
               >
                 <ImagePlus size={20} />
               </button>
@@ -402,7 +403,9 @@ export function ScannerView() {
               {hasTorch && (
                 <button
                   onClick={toggleTorch}
-                  className={`grid h-12 w-12 place-items-center rounded-full backdrop-blur-md border border-white/20 shadow-lg active:scale-95 transition-transform ${torchOn ? "bg-white text-stone-900" : "bg-black/40 text-white"}`}
+                  aria-pressed={torchOn}
+                  aria-label={torchOn ? "Turn off flashlight" : "Turn on flashlight"}
+                  className={`grid h-12 w-12 place-items-center rounded-full backdrop-blur-md border border-white/20 shadow-float active:scale-95 transition-transform ${torchOn ? "bg-white text-stone-900" : "bg-black/40 text-white"}`}
                 >
                   {torchOn ? <Zap size={20} className="fill-current" /> : <ZapOff size={20} />}
                 </button>
@@ -411,7 +414,8 @@ export function ScannerView() {
               {/* Flip Camera */}
               <button
                 onClick={toggleCamera}
-                className="grid h-12 w-12 place-items-center rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-lg active:scale-95 transition-transform"
+                aria-label="Switch camera"
+                className="grid h-12 w-12 place-items-center rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-float active:scale-95 transition-transform"
               >
                 <SwitchCamera size={20} />
               </button>
@@ -430,14 +434,18 @@ export function ScannerView() {
       {/* ── Result bottom sheet ─────────────────────────────────────────── */}
       {sheetOpen && (
         <div
-          className="absolute inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white px-4 pt-5 shadow-float"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Scan result"
+          aria-live="polite"
+          className="absolute inset-x-0 bottom-0 z-50 rounded-t-sheet bg-white px-4 pt-5 shadow-float"
           style={{
             paddingBottom: "max(2rem, env(safe-area-inset-bottom))",
             maxHeight: "80vh",
             overflowY: "auto",
           }}
         >
-          <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-stone-200" />
+          <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-pine mb-1">
@@ -478,17 +486,21 @@ export function ScannerView() {
               </div>
               <div>
                 <h4 className="font-bold text-stone-900 mb-2 px-1">Quick Facts</h4>
-                <div className="space-y-2">
-                  {aiResult.facts.map((fact: string, idx: number) => (
-                    <div
-                      key={idx}
-                      className="flex items-start gap-3 rounded-xl border border-stone-100 bg-white px-4 py-3"
-                    >
-                      <CheckCircle2 size={16} color={pine} className="shrink-0 mt-0.5" />
-                      <span className="text-sm font-medium text-stone-700">{fact}</span>
-                    </div>
-                  ))}
-                </div>
+                {aiResult.facts?.length > 0 ? (
+                  <div className="space-y-2">
+                    {aiResult.facts.map((fact: string, idx: number) => (
+                      <div
+                        key={idx}
+                        className="flex items-start gap-3 rounded-xl border border-stone-100 bg-white px-4 py-3"
+                      >
+                        <CheckCircle2 size={16} color={pine} className="shrink-0 mt-0.5" />
+                        <span className="text-sm font-medium text-stone-700">{fact}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="px-1 text-sm text-stone-500">No quick facts available.</p>
+                )}
               </div>
             </div>
           ) : (

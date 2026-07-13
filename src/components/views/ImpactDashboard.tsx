@@ -87,52 +87,58 @@ export function ImpactDashboard() {
       <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3 md:mb-4">
         Achievements
       </h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-        {impactBadges.map((badge) => {
-          const Icon = badge.icon;
-          return (
-            <div
-              key={badge.title}
-              className={`rounded-card border p-4 transition-all ${
-                badge.unlocked
-                  ? "bg-pine border-pine/20 text-white"
-                  : "bg-white border-stone-100 text-stone-400"
-              }`}
-            >
-              {/* Icon */}
+      {impactBadges.length === 0 ? (
+        <p className="rounded-card border border-dashed border-stone-200 bg-white p-6 text-center text-sm text-stone-500">
+          No trail stamps yet — start exploring to earn your first badge.
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+          {impactBadges.map((badge) => {
+            const Icon = badge.icon;
+            return (
               <div
-                className={`mb-3 h-10 w-10 grid place-items-center rounded-xl ${
-                  badge.unlocked ? "bg-white/15" : "bg-stone-50"
+                key={badge.title}
+                className={`rounded-card border p-4 transition-all ${
+                  badge.unlocked
+                    ? "bg-pine border-pine/20 text-white"
+                    : "bg-white border-stone-100 text-stone-500"
                 }`}
               >
-                {badge.unlocked ? (
-                  <Icon size={20} className="text-white" />
-                ) : (
-                  <Lock size={16} className="text-stone-300" />
-                )}
+                {/* Icon */}
+                <div
+                  className={`mb-3 h-10 w-10 grid place-items-center rounded-xl ${
+                    badge.unlocked ? "bg-white/15" : "bg-stone-50"
+                  }`}
+                >
+                  {badge.unlocked ? (
+                    <Icon size={20} className="text-white" />
+                  ) : (
+                    <Lock size={16} className="text-stone-400" />
+                  )}
+                </div>
+
+                {/* Badge title */}
+                <p
+                  className={`text-[13px] font-semibold leading-snug ${
+                    badge.unlocked ? "text-white" : "text-stone-500"
+                  }`}
+                >
+                  {badge.title}
+                </p>
+
+                {/* Status label */}
+                <p
+                  className={`mt-2 text-[10px] font-bold uppercase tracking-wider ${
+                    badge.unlocked ? "text-white/60" : "text-stone-400"
+                  }`}
+                >
+                  {badge.unlocked ? "Earned" : "Locked"}
+                </p>
               </div>
-
-              {/* Badge title */}
-              <p
-                className={`text-[13px] font-semibold leading-snug ${
-                  badge.unlocked ? "text-white" : "text-stone-400"
-                }`}
-              >
-                {badge.title}
-              </p>
-
-              {/* Status label */}
-              <p
-                className={`mt-2 text-[10px] font-bold uppercase tracking-wider ${
-                  badge.unlocked ? "text-white/60" : "text-stone-300"
-                }`}
-              >
-                {badge.unlocked ? "Earned" : "Locked"}
-              </p>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

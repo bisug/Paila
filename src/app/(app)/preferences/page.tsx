@@ -116,19 +116,19 @@ export default function PreferencesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 pb-16">
-      <header className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-stone-200">
+    <div className="min-h-screen bg-background pb-16">
+      <header className="sticky top-0 z-10 bg-card/95 backdrop-blur border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link
             href="/"
-            className="grid place-items-center w-9 h-9 rounded-full bg-stone-100 text-stone-700 hover:bg-stone-200"
+            className="grid place-items-center w-9 h-9 rounded-full bg-muted text-foreground hover:bg-accent"
             aria-label="Back"
           >
             <ArrowLeft size={18} />
           </Link>
           <div className="flex-1 min-w-0">
-            <h1 className="text-sm font-bold text-stone-900 truncate">Event preferences</h1>
-            <p className="text-[11px] text-stone-500 truncate">
+            <h1 className="text-sm font-bold text-foreground truncate">Event preferences</h1>
+            <p className="text-[11px] text-muted-foreground truncate">
               Manage what you’ve marked as “Not interested”.
             </p>
           </div>
@@ -150,20 +150,21 @@ export default function PreferencesPage() {
             <div className="relative">
               <Search
                 size={14}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search hidden events…"
-                className="w-full rounded-xl border border-stone-200 bg-white pl-8 pr-8 py-2 text-xs text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-terracotta/30"
+                aria-label="Search hidden events"
+                className="input pl-8 pr-8 text-xs"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   aria-label="Clear search"
                 >
                   <X size={14} />
@@ -185,8 +186,8 @@ export default function PreferencesPage() {
                   onClick={() => setFilterMode(f.key)}
                   className={`text-[11px] font-bold px-2.5 py-1 rounded-full border transition-colors ${
                     filterMode === f.key
-                      ? "bg-stone-800 text-white border-stone-800"
-                      : "bg-white text-stone-600 border-stone-200 hover:border-stone-300"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card text-muted-foreground border-border"
                   }`}
                 >
                   {f.label}
@@ -195,7 +196,7 @@ export default function PreferencesPage() {
             </div>
 
             {q && (
-              <p className="text-[11px] text-stone-500">
+              <p className="text-[11px] text-muted-foreground">
                 {filteredByCategory.length + filteredByLocation.length + filteredPenalties.length}{" "}
                 result
                 {filteredByCategory.length +
@@ -210,11 +211,11 @@ export default function PreferencesPage() {
         )}
         {totalHidden === 0 && categoryPenalties.length === 0 ? (
           <div className="mt-10 text-center">
-            <div className="mx-auto w-12 h-12 grid place-items-center rounded-full bg-stone-100 text-stone-400 mb-3">
+            <div className="mx-auto w-12 h-12 grid place-items-center rounded-full bg-muted text-muted-foreground mb-3">
               <CalendarDays size={20} />
             </div>
-            <p className="text-sm font-bold text-stone-700">No hidden events yet</p>
-            <p className="text-xs text-stone-500 mt-1 max-w-xs mx-auto">
+            <p className="text-sm font-bold text-foreground">No hidden events yet</p>
+            <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
               When you mark a recommended festival or activity as “Not interested”, it will show up
               here.
             </p>
@@ -232,9 +233,9 @@ export default function PreferencesPage() {
               filteredByLocation.length === 0 &&
               filteredPenalties.length === 0 && (
                 <div className="text-center py-10">
-                  <Search size={20} className="mx-auto text-stone-300 mb-2" />
-                  <p className="text-xs font-bold text-stone-500">No matches found</p>
-                  <p className="text-[10px] text-stone-400 mt-1">Try a different search term.</p>
+                  <Search size={20} className="mx-auto text-muted-foreground mb-2" />
+                  <p className="text-xs font-bold text-muted-foreground">No matches found</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">Try a different search term.</p>
                 </div>
               )}
 
@@ -242,12 +243,12 @@ export default function PreferencesPage() {
               <section>
                 <div className="flex items-center gap-2 mb-2">
                   <Tag size={13} className="text-terracotta" />
-                  <h2 className="text-[11px] font-bold uppercase tracking-widest text-stone-500">
+                  <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                     By category
                   </h2>
                 </div>
                 {filteredByCategory.length === 0 && filteredPenalties.length === 0 ? (
-                  <p className="text-xs text-stone-400 italic">No category-level adjustments.</p>
+                  <p className="text-xs text-muted-foreground italic">No category-level adjustments.</p>
                 ) : (
                   <div className="space-y-2">
                     {filteredByCategory.map(([cat, events]) => (
@@ -265,11 +266,11 @@ export default function PreferencesPage() {
                     {filteredPenalties.map(([cat]) => (
                       <div
                         key={`pen-${cat}`}
-                        className="flex items-center justify-between bg-white border border-stone-200 rounded-xl px-3 py-2"
+                        className="flex items-center justify-between bg-card border border-border rounded-card px-3 py-2"
                       >
                         <div className="min-w-0">
-                          <p className="text-xs font-bold text-stone-800">{cat}</p>
-                          <p className="text-[10px] text-stone-500">Showing fewer of these.</p>
+                          <p className="text-xs font-bold text-foreground">{cat}</p>
+                          <p className="text-[10px] text-muted-foreground">Showing fewer of these.</p>
                         </div>
                         <button
                           type="button"
@@ -289,12 +290,12 @@ export default function PreferencesPage() {
               <section>
                 <div className="flex items-center gap-2 mb-2">
                   <MapPin size={13} className="text-terracotta" />
-                  <h2 className="text-[11px] font-bold uppercase tracking-widest text-stone-500">
+                  <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                     By location
                   </h2>
                 </div>
                 {filteredByLocation.length === 0 ? (
-                  <p className="text-xs text-stone-400 italic">No hidden events.</p>
+                  <p className="text-xs text-muted-foreground italic">No hidden events.</p>
                 ) : (
                   <div className="space-y-2">
                     {filteredByLocation.map(([loc, events]) => (
@@ -330,15 +331,15 @@ function PrefGroup({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-white border border-stone-200 rounded-xl overflow-hidden">
+    <div className="bg-card border border-border rounded-card overflow-hidden">
       <div className="flex items-center justify-between px-3 py-2">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
           className="flex-1 min-w-0 text-left"
         >
-          <p className="text-xs font-bold text-stone-800 truncate">{label}</p>
-          <p className="text-[10px] text-stone-500">
+          <p className="text-xs font-bold text-foreground truncate">{label}</p>
+          <p className="text-[10px] text-muted-foreground">
             {events.length} hidden {events.length === 1 ? "event" : "events"} · tap to{" "}
             {open ? "hide" : "view"}
           </p>
@@ -352,7 +353,7 @@ function PrefGroup({
         </button>
       </div>
       {open && (
-        <ul className="border-t border-stone-100 divide-y divide-stone-100">
+        <ul className="border-t border-border divide-y divide-border">
           {events.map((ev) => (
             <li key={`${label}-${ev.id}`} className="flex items-center gap-2 px-3 py-2">
               <img
@@ -361,15 +362,15 @@ function PrefGroup({
                 className="w-9 h-9 rounded-md object-cover shrink-0"
               />
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-semibold text-stone-900 truncate">{ev.title}</p>
-                <p className="text-[10px] text-stone-500 truncate">
+                <p className="text-[12px] font-semibold text-foreground truncate">{ev.title}</p>
+                <p className="text-[10px] text-muted-foreground truncate">
                   {ev.category} · {ev.place}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => onRestoreOne(ev.id)}
-                className="shrink-0 text-[10px] font-bold text-stone-500 hover:text-terracotta hover:underline"
+                className="shrink-0 text-[10px] font-bold text-muted-foreground hover:text-terracotta hover:underline"
               >
                 Restore
               </button>

@@ -25,6 +25,7 @@ export default function ProfileMenu() {
   const [loading, setLoading] = useState(true);
   const [unread, setUnread] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -66,9 +67,15 @@ export default function ProfileMenu() {
   }, [router]);
 
   async function handleLogout() {
-    await supabase.auth.signOut();
-    router.refresh();
-    router.push("/login");
+    setLoggingOut(true);
+    try {
+      await supabase.auth.signOut();
+      router.refresh();
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout error:", err);
+      setLoggingOut(false);
+    }
   }
 
   if (loading) {
@@ -85,7 +92,7 @@ export default function ProfileMenu() {
   const isProfileIncomplete = !meta.first_name;
 
   return (
-    <div className="min-h-screen bg-stone-50 px-4 pt-5 pb-28">
+    <div className="min-h-screen bg-background px-4 pt-5 pb-28">
       {isProfileIncomplete && (
         <Link
           href="/profile/account"
@@ -105,52 +112,52 @@ export default function ProfileMenu() {
       )}
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-stone-900">Menu</h1>
-        <p className="text-sm text-stone-500 mt-1">Signed in as {identifier}</p>
+        <h1 className="text-2xl font-bold text-foreground">Menu</h1>
+        <p className="text-sm text-muted-foreground mt-1">Signed in as {identifier}</p>
       </div>
 
       <div className="space-y-6">
         <div>
-          <h2 className="text-[11px] font-bold uppercase tracking-widest text-stone-400 mb-3 ml-2">
+          <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3 ml-2">
             Account
           </h2>
-          <div className="rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden">
+          <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
             <Link
               href="/profile/account"
-              className="flex items-center gap-3 p-4 hover:bg-stone-50 transition-colors border-b border-stone-100"
+              className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
             >
               <div className="h-10 w-10 rounded-xl bg-terracotta/10 text-terracotta grid place-items-center shrink-0">
                 <UserIcon size={18} />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-bold text-stone-900">Profile & Details</p>
-                <p className="text-xs text-stone-500 mt-0.5">View your impact and info</p>
+                <p className="text-sm font-bold text-foreground">Profile & Details</p>
+                <p className="text-xs text-muted-foreground mt-0.5">View your impact and info</p>
               </div>
               <ChevronRight size={18} className="text-stone-300" />
             </Link>
             <Link
               href="/profile/bookings"
-              className="flex items-center gap-3 p-4 hover:bg-stone-50 transition-colors border-b border-stone-100"
+              className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
             >
               <div className="h-10 w-10 rounded-xl bg-terracotta/10 text-terracotta grid place-items-center shrink-0">
                 <HotelIcon size={18} />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-bold text-stone-900">My bookings</p>
-                <p className="text-xs text-stone-500 mt-0.5">Your hotel stays</p>
+                <p className="text-sm font-bold text-foreground">My bookings</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Your hotel stays</p>
               </div>
               <ChevronRight size={18} className="text-stone-300" />
             </Link>
             <Link
               href="/notifications"
-              className="flex items-center gap-3 p-4 hover:bg-stone-50 transition-colors border-b border-stone-100"
+              className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
             >
               <div className="h-10 w-10 rounded-xl bg-pine/10 text-pine grid place-items-center shrink-0">
                 <Bell size={18} />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-bold text-stone-900">Notifications</p>
-                <p className="text-xs text-stone-500 mt-0.5">
+                <p className="text-sm font-bold text-foreground">Notifications</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {unread > 0 ? `${unread} unread` : "All caught up"}
                 </p>
               </div>
@@ -164,28 +171,28 @@ export default function ProfileMenu() {
             {isAdmin && (
               <Link
                 href="/admin/guides"
-                className="flex items-center gap-3 p-4 hover:bg-stone-50 transition-colors border-b border-stone-100"
+                className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
               >
                 <div className="h-10 w-10 rounded-xl bg-amber-100 text-amber-700 grid place-items-center shrink-0">
                   <ShieldAlert size={18} />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-stone-900">Admin · Guide reviews</p>
-                  <p className="text-xs text-stone-500 mt-0.5">Approve or reject submissions</p>
+                  <p className="text-sm font-bold text-foreground">Admin · Guide reviews</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Approve or reject submissions</p>
                 </div>
                 <ChevronRight size={18} className="text-stone-300" />
               </Link>
             )}
             <Link
               href="/profile/settings"
-              className="flex items-center gap-3 p-4 hover:bg-stone-50 transition-colors"
+              className="flex items-center gap-3 p-4 hover:bg-muted transition-colors"
             >
-              <div className="h-10 w-10 rounded-xl bg-stone-100 text-stone-600 grid place-items-center shrink-0">
+              <div className="h-10 w-10 rounded-xl bg-muted text-muted-foreground grid place-items-center shrink-0">
                 <Settings size={18} />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-bold text-stone-900">Settings</p>
-                <p className="text-xs text-stone-500 mt-0.5">Preferences and security</p>
+                <p className="text-sm font-bold text-foreground">Settings</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Preferences and security</p>
               </div>
               <ChevronRight size={18} className="text-stone-300" />
             </Link>
@@ -193,28 +200,28 @@ export default function ProfileMenu() {
         </div>
 
         <div>
-          <h2 className="text-[11px] font-bold uppercase tracking-widest text-stone-400 mb-3 ml-2">
+          <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3 ml-2">
             Resources
           </h2>
-          <div className="rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden">
-            <div className="flex items-start gap-3 p-4 border-b border-stone-100">
-              <div className="h-10 w-10 rounded-xl bg-stone-100 text-stone-600 grid place-items-center shrink-0">
+          <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
+            <div className="flex items-start gap-3 p-4 border-b border-border">
+              <div className="h-10 w-10 rounded-xl bg-muted text-muted-foreground grid place-items-center shrink-0">
                 <ShieldCheck size={18} />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-bold text-stone-900">Safety Guidelines</p>
-                <p className="text-xs text-stone-500 mt-0.5">
+                <p className="text-sm font-bold text-foreground">Safety Guidelines</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Tap the red SOS button anytime for emergency contacts and your live location.
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-4">
-              <div className="h-10 w-10 rounded-xl bg-stone-100 text-stone-600 grid place-items-center shrink-0">
+              <div className="h-10 w-10 rounded-xl bg-muted text-muted-foreground grid place-items-center shrink-0">
                 <BookOpen size={18} />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-bold text-stone-900">Offline Guide</p>
-                <p className="text-xs text-stone-500 mt-0.5">
+                <p className="text-sm font-bold text-foreground">Offline Guide</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Maps, bookings and phrases stay available offline once loaded.
                 </p>
               </div>
@@ -225,10 +232,15 @@ export default function ProfileMenu() {
         <div className="pt-4">
           <button
             onClick={handleLogout}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 text-red-600 px-4 py-3.5 text-sm font-bold hover:bg-red-100 transition-colors"
+            disabled={loggingOut}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 text-red-600 px-4 py-3.5 text-sm font-bold hover:bg-red-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <LogOut size={16} />
-            Log Out
+            {loggingOut ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <LogOut size={16} />
+            )}
+            {loggingOut ? "Logging out…" : "Log Out"}
           </button>
         </div>
       </div>

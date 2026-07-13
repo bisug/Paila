@@ -275,7 +275,7 @@ export default function LoginPage() {
 
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-md flex-col justify-center">
         <div className="mb-7 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-terracotta shadow-float">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-card bg-terracotta shadow-float">
             <Footprints size={28} className="text-white" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-stone-900">Welcome to Paila</h1>
@@ -290,6 +290,7 @@ export default function LoginPage() {
               <button
                 key={mode}
                 type="button"
+                aria-pressed={authMode === mode}
                 onClick={() => {
                   setAuthMode(mode);
                   resetFeedback();
@@ -322,6 +323,7 @@ export default function LoginPage() {
           <div className="mb-4 grid grid-cols-2 gap-2">
             <button
               type="button"
+              aria-pressed={identifierMode === "email"}
               onClick={() => {
                 setIdentifierMode("email");
                 setPendingPhone("");
@@ -338,6 +340,7 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
+              aria-pressed={identifierMode === "phone"}
               onClick={() => {
                 setIdentifierMode("phone");
                 resetFeedback();
@@ -365,7 +368,7 @@ export default function LoginPage() {
                   onChange={(event) => setFullName(event.target.value)}
                   placeholder="Your name"
                   autoComplete="name"
-                  className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-terracotta focus:ring-2 focus:ring-terracotta/20"
+                  className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
                 />
               </label>
             )}
@@ -374,7 +377,7 @@ export default function LoginPage() {
               <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-stone-500">
                 {identifierMode === "email" ? "Email" : "Phone number"}
               </span>
-              <div className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/20">
+              <div className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/30">
                 {identifierMode === "email" ? (
                   <Mail size={16} className="shrink-0 text-stone-400" />
                 ) : (
@@ -400,7 +403,7 @@ export default function LoginPage() {
               <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-stone-500">
                 Password
               </span>
-              <div className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/20">
+              <div className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/30">
                 <LockKeyhole size={16} className="shrink-0 text-stone-400" />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -432,7 +435,7 @@ export default function LoginPage() {
                   onChange={(event) => setConfirmPassword(event.target.value)}
                   placeholder="Repeat password"
                   autoComplete="new-password"
-                  className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-terracotta focus:ring-2 focus:ring-terracotta/20"
+                  className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
                 />
               </label>
             )}
@@ -469,7 +472,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting || oauthLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-terracotta px-4 py-3 text-sm font-bold text-white hover:bg-terracotta/90 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? (
                 <Loader2 size={14} className="animate-spin" />

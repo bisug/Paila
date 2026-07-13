@@ -20,8 +20,8 @@ export default function AccountPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen grid place-items-center">
-        <Loader2 className="animate-spin text-stone-400" />
+      <div className="min-h-screen grid place-items-center bg-background">
+        <Loader2 className="animate-spin text-muted-foreground" />
       </div>
     );
   }

@@ -150,21 +150,21 @@ function RoadCard({
         {isFull ? (
           <button
             onClick={onFindLocal}
-            className="flex items-center gap-2 bg-stone-100 text-stone-700 px-3 py-2 rounded-lg text-xs font-bold hover:bg-stone-200 transition-colors"
+            className="flex items-center gap-2 bg-stone-100 text-stone-700 px-3 py-2 min-h-[44px] rounded-lg text-xs font-bold hover:bg-stone-200 transition-colors"
           >
             <Car size={14} /> Find Local Ride
           </button>
         ) : canBuyTicket ? (
           <button
             onClick={() => onBuy(o)}
-            className="flex items-center gap-2 bg-terracotta text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-terracotta/90 transition-colors"
+            className="flex items-center gap-2 bg-terracotta text-white px-4 py-2 min-h-[44px] rounded-lg text-xs font-bold shadow-sm hover:bg-terracotta/90 transition-colors"
           >
             <Ticket size={14} /> {purchased ? "Buy Again" : "Buy Ticket"}
           </button>
         ) : (
           <a
             href={`tel:${o.contact}`}
-            className="flex items-center gap-2 bg-terracotta text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-terracotta/90 transition-colors"
+            className="flex items-center gap-2 bg-terracotta text-white px-4 py-2 min-h-[44px] rounded-lg text-xs font-bold shadow-sm hover:bg-terracotta/90 transition-colors"
           >
             <Phone size={14} /> Request Ride
           </a>
@@ -274,7 +274,7 @@ function FlightCard({
             <a
               href={`tel:${o.officePhone}`}
               title="Call airline office"
-              className="flex items-center gap-1.5 bg-stone-100 text-stone-700 px-3 py-2 rounded-lg text-xs font-bold hover:bg-stone-200 transition-colors"
+              className="flex items-center gap-1.5 bg-stone-100 text-stone-700 px-3 py-2 min-h-[44px] rounded-lg text-xs font-bold hover:bg-stone-200 transition-colors"
             >
               <Phone size={13} />
             </a>
@@ -282,14 +282,14 @@ function FlightCard({
           {canBuy ? (
             <button
               onClick={() => onBuy(o)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-colors bg-terracotta text-white hover:bg-terracotta/90"
+              className="flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-lg text-xs font-bold shadow-sm transition-colors bg-terracotta text-white hover:bg-terracotta/90"
             >
               <Ticket size={13} /> {purchased ? "Buy Again" : "Buy Ticket"}
             </button>
           ) : (
             <button
               onClick={onFindLocal}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-colors bg-stone-100 text-stone-700 hover:bg-stone-200"
+              className="flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-lg text-xs font-bold shadow-sm transition-colors bg-stone-100 text-stone-700 hover:bg-stone-200"
             >
               <Car size={13} /> Try Local Vehicles
             </button>
@@ -426,7 +426,7 @@ export function TransportView() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 pb-28 pt-4">
+    <div className="min-h-screen bg-background pb-28 pt-4">
       <div className="px-4 md:px-8">
         <PageHeader
           title="Transit & Route"
@@ -453,7 +453,7 @@ export function TransportView() {
       </a>
 
       {/* Search */}
-      <div className="mx-4 md:mx-8 bg-white rounded-2xl shadow-sm border border-stone-100 p-4 mb-4 relative">
+      <div className="mx-4 md:mx-8 bg-white rounded-card shadow-card border border-stone-100 p-4 mb-4 relative">
         <div className="absolute left-7 top-9 bottom-16 w-0.5 bg-stone-100 rounded-full" />
         <div className="flex gap-3 mb-3 relative z-10">
           <div className="mt-2 text-stone-400 shrink-0">
@@ -462,6 +462,7 @@ export function TransportView() {
           <div className="flex-1">
             <input
               type="text"
+              aria-label="From location"
               placeholder="From (e.g. Kathmandu)"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
@@ -476,6 +477,7 @@ export function TransportView() {
           <div className="flex-1">
             <input
               type="text"
+              aria-label="To location"
               placeholder="To (e.g. Pokhara)"
               value={to}
               onChange={(e) => setTo(e.target.value)}
@@ -487,14 +489,15 @@ export function TransportView() {
         <div className="flex justify-between items-center z-10 relative">
           <button
             onClick={swapLocations}
-            className="h-10 w-10 bg-stone-50 rounded-full grid place-items-center text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors shadow-sm border border-stone-100"
+            aria-label="Swap origin and destination"
+            className="h-11 w-11 bg-stone-50 rounded-full grid place-items-center text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors shadow-sm border border-stone-100"
           >
             <ArrowRightLeft size={16} className="rotate-90" />
           </button>
           <button
             onClick={searchRoute}
             disabled={!from || !to}
-            className="flex items-center gap-2 bg-terracotta text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:bg-terracotta/90 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 bg-terracotta text-white px-5 py-2.5 min-h-[44px] rounded-xl text-sm font-bold shadow-sm hover:bg-terracotta/90 transition-colors disabled:opacity-50"
           >
             <Search size={16} /> Get Directions
           </button>
@@ -503,7 +506,7 @@ export function TransportView() {
 
       {/* Map */}
       {(isSearchingRoute || directionsResponse || routeError) && (
-        <div className="mx-4 md:mx-8 mb-6 rounded-2xl overflow-hidden shadow-card-md border border-stone-100 bg-stone-100 h-[300px] md:h-[400px] relative">
+        <div className="mx-4 md:mx-8 mb-6 rounded-card overflow-hidden shadow-card-md border border-stone-100 bg-stone-100 h-[300px] md:h-[400px] relative" role="region" aria-label="Route map">
           {mapLoadError ? (
             <div className="absolute inset-0 flex items-center justify-center bg-stone-50 p-6 text-center">
               <div>
@@ -543,12 +546,12 @@ export function TransportView() {
             </GoogleMap>
           )}
           {routeError && (
-            <div className="absolute bottom-4 left-4 right-4 z-10 rounded-xl border border-red-100 bg-white/95 p-3 text-xs font-semibold text-red-700 shadow-md">
+            <div className="absolute bottom-4 left-4 right-4 z-10 rounded-xl border border-red-100 bg-white/95 p-3 text-xs font-semibold text-red-700 shadow-float">
               {routeError}
             </div>
           )}
           {directionsResponse && directionsResponse.routes[0] && (
-            <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-md border border-stone-100 flex items-center justify-between z-10">
+            <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-float border border-stone-100 flex items-center justify-between z-10">
               <div>
                 <p className="text-[10px] font-bold text-stone-400 uppercase">Estimated Drive</p>
                 <p className="text-sm font-bold text-stone-900">
@@ -571,15 +574,15 @@ export function TransportView() {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-colors border ${
+              className={`shrink-0 px-3.5 py-1.5 min-h-[44px] rounded-full text-xs font-bold uppercase tracking-wider transition-colors border ${
                 tab === t.id
-                  ? "bg-stone-900 text-white border-stone-900"
+                  ? "bg-primary text-primary-foreground border-primary"
                   : "bg-white text-stone-600 border-stone-200 hover:border-stone-300"
               }`}
             >
               {t.label}{" "}
               <span
-                className={`ml-1 font-normal ${tab === t.id ? "text-stone-300" : "text-stone-400"}`}
+                className={`ml-1 font-normal ${tab === t.id ? "text-primary-foreground/70" : "text-stone-400"}`}
               >
                 {counts[t.id]}
               </span>
@@ -724,7 +727,7 @@ function BuyTicketModal({
       onClick={onClose}
     >
       <div
-        className="w-full md:max-w-md bg-white rounded-t-3xl md:rounded-2xl shadow-2xl border border-stone-100 overflow-hidden"
+        className="w-full md:max-w-md bg-white rounded-t-sheet md:rounded-modal shadow-tactile border border-stone-100 overflow-hidden pb-safe"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-stone-100">
@@ -778,7 +781,7 @@ function BuyTicketModal({
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSeats((s) => Math.max(1, s - 1))}
-                    className="h-9 w-9 grid place-items-center rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700"
+                    className="h-11 w-11 grid place-items-center rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700"
                   >
                     <Minus size={14} />
                   </button>
@@ -788,7 +791,7 @@ function BuyTicketModal({
                   <button
                     onClick={() => setSeats((s) => Math.min(maxSeats, s + 1))}
                     disabled={seats >= maxSeats}
-                    className="h-9 w-9 grid place-items-center rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-40"
+                    className="h-11 w-11 grid place-items-center rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-40"
                   >
                     <Plus size={14} />
                   </button>
@@ -816,14 +819,14 @@ function BuyTicketModal({
             <div className="p-4 border-t border-stone-100 flex gap-2">
               <button
                 onClick={onClose}
-                className="flex-1 py-2.5 rounded-lg text-sm font-bold bg-stone-100 text-stone-700 hover:bg-stone-200"
+                className="flex-1 py-2.5 min-h-[44px] rounded-lg text-sm font-bold bg-stone-100 text-stone-700 hover:bg-stone-200"
               >
                 Cancel
               </button>
               <button
                 disabled={!name.trim()}
                 onClick={confirm}
-                className="flex-1 py-2.5 rounded-lg text-sm font-bold bg-terracotta text-white hover:opacity-90 disabled:opacity-50"
+                className="flex-1 py-2.5 min-h-[44px] rounded-lg text-sm font-bold bg-terracotta text-white hover:opacity-90 disabled:opacity-50"
               >
                 Pay & Confirm
               </button>
