@@ -181,7 +181,7 @@ export default function GuideVerifyPage() {
 
       <h1 className="text-2xl font-bold text-stone-900">Get verified as a guide</h1>
       <p className="text-sm text-stone-500 mt-1">
-        Upload a photo of your official Guide ID card. Verified guides show a blue tick next to
+        Upload a photo of your official Guide ID card. Verified guides show a verified tick next to
         their name.
       </p>
 
@@ -189,14 +189,14 @@ export default function GuideVerifyPage() {
         <div
           className={`mt-4 rounded-xl border p-3 text-sm flex items-start gap-2 ${
             existing.status === "approved"
-              ? "bg-sky-50 border-sky-200 text-sky-800"
+              ? "bg-pine-tint border-pine/20 text-pine"
               : existing.status === "rejected"
                 ? "bg-red-50 border-red-200 text-red-800"
                 : "bg-amber-50 border-amber-200 text-amber-800"
           }`}
         >
           {existing.status === "approved" ? (
-            <BadgeCheck className="w-4 h-4 mt-0.5 text-sky-500 shrink-0" />
+            <BadgeCheck className="w-4 h-4 mt-0.5 text-pine shrink-0" />
           ) : (
             <ShieldAlert className="w-4 h-4 mt-0.5 shrink-0" />
           )}
@@ -299,8 +299,8 @@ export default function GuideVerifyPage() {
           )}
         </Field>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        {success && <p className="text-sm text-pine">{success}</p>}
+        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+        {success && <p role="status" className="text-sm text-pine">{success}</p>}
 
         <button
           type="submit"

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowRightLeft, Mic, Sparkles, Volume2, X } from "lucide-react";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import {
   cleanLookupWord,
@@ -194,7 +195,7 @@ export function TranslatorView() {
     }
 
     if (!recognition) {
-      window.alert("Speech recognition is not supported in this browser.");
+      toast.error("Speech recognition isn't supported in this browser.");
       return;
     }
 
@@ -284,7 +285,7 @@ export function TranslatorView() {
       </section>
 
       <section className="sticky top-14 z-20 border-b border-stone-200 bg-white/95 px-4 py-3 backdrop-blur md:top-16 md:px-8">
-        <div className="grid grid-cols-[minmax(0,1fr)_40px_minmax(0,1fr)] items-end gap-2 md:max-w-3xl">
+        <div className="grid grid-cols-[minmax(0,1fr)_44px_minmax(0,1fr)] items-end gap-2 md:max-w-3xl">
           <LanguageSelect
             label="From"
             value={sourceLang}
@@ -294,7 +295,7 @@ export function TranslatorView() {
           <button
             type="button"
             onClick={handleSwap}
-            className="grid h-10 w-10 place-items-center rounded-xl border border-stone-200 bg-stone-50 text-stone-500 shadow-sm transition-colors hover:bg-stone-100"
+            className="grid h-11 w-11 place-items-center rounded-xl border border-stone-200 bg-stone-50 text-stone-500 shadow-sm transition-colors hover:bg-stone-100"
             aria-label="Swap languages"
           >
             <ArrowRightLeft size={16} />
@@ -321,7 +322,7 @@ export function TranslatorView() {
               <button
                 type="button"
                 onClick={() => handleSourceTextChange("")}
-                className="grid h-8 w-8 place-items-center rounded-lg text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700"
+                className="grid h-9 w-9 place-items-center rounded-lg text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700"
                 aria-label="Clear source text"
               >
                 <X size={17} />
@@ -371,7 +372,7 @@ export function TranslatorView() {
               type="button"
               onClick={() => speakText(targetText, targetLang)}
               disabled={!targetText}
-              className="grid h-10 w-10 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
+              className="grid h-11 w-11 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
               aria-label="Play translation"
             >
               <Volume2 size={18} />
@@ -380,7 +381,10 @@ export function TranslatorView() {
 
           <div className="min-h-36 flex-1 rounded-xl border border-stone-200 bg-stone-50 p-4">
             {targetText ? (
-              <p className="flex flex-wrap gap-x-2 gap-y-1 text-xl font-semibold leading-snug text-stone-900 md:text-2xl">
+              <p
+                aria-live="polite"
+                className="flex flex-wrap gap-x-2 gap-y-1 text-xl font-semibold leading-snug text-stone-900 md:text-2xl"
+              >
                 {targetText.split(" ").map((word, index) => (
                   <button
                     key={`${word}-${index}`}
@@ -399,7 +403,10 @@ export function TranslatorView() {
             )}
 
             {isTranslating && (
-              <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-stone-400">
+              <div
+                aria-live="polite"
+                className="mt-4 flex items-center gap-2 text-sm font-semibold text-stone-400"
+              >
                 <Sparkles size={16} className="animate-pulse" />
                 Translating...
               </div>
@@ -502,7 +509,10 @@ function VoiceBar({
           <Mic size={22} className="text-white" />
         </button>
 
-        <p className="min-w-0 flex-1 truncate text-xs font-semibold text-stone-600 md:w-48">
+        <p
+          aria-live="polite"
+          className="min-w-0 flex-1 truncate text-xs font-semibold text-stone-600 md:w-48"
+        >
           {isListening ? "Listening... tap mic to stop" : "Tap mic and speak to translate"}
         </p>
       </div>
@@ -523,7 +533,12 @@ function WordMeaningModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-float">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Word meaning"
+        className="w-full max-w-sm rounded-modal bg-white p-6 shadow-tactile"
+      >
         <div className="mb-4 flex items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-terracotta">

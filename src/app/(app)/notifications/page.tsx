@@ -45,7 +45,7 @@ export default function NotificationsPage() {
   return (
     <div className="min-h-screen bg-stone-50 pb-12">
       <header className="sticky top-0 z-10 border-b border-stone-200 bg-white px-4 py-3 flex items-center gap-3">
-        <Link href="/" className="text-stone-500">
+        <Link href="/" aria-label="Back to home" className="text-stone-500">
           <ArrowLeft size={20} />
         </Link>
         <h1 className="text-base font-bold text-stone-900 flex items-center gap-2">
@@ -67,7 +67,7 @@ export default function NotificationsPage() {
             {items.map((n) => {
               const card = (
                 <div
-                  className={`rounded-2xl p-4 border ${n.read ? "bg-white border-stone-100" : "bg-pine-tint/40 border-pine/20"}`}
+                  className={`rounded-card p-4 border shadow-card ${n.read ? "bg-white border-stone-100" : "bg-pine-tint/40 border-pine/20"}`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="text-sm font-bold text-stone-900">{n.title}</h3>
@@ -75,10 +75,23 @@ export default function NotificationsPage() {
                       {new Date(n.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  {n.body && <p className="mt-1 text-xs text-stone-600">{n.body}</p>}
+                  {n.body && <p className="mt-1 line-clamp-3 text-xs text-stone-600">{n.body}</p>}
                 </div>
               );
-              return <li key={n.id}>{n.link ? <Link href={n.link}>{card}</Link> : card}</li>;
+              return (
+                <li key={n.id}>
+                  {n.link ? (
+                    <Link
+                      href={n.link}
+                      className="block rounded-card transition hover:shadow-card-md"
+                    >
+                      {card}
+                    </Link>
+                  ) : (
+                    card
+                  )}
+                </li>
+              );
             })}
           </ul>
         )}

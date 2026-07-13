@@ -83,10 +83,10 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 pb-28 md:pb-10">
+    <div className="min-h-screen bg-background pb-28 md:pb-10">
       {/* Gallery */}
       <div className="relative">
-        <div className="aspect-[16/10] md:aspect-[16/7] overflow-hidden bg-stone-200">
+        <div className="aspect-[16/10] md:aspect-[16/7] overflow-hidden bg-muted">
           <img
             src={imageSrc(hotel.images[activeImg])}
             alt={hotel.name}
@@ -95,7 +95,7 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
         </div>
         <Link
           href="/hotels"
-          className="absolute top-4 left-4 grid h-9 w-9 place-items-center rounded-full bg-white/90 backdrop-blur shadow-md text-stone-700 hover:bg-white"
+          className="absolute top-4 left-4 grid h-9 w-9 place-items-center rounded-full bg-card/90 backdrop-blur shadow-card-md text-foreground hover:bg-card"
           aria-label="Back"
         >
           <ChevronLeft size={18} />
@@ -107,7 +107,7 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
                 key={i}
                 onClick={() => setActiveImg(i)}
                 className={`h-1.5 rounded-full transition-all ${
-                  i === activeImg ? "w-6 bg-white" : "w-1.5 bg-white/60"
+                  i === activeImg ? "w-6 bg-card" : "w-1.5 bg-card/60"
                 }`}
                 aria-label={`Image ${i + 1}`}
               />
@@ -121,8 +121,8 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
         <div className="md:col-span-2">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-bold text-stone-900">{hotel.name}</h1>
-              <p className="mt-1 flex items-center gap-1 text-sm text-stone-500">
+              <h1 className="text-2xl font-bold text-foreground">{hotel.name}</h1>
+              <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
                 <MapPin size={14} /> {hotel.location}
               </p>
             </div>
@@ -133,7 +133,7 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
             </div>
           </div>
 
-          <p className="mt-4 text-sm leading-relaxed text-stone-700">{hotel.description}</p>
+          <p className="mt-4 text-sm leading-relaxed text-foreground">{hotel.description}</p>
 
           <div className="mt-5 grid grid-cols-3 gap-3 text-center">
             <Stat
@@ -150,14 +150,14 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
           </div>
 
           <div className="mt-6">
-            <h2 className="text-sm font-bold text-stone-900 uppercase tracking-wide mb-3">
+            <h2 className="text-sm font-bold text-foreground uppercase tracking-wide mb-3">
               {t("hotels.amenities", "Amenities")}
             </h2>
             <div className="flex flex-wrap gap-2">
               {hotel.amenities.map((a) => (
                 <span
                   key={a}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-white border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-700"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-card border border-border px-3 py-1.5 text-xs font-medium text-foreground"
                 >
                   <Wifi size={11} className="text-pine" /> {a}
                 </span>
@@ -165,15 +165,15 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
             </div>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-stone-200 bg-white p-4 text-xs text-stone-600">
+          <div className="mt-6 rounded-card border border-border bg-card p-4 text-xs text-muted-foreground">
             <p>
-              <span className="font-bold text-stone-900">
+              <span className="font-bold text-foreground">
                 {t("hotels.checkInTime", "Check-in")}:{" "}
               </span>
               {hotel.checkIn}
             </p>
             <p className="mt-1">
-              <span className="font-bold text-stone-900">
+              <span className="font-bold text-foreground">
                 {t("hotels.checkOutTime", "Check-out")}:{" "}
               </span>
               {hotel.checkOut}
@@ -183,51 +183,54 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
 
         {/* Booking card */}
         <aside className="mt-6 md:mt-0">
-          <div className="md:sticky md:top-20 rounded-2xl border border-stone-200 bg-white shadow-md p-5">
-            <p className="text-2xl font-bold text-stone-900">
+          <div className="md:sticky md:top-20 rounded-card border border-border bg-card shadow-card-md p-5">
+            <p className="text-2xl font-bold text-foreground">
               NPR {hotel.pricePerNight.toLocaleString()}
-              <span className="text-sm font-medium text-stone-500">
+              <span className="text-sm font-medium text-muted-foreground">
                 {" "}
                 / {t("hotels.night", "night")}
               </span>
             </p>
 
             <div className="mt-4 space-y-3">
-              <label className="block">
-                <span className="block text-xs font-bold text-stone-600 mb-1 uppercase tracking-wide">
+              <div className="block">
+                <label htmlFor="checkIn" className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide">
                   <Calendar size={11} className="inline mr-1" />
                   {t("hotels.checkIn", "Check in")}
-                </span>
+                </label>
                 <input
+                  id="checkIn"
                   type="date"
                   value={checkIn}
                   min={todayPlus(0)}
                   onChange={(e) => setCheckIn(e.target.value)}
-                  className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-terracotta/30"
+                  className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground h-11 focus:outline-none focus:ring-2 focus:ring-terracotta/30"
                 />
-              </label>
-              <label className="block">
-                <span className="block text-xs font-bold text-stone-600 mb-1 uppercase tracking-wide">
+              </div>
+              <div className="block">
+                <label htmlFor="checkOut" className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide">
                   <Calendar size={11} className="inline mr-1" />
                   {t("hotels.checkOut", "Check out")}
-                </span>
+                </label>
                 <input
+                  id="checkOut"
                   type="date"
                   value={checkOut}
                   min={checkIn}
                   onChange={(e) => setCheckOut(e.target.value)}
-                  className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-terracotta/30"
+                  className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground h-11 focus:outline-none focus:ring-2 focus:ring-terracotta/30"
                 />
-              </label>
-              <label className="block">
-                <span className="block text-xs font-bold text-stone-600 mb-1 uppercase tracking-wide">
+              </div>
+              <div className="block">
+                <label htmlFor="guests" className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide">
                   <Users size={11} className="inline mr-1" />
                   {t("hotels.guests", "Guests")}
-                </span>
+                </label>
                 <select
+                  id="guests"
                   value={guests}
                   onChange={(e) => setGuests(Number(e.target.value))}
-                  className="w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-terracotta/30"
+                  className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground h-11 focus:outline-none focus:ring-2 focus:ring-terracotta/30"
                 >
                   {Array.from({ length: hotel.maxGuests }, (_, i) => i + 1).map((n) => (
                     <option key={n} value={n}>
@@ -235,35 +238,35 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
                     </option>
                   ))}
                 </select>
-              </label>
+              </div>
             </div>
 
-            <div className="mt-5 space-y-1.5 text-sm border-t border-stone-100 pt-4">
-              <div className="flex justify-between text-stone-600">
+            <div className="mt-5 space-y-1.5 text-sm border-t border-border pt-4">
+              <div className="flex justify-between text-muted-foreground">
                 <span>
                   NPR {hotel.pricePerNight.toLocaleString()} × {nights}{" "}
                   {nights === 1 ? t("hotels.nightOne", "night") : t("hotels.night", "nights")}
                 </span>
                 <span className="tabular-nums">NPR {totalNpr.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between font-bold text-stone-900 text-base pt-2 border-t border-stone-100">
+              <div className="flex justify-between font-bold text-foreground text-base pt-2 border-t border-border">
                 <span>{t("hotels.total", "Total")}</span>
                 <span className="tabular-nums">NPR {totalNpr.toLocaleString()}</span>
               </div>
-              <p className="text-[11px] text-stone-400">≈ ${totalUsd} USD</p>
+              <p className="text-[11px] text-muted-foreground">≈ ${totalUsd} USD</p>
             </div>
 
             <button
               onClick={handleBook}
               disabled={submitting || nights < 1}
-              className="mt-5 w-full rounded-xl bg-terracotta px-4 py-3 text-sm font-bold text-white hover:bg-terracotta/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="mt-5 w-full rounded-lg bg-primary px-4 py-3 text-sm font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               {submitting && <Loader2 size={16} className="animate-spin" />}
               {submitting
                 ? t("hotels.processing", "Processing…")
                 : t("hotels.requestBooking", "Request booking")}
             </button>
-            <p className="mt-3 text-[11px] text-center text-stone-500">
+            <p className="mt-3 text-[11px] text-center text-muted-foreground">
               {t(
                 "hotels.pendingNotice",
                 "Payment is not connected yet. Requests stay pending until the hotel confirms.",
@@ -278,10 +281,10 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
 
 function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-white border border-stone-200 p-3">
+    <div className="rounded-xl bg-card border border-border p-3">
       <div className="grid place-items-center text-terracotta mb-1">{icon}</div>
-      <p className="text-[10px] uppercase tracking-wider text-stone-500 font-bold">{label}</p>
-      <p className="text-xs font-bold text-stone-900 truncate" title={value}>
+      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{label}</p>
+      <p className="text-xs font-bold text-foreground truncate" title={value}>
         {value}
       </p>
     </div>

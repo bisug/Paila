@@ -212,7 +212,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-950/50 p-4 backdrop-blur-sm md:items-center md:justify-center">
       <div
-        className="no-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-[34px] border border-white/50 bg-white/[0.94] p-5 shadow-2xl backdrop-blur-2xl md:max-w-md"
+        className="no-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-[34px] border border-white/50 bg-white/[0.94] p-5 shadow-tactile backdrop-blur-2xl md:max-w-md"
         style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
       >
         <div className="mb-5 flex items-start justify-between gap-4">

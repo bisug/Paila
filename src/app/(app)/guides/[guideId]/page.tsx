@@ -89,7 +89,7 @@ export default function GuideProfile() {
         Back
       </button>
 
-      <div className="rounded-3xl border border-stone-200 bg-white p-5">
+      <div className="rounded-2xl border border-stone-200 bg-white p-5">
         <div className="flex items-start gap-4">
           {image ? (
             <img src={image} alt={name} className="h-20 w-20 rounded-2xl object-cover" />

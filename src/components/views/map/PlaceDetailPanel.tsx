@@ -63,7 +63,7 @@ function SectionHeader({ icon: Icon, label }: { icon: typeof Mountain; label: st
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-4">{children}</div>
+    <div className="rounded-2xl bg-white border border-stone-100 shadow-card p-4">{children}</div>
   );
 }
 
@@ -227,7 +227,7 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
   return (
     <div className="mt-6 mx-4 md:mx-0 space-y-4">
       {/* Header */}
-      <div className="rounded-2xl bg-linear-to-br from-pine to-pine/80 text-white p-5 shadow-sm">
+      <div className="rounded-2xl bg-linear-to-br from-pine to-pine/80 text-white p-5 shadow-card">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-1">

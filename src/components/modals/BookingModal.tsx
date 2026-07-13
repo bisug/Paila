@@ -180,6 +180,7 @@ export function BookingModal({
               <button
                 type="button"
                 onClick={() => setStep("select_method")}
+                aria-label="Go back"
                 className="h-9 w-9 shrink-0 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200"
               >
                 ←
@@ -202,7 +203,7 @@ export function BookingModal({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
                   maxLength={10}
-                  className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-semibold outline-none focus:border-stone-500"
+                  className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-semibold outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
                 />
               </div>
               <div>
@@ -214,7 +215,7 @@ export function BookingModal({
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
                   maxLength={6}
-                  className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-bold tracking-[0.5em] outline-none focus:border-stone-500"
+                  className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-bold tracking-[0.5em] outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
                 />
               </div>
 
@@ -263,6 +264,7 @@ export function BookingModal({
               <button
                 type="button"
                 onClick={() => setStep("form")}
+                aria-label="Go back"
                 className="h-9 w-9 shrink-0 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200"
               >
                 ←
@@ -302,7 +304,7 @@ export function BookingModal({
                   }}
                   className={`w-full flex items-center justify-between p-4 border rounded-2xl text-left hover:bg-stone-50 transition-colors shadow-sm ${
                     method === m.id
-                      ? "border-slate-800 ring-2 ring-slate-800/10"
+                      ? "border-primary ring-2 ring-primary/10"
                       : "border-stone-200/80"
                   }`}
                 >
