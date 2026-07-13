@@ -18,6 +18,16 @@ dist-ssr
 .nitro
 *.local
 .env
+.env.*
+!.env.example
+
+# Next.js generated
+next-env.d.ts
+/out/
+/build
+
+# Claude Code local state (worktrees, jobs, plugins, settings)
+.claude/
 
 # Wrangler / Cloudflare
 .wrangler/
