@@ -1,13 +1,9 @@
 "use server";
 
-import { fetchGoogleMapsJson, getGoogleMapsServerKey } from "@/lib/server/google-maps";
-import {
-  assertLatLng,
-  enforceMapRateLimit,
-  normalizeRadiusMeters,
-} from "@/lib/server/maps-guardrails";
+import { fetchMapboxUrl, getMapboxToken } from "@/lib/server/mapbox";
+import { assertLatLng, enforceMapRateLimit, normalizeRadiusMeters } from "@/lib/server/maps-guardrails";
 
-const NEARBY_URL = "https://places.googleapis.com/v1/places:searchNearby";
+const GEOCODE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places";
 
 export type NearbyPlace = {
   id: string;
@@ -20,54 +16,54 @@ export type NearbyPlace = {
   userRatingCount: number | null;
 };
 
-const EXPLORE_TYPES = ["tourist_attraction", "museum", "hindu_temple", "buddhist_temple", "park"];
-const HOTSPOT_TYPES = ["restaurant", "cafe", "bar", "lodging"];
+const EXPLORE_CATS = [
+  "museum",
+  "monument",
+  "temple",
+  "shrine",
+  "park",
+  "garden",
+  "viewpoint",
+  "attraction",
+  "arts",
+  "culture",
+  "heritage",
+  "historic",
+];
+const HOTSPOT_CATS = ["restaurant", "cafe", "bar", "pub", "lodging", "hotel", "food", "nightlife"];
 
 async function searchNearby(
   lat: number,
   lng: number,
-  includedTypes: string[],
   radiusMeters: number,
 ): Promise<NearbyPlace[]> {
-  const res = await fetchGoogleMapsJson(NEARBY_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-FieldMask":
-        "places.id,places.displayName,places.formattedAddress,places.location,places.types,places.rating,places.userRatingCount",
-    },
-    body: JSON.stringify({
-      includedTypes,
-      maxResultCount: 10,
-      rankPreference: "POPULARITY",
-      locationRestriction: {
-        circle: { center: { latitude: lat, longitude: lng }, radius: radiusMeters },
-      },
-    }),
+  const endpoint = `${GEOCODE_URL}/${lng},${lat}.json`;
+  const res = await fetchMapboxUrl(endpoint, {
+    types: "poi",
+    limit: 20,
+    proximity: `${lng},${lat}`,
   });
   if (!res.ok) return [];
   const j = (await res.json()) as {
-    places?: Array<{
+    features?: Array<{
       id: string;
-      displayName?: { text?: string };
-      formattedAddress?: string;
-      location?: { latitude: number; longitude: number };
-      types?: string[];
-      rating?: number;
-      userRatingCount?: number;
+      text?: string;
+      place_name?: string;
+      center?: [number, number];
+      properties?: { category?: string[] };
     }>;
   };
-  return (j.places ?? [])
-    .filter((p) => p.location)
+  return (j.features ?? [])
+    .filter((p) => p.center)
     .map((p) => ({
       id: p.id,
-      name: p.displayName?.text ?? p.formattedAddress ?? "Unknown",
-      address: p.formattedAddress ?? "",
-      lat: p.location!.latitude,
-      lng: p.location!.longitude,
-      types: p.types ?? [],
-      rating: p.rating ?? null,
-      userRatingCount: p.userRatingCount ?? null,
+      name: p.text ?? p.place_name ?? "Unknown",
+      address: p.place_name ?? "",
+      lat: p.center![1],
+      lng: p.center![0],
+      types: p.properties?.category ?? [],
+      rating: null,
+      userRatingCount: null,
     }));
 }
 
@@ -79,15 +75,18 @@ export async function getNearbyPlaces({
   await enforceMapRateLimit("maps:nearby", 30, 60_000);
 
   const center = assertLatLng(data);
-  const radius = normalizeRadiusMeters(data.radiusMeters, 8000, 20000);
-  if (!getGoogleMapsServerKey()) {
-    return { explore: [], hotspots: [], error: "Missing Google Maps credentials" };
+  normalizeRadiusMeters(data.radiusMeters, 8000, 20000);
+  if (!getMapboxToken()) {
+    return { explore: [], hotspots: [], error: "Missing Mapbox access token" };
   }
   try {
-    const [explore, hotspots] = await Promise.all([
-      searchNearby(center.lat, center.lng, EXPLORE_TYPES, radius),
-      searchNearby(center.lat, center.lng, HOTSPOT_TYPES, radius),
-    ]);
+    const places = await searchNearby(center.lat, center.lng, data.radiusMeters ?? 8000);
+    const match = (cats: string[], keys: string[]) =>
+      cats.some((c) => keys.some((k) => c.toLowerCase().includes(k)));
+    const explore = places.filter((p) => match(p.types, EXPLORE_CATS));
+    const hotspots = places.filter(
+      (p) => !match(p.types, EXPLORE_CATS) && match(p.types, HOTSPOT_CATS),
+    );
     return { explore, hotspots, error: null };
   } catch (e) {
     return { explore: [], hotspots: [], error: e instanceof Error ? e.message : "Search failed" };

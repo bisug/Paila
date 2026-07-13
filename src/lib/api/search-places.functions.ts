@@ -1,14 +1,9 @@
 "use server";
 
-import { fetchGoogleMapsJson } from "@/lib/server/google-maps";
-import {
-  assertLatLng,
-  enforceMapRateLimit,
-  normalizeRadiusMeters,
-  sanitizePlaceSearchQuery,
-} from "@/lib/server/maps-guardrails";
+import { fetchMapboxUrl } from "@/lib/server/mapbox";
+import { enforceMapRateLimit, sanitizePlaceSearchQuery } from "@/lib/server/maps-guardrails";
 
-const PLACES_URL = "https://places.googleapis.com/v1/places:searchText";
+const GEOCODE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places";
 
 export async function searchPlaces({
   data,
@@ -22,61 +17,48 @@ export async function searchPlaces({
   await enforceMapRateLimit("maps:search", 30, 60_000);
 
   const query = sanitizePlaceSearchQuery(data.query);
-  const body: Record<string, unknown> = { textQuery: query, maxResultCount: 10 };
-  if (data.bias) {
-    const center = assertLatLng(data.bias);
-    body.locationBias = {
-      circle: {
-        center: { latitude: center.lat, longitude: center.lng },
-        radius: normalizeRadiusMeters(data.bias.radiusMeters, 50000, 50000),
-      },
-    };
-    if (data.rankByDistance) {
-      body.rankPreference = "DISTANCE";
-    }
-  }
-
-  const res = await fetchGoogleMapsJson(PLACES_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-FieldMask":
-        "places.id,places.displayName,places.formattedAddress,places.location,places.types,places.rating,places.userRatingCount,places.priceLevel",
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    return { places: [], error: `Places API ${res.status}: ${text.slice(0, 200)}` };
-  }
-
-  const json = (await res.json()) as {
-    places?: Array<{
-      id: string;
-      displayName?: { text?: string };
-      formattedAddress?: string;
-      location?: { latitude: number; longitude: number };
-      types?: string[];
-      rating?: number;
-      userRatingCount?: number;
-      priceLevel?: string;
-    }>;
+  const params: Record<string, string | number | boolean | undefined> = {
+    types: "poi",
+    limit: 10,
   };
+  if (data.bias) {
+    params.proximity = `${data.bias.lng},${data.bias.lat}`;
+  }
 
-  const places = (json.places ?? [])
-    .filter((p) => p.location)
-    .map((p) => ({
-      id: p.id,
-      name: p.displayName?.text ?? p.formattedAddress ?? "Unknown",
-      address: p.formattedAddress ?? "",
-      lat: p.location!.latitude,
-      lng: p.location!.longitude,
-      types: p.types ?? [],
-      rating: p.rating ?? null,
-      userRatingCount: p.userRatingCount ?? null,
-      priceLevel: p.priceLevel ?? null,
-    }));
+  const endpoint = `${GEOCODE_URL}/${encodeURIComponent(query)}.json`;
+  try {
+    const res = await fetchMapboxUrl(endpoint, params);
+    if (!res.ok) {
+      const text = await res.text();
+      return { places: [], error: `Places API ${res.status}: ${text.slice(0, 200)}` };
+    }
 
-  return { places, error: null as string | null };
+    const json = (await res.json()) as {
+      features?: Array<{
+        id: string;
+        text?: string;
+        place_name?: string;
+        center?: [number, number];
+        properties?: { category?: string[] };
+      }>;
+    };
+
+    const places = (json.features ?? [])
+      .filter((p) => p.center)
+      .map((p) => ({
+        id: p.id,
+        name: p.text ?? p.place_name ?? "Unknown",
+        address: p.place_name ?? "",
+        lat: p.center![1],
+        lng: p.center![0],
+        types: p.properties?.category ?? [],
+        rating: null as number | null,
+        userRatingCount: null as number | null,
+        priceLevel: null as string | null,
+      }));
+
+    return { places, error: null as string | null };
+  } catch (e) {
+    return { places: [], error: e instanceof Error ? e.message : "Search failed" };
+  }
 }

@@ -1,10 +1,6 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
-import {
-  GoogleMap,
-  useJsApiLoader,
-  DirectionsService,
-  DirectionsRenderer,
-} from "@react-google-maps/api";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import Map, { Source, Layer, type MapRef } from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import {
   Bus,
   Car,
@@ -34,7 +30,9 @@ import {
   type TransportMode,
 } from "@/lib/data";
 import { PageHeader, SectionHeader } from "@/components/ui/page";
-import { GOOGLE_MAPS_LOADER_OPTIONS } from "@/lib/google-maps-loader";
+import { MAPBOX_TOKEN, decodePolyline } from "@/lib/mapbox-loader";
+import { forwardGeocode } from "@/lib/api/geocode.functions";
+import { computeRoute } from "@/lib/api/compute-route.functions";
 
 type Bookable = RoadOption | FlightOption;
 
@@ -66,6 +64,18 @@ function modeGroup(mode: TransportMode): FilterTab {
 
 function formatPrice(o: TransportOption) {
   return `${o.price.toLocaleString()} ${o.priceUnit}`;
+}
+
+function formatDistance(meters: number) {
+  if (meters >= 1000) return `${(meters / 1000).toFixed(1)} km`;
+  return `${Math.round(meters)} m`;
+}
+
+function formatDuration(seconds: number) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.round((seconds % 3600) / 60);
+  if (h > 0) return `${h} h ${m} min`;
+  return `${m} min`;
 }
 
 // ── Road card ─────────────────────────────────────────────────────────
@@ -350,11 +360,13 @@ export function TransportView() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [tab, setTab] = useState<FilterTab>("all");
-  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(
-    null,
-  );
   const [isSearchingRoute, setIsSearchingRoute] = useState(false);
   const [routeError, setRouteError] = useState<string | null>(null);
+  const [routePoints, setRoutePoints] = useState<{ lat: number; lng: number }[] | null>(null);
+  const [routeDistanceMeters, setRouteDistanceMeters] = useState(0);
+  const [routeDurationSeconds, setRouteDurationSeconds] = useState(0);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const mapRef = useRef<MapRef | null>(null);
   const [buying, setBuying] = useState<Bookable | null>(null);
   const [purchasedIds, setPurchasedIds] = useState<Set<string>>(new Set());
   const [localNotice, setLocalNotice] = useState<string | null>(null);
@@ -366,11 +378,7 @@ export function TransportView() {
       window.scrollTo({ top: window.innerHeight * 0.4, behavior: "smooth" });
   }, []);
 
-  const { isLoaded, loadError } = useJsApiLoader(GOOGLE_MAPS_LOADER_OPTIONS);
-  const mapLoadError =
-    loadError || !GOOGLE_MAPS_LOADER_OPTIONS.googleMapsApiKey
-      ? "Google Maps is not configured or failed to load."
-      : null;
+  const mapLoadError = !MAPBOX_TOKEN ? "Mapbox is not configured or failed to load." : null;
 
   const filtered = useMemo(() => {
     const f = from.trim().toLowerCase();
@@ -397,31 +405,49 @@ export function TransportView() {
     return c;
   }, []);
 
-  const directionsCallback = useCallback(
-    (res: google.maps.DirectionsResult | null, status: google.maps.DirectionsStatus) => {
-      if (status === google.maps.DirectionsStatus.OK && res?.routes?.length) {
-        setDirectionsResponse(res);
-        setRouteError(null);
-      } else {
-        setDirectionsResponse(null);
-        setRouteError(`Could not calculate this route (${status}).`);
-      }
-      setIsSearchingRoute(false);
-    },
-    [],
-  );
-
-  function searchRoute() {
+  async function searchRoute() {
     if (!from || !to) return;
-    setDirectionsResponse(null);
+    setRoutePoints(null);
     setRouteError(null);
     setIsSearchingRoute(true);
+    try {
+      const [originRes, destRes] = await Promise.all([
+        forwardGeocode({ data: { query: from } }),
+        forwardGeocode({ data: { query: to } }),
+      ]);
+      if (originRes.error || !originRes.point) {
+        setRouteError(`Could not find "${from}".`);
+        return;
+      }
+      if (destRes.error || !destRes.point) {
+        setRouteError(`Could not find "${to}".`);
+        return;
+      }
+      const res = await computeRoute({
+        data: {
+          origin: originRes.point,
+          destination: destRes.point,
+          travelMode: "DRIVE",
+        },
+      });
+      if (res.error || !res.route) {
+        setRouteError(res.error ?? "No route found.");
+        return;
+      }
+      setRoutePoints(decodePolyline(res.route.encodedPolyline));
+      setRouteDistanceMeters(res.route.distanceMeters);
+      setRouteDurationSeconds(res.route.durationSeconds);
+    } catch (e) {
+      setRouteError(e instanceof Error ? e.message : "Route failed");
+    } finally {
+      setIsSearchingRoute(false);
+    }
   }
 
   function swapLocations() {
     setFrom(to);
     setTo(from);
-    setDirectionsResponse(null);
+    setRoutePoints(null);
     setRouteError(null);
   }
 
@@ -496,7 +522,7 @@ export function TransportView() {
           </button>
           <button
             onClick={searchRoute}
-            disabled={!from || !to}
+            disabled={!from || !to || isSearchingRoute}
             className="flex items-center gap-2 bg-terracotta text-white px-5 py-2.5 min-h-[44px] rounded-xl text-sm font-bold shadow-sm hover:bg-terracotta/90 transition-colors disabled:opacity-50"
           >
             <Search size={16} /> Get Directions
@@ -505,8 +531,12 @@ export function TransportView() {
       </div>
 
       {/* Map */}
-      {(isSearchingRoute || directionsResponse || routeError) && (
-        <div className="mx-4 md:mx-8 mb-6 rounded-card overflow-hidden shadow-card-md border border-stone-100 bg-stone-100 h-[300px] md:h-[400px] relative" role="region" aria-label="Route map">
+      {(isSearchingRoute || routePoints || routeError) && (
+        <div
+          className="mx-4 md:mx-8 mb-6 rounded-card overflow-hidden shadow-card-md border border-stone-100 bg-stone-100 h-[300px] md:h-[400px] relative"
+          role="region"
+          aria-label="Route map"
+        >
           {mapLoadError ? (
             <div className="absolute inset-0 flex items-center justify-center bg-stone-50 p-6 text-center">
               <div>
@@ -514,49 +544,59 @@ export function TransportView() {
                 <p className="mt-1 text-xs text-stone-500">{mapLoadError}</p>
               </div>
             </div>
-          ) : !isLoaded ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
-              <p className="text-xs font-semibold text-stone-400 animate-pulse">Loading Map...</p>
-            </div>
           ) : (
-            <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              center={defaultCenter}
-              zoom={7}
-              options={{ disableDefaultUI: true, zoomControl: true }}
-            >
-              {isSearchingRoute && from && to && !directionsResponse && (
-                <DirectionsService
-                  options={{
-                    destination: to,
-                    origin: from,
-                    travelMode: google.maps.TravelMode.DRIVING,
-                  }}
-                  callback={directionsCallback}
-                />
+            <>
+              <Map
+                ref={mapRef}
+                mapboxAccessToken={MAPBOX_TOKEN}
+                initialViewState={{
+                  latitude: defaultCenter.lat,
+                  longitude: defaultCenter.lng,
+                  zoom: 7,
+                }}
+                mapStyle="mapbox://styles/mapbox/streets-v12"
+                style={mapContainerStyle}
+                onLoad={() => setMapLoaded(true)}
+              >
+                {routePoints && routePoints.length > 1 && (
+                  <Source
+                    id="route"
+                    type="geojson"
+                    data={{
+                      type: "Feature",
+                      properties: {},
+                      geometry: {
+                        type: "LineString",
+                        coordinates: routePoints.map((p) => [p.lng, p.lat]),
+                      },
+                    }}
+                  >
+                    <Layer
+                      id="route-line"
+                      type="line"
+                      paint={{ "line-color": "#3b82f6", "line-width": 4 }}
+                    />
+                  </Source>
+                )}
+              </Map>
+              {!mapLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
+                  <p className="text-xs font-semibold text-stone-400 animate-pulse">Loading Map...</p>
+                </div>
               )}
-              {directionsResponse && (
-                <DirectionsRenderer
-                  options={{
-                    directions: directionsResponse,
-                    polylineOptions: { strokeColor: "#3b82f6", strokeWeight: 4 },
-                  }}
-                />
-              )}
-            </GoogleMap>
+            </>
           )}
           {routeError && (
             <div className="absolute bottom-4 left-4 right-4 z-10 rounded-xl border border-red-100 bg-white/95 p-3 text-xs font-semibold text-red-700 shadow-float">
               {routeError}
             </div>
           )}
-          {directionsResponse && directionsResponse.routes[0] && (
+          {routePoints && routePoints.length > 0 && (
             <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-float border border-stone-100 flex items-center justify-between z-10">
               <div>
                 <p className="text-[10px] font-bold text-stone-400 uppercase">Estimated Drive</p>
                 <p className="text-sm font-bold text-stone-900">
-                  {directionsResponse.routes[0].legs[0].distance?.text} •{" "}
-                  {directionsResponse.routes[0].legs[0].duration?.text}
+                  {formatDistance(routeDistanceMeters)} • {formatDuration(routeDurationSeconds)}
                 </p>
               </div>
               <div className="text-pine">

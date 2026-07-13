@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { GoogleMap, useJsApiLoader, Marker, Polyline } from "@react-google-maps/api";
+import Map, { Marker, Source, Layer, type MapRef } from "react-map-gl";
+import type { MapMouseEvent } from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import {
   MapPin,
   Navigation,
@@ -16,7 +18,6 @@ import { pine, terracotta } from "@/lib/data";
 import { useGeolocationTracker } from "@/hooks/use-geolocation";
 import { listCheckpoints, addCheckpoint, removeCheckpoint } from "@/lib/api/checkpoints.functions";
 import { reverseGeocode } from "@/lib/api/geocode.functions";
-// removed useServerFn
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PlaceDetailPanel, type FocusedPlace } from "@/components/views/map/PlaceDetailPanel";
 import { LocationPermissionBanner } from "@/components/views/map/LocationPermissionBanner";
@@ -26,7 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { journeyStages, journeyTitle, journeySubtitle, type JourneyStage } from "@/lib/journey";
 import { useVisitTracker } from "@/hooks/use-visit-tracker";
 import { JourneyStageList } from "@/components/views/JourneyStageList";
-import { GOOGLE_MAPS_LOADER_OPTIONS } from "@/lib/google-maps-loader";
+import { MAPBOX_TOKEN } from "@/lib/mapbox-loader";
 
 type Checkpoint = {
   id: string;
@@ -45,11 +46,6 @@ type PendingTap = {
   address: string | null;
   placeId: string | null;
   loading: boolean;
-};
-
-type PoiMapMouseEvent = google.maps.MapMouseEvent & {
-  placeId?: string;
-  stop?: () => void;
 };
 
 const mapContainerStyle = { width: "100%", height: "100%" };
@@ -73,8 +69,57 @@ function cardinal(deg: number) {
   return dirs[Math.round(deg / 45) % 8];
 }
 
+function CirclePin({ color, scale, ring }: { color: string; scale: number; ring?: string }) {
+  return (
+    <div
+      style={{
+        width: scale * 2,
+        height: scale * 2,
+        borderRadius: "50%",
+        background: color,
+        border: `2px solid ${ring ?? "#ffffff"}`,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+      }}
+    />
+  );
+}
+
+function NumberedPin({ n, color, scale }: { n: number; color: string; scale: number }) {
+  return (
+    <div
+      style={{
+        width: scale * 2,
+        height: scale * 2,
+        borderRadius: "50%",
+        background: color,
+        border: "2px solid #ffffff",
+        color: "#ffffff",
+        fontSize: 11,
+        fontWeight: 700,
+        display: "grid",
+        placeItems: "center",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+      }}
+    >
+      {n}
+    </div>
+  );
+}
+
+function toLineFeature(points: { lat: number; lng: number }[]) {
+  return {
+    type: "Feature" as const,
+    properties: {},
+    geometry: {
+      type: "LineString" as const,
+      coordinates: points.map((p) => [p.lng, p.lat]),
+    },
+  };
+}
+
 export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | "journey" } = {}) {
-  const mapRef = useRef<google.maps.Map | null>(null);
+  const mapRef = useRef<MapRef | null>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const fittedRef = useRef(false);
   const journeyFittedRef = useRef(false);
   const searchRequestRef = useRef(0);
@@ -96,11 +141,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
   const reverseGeocodeFn = reverseGeocode;
   const queryClient = useQueryClient();
 
-  const { isLoaded, loadError } = useJsApiLoader(GOOGLE_MAPS_LOADER_OPTIONS);
-  const mapLoadError =
-    loadError || !GOOGLE_MAPS_LOADER_OPTIONS.googleMapsApiKey
-      ? "Google Maps is not configured or failed to load."
-      : null;
+  const mapLoadError = !MAPBOX_TOKEN ? "Mapbox is not configured or failed to load." : null;
 
   const {
     location,
@@ -195,34 +236,44 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
 
   // Fit bounds when checkpoints first load
   useEffect(() => {
-    if (!isLoaded || !mapRef.current || fittedRef.current) return;
+    if (!mapLoaded || !mapRef.current || fittedRef.current) return;
     if (checkpoints.length === 0) return;
     fittedRef.current = true;
-    const bounds = new window.google.maps.LatLngBounds();
-    checkpoints.forEach((c) => bounds.extend({ lat: c.lat, lng: c.lng }));
-    if (location) bounds.extend({ lat: location.lat, lng: location.lng });
-    mapRef.current.fitBounds(bounds, 80);
-  }, [isLoaded, checkpoints, location]);
+    const lats = checkpoints.map((c) => c.lat).concat(location ? [location.lat] : []);
+    const lngs = checkpoints.map((c) => c.lng).concat(location ? [location.lng] : []);
+    mapRef.current.fitBounds(
+      [
+        [Math.min(...lngs), Math.min(...lats)],
+        [Math.max(...lngs), Math.max(...lats)],
+      ],
+      { padding: 80 },
+    );
+  }, [mapLoaded, checkpoints, location]);
 
   // Fit bounds for the journey route when entering Journey mode
   useEffect(() => {
-    if (!isLoaded || !mapRef.current) return;
+    if (!mapLoaded || !mapRef.current) return;
     if (viewMode !== "journey") {
       journeyFittedRef.current = false;
       return;
     }
     if (journeyFittedRef.current) return;
     journeyFittedRef.current = true;
-    const bounds = new window.google.maps.LatLngBounds();
-    journeyStages.forEach((s) => bounds.extend({ lat: s.lat, lng: s.lng }));
-    mapRef.current.fitBounds(bounds, 60);
-  }, [isLoaded, viewMode]);
+    const lats = journeyStages.map((s) => s.lat);
+    const lngs = journeyStages.map((s) => s.lng);
+    mapRef.current.fitBounds(
+      [
+        [Math.min(...lngs), Math.min(...lats)],
+        [Math.max(...lngs), Math.max(...lats)],
+      ],
+      { padding: 60 },
+    );
+  }, [mapLoaded, viewMode]);
 
   const pickStage = useCallback((stage: JourneyStage) => {
     setActiveStageId(stage.id);
     if (mapRef.current) {
-      mapRef.current.panTo({ lat: stage.lat, lng: stage.lng });
-      mapRef.current.setZoom(11);
+      mapRef.current.flyTo({ center: [stage.lng, stage.lat], zoom: 11 });
     }
   }, []);
 
@@ -241,31 +292,20 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     };
   }, [hasVisited]);
 
-  // Use a stable default center and zoom to prevent declarative props from fighting imperative panTo/fitBounds calls.
-  const [defaultCenter] = useState(DEFAULT_CENTER);
-  const [defaultZoom] = useState(5);
-
   const recenterOnUser = () => {
     if (location && mapRef.current) {
-      mapRef.current.panTo({ lat: location.lat, lng: location.lng });
-      mapRef.current.setZoom(15);
+      mapRef.current.flyTo({ center: [location.lng, location.lat], zoom: 15 });
     }
   };
 
   const handleMapClick = useCallback(
-    async (e: google.maps.MapMouseEvent) => {
+    async (e: MapMouseEvent) => {
       if (!tapMode) return;
-      if (!e.latLng) return;
+      const { lng, lat } = e.lngLat;
       if (isAuthed !== true) {
         toast.error("Sign in to save checkpoints");
         return;
       }
-      const lat = e.latLng.lat();
-      const lng = e.latLng.lng();
-      // If user tapped a Google POI, prefer its placeId for nicer name
-      const poiEvent = e as PoiMapMouseEvent;
-      const placeId = poiEvent.placeId;
-      if (placeId) poiEvent.stop?.();
 
       const requestId = ++tapRequestRef.current;
 
@@ -274,7 +314,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
         lng,
         name: "Loading…",
         address: null,
-        placeId: placeId ?? null,
+        placeId: null,
         loading: true,
       });
       try {
@@ -285,7 +325,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
           lng,
           name: res.name,
           address: res.address,
-          placeId: placeId ?? res.placeId,
+          placeId: res.placeId,
           loading: false,
         });
       } catch {
@@ -295,7 +335,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
           lng,
           name: `Pin ${lat.toFixed(4)}, ${lng.toFixed(4)}`,
           address: null,
-          placeId: placeId ?? null,
+          placeId: null,
           loading: false,
         });
       }
@@ -351,8 +391,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     setSelectedPlace(p);
     setActiveCheckpointId(null);
     if (mapRef.current) {
-      mapRef.current.panTo({ lat: p.lat, lng: p.lng });
-      mapRef.current.setZoom(14);
+      mapRef.current.flyTo({ center: [p.lng, p.lat], zoom: 14 });
     }
   };
 
@@ -360,8 +399,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
     setSelectedPlace(null);
     setActiveCheckpointId(c.id);
     if (mapRef.current) {
-      mapRef.current.panTo({ lat: c.lat, lng: c.lng });
-      mapRef.current.setZoom(14);
+      mapRef.current.flyTo({ center: [c.lng, c.lat], zoom: 14 });
     }
   };
 
@@ -484,63 +522,44 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                     <p className="mt-1 text-xs text-stone-500">{mapLoadError}</p>
                   </div>
                 </div>
-              ) : !isLoaded ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
-                  <p className="text-xs font-semibold text-stone-400 animate-pulse">
-                    Loading Google Maps...
-                  </p>
-                </div>
               ) : (
                 <>
-                  <GoogleMap
-                    mapContainerStyle={mapContainerStyle}
-                    center={defaultCenter}
-                    zoom={defaultZoom}
-                    onLoad={(m) => {
-                      mapRef.current = m;
+                  <Map
+                    ref={mapRef}
+                    mapboxAccessToken={MAPBOX_TOKEN}
+                    initialViewState={{
+                      latitude: DEFAULT_CENTER.lat,
+                      longitude: DEFAULT_CENTER.lng,
+                      zoom: 5,
                     }}
+                    mapStyle="mapbox://styles/mapbox/outdoors-v12"
+                    style={mapContainerStyle}
                     onClick={handleMapClick}
-                    options={{
-                      disableDefaultUI: true,
-                      zoomControl: true,
-                      clickableIcons: true,
-                      draggableCursor: tapMode ? "crosshair" : undefined,
-                      styles: [
-                        {
-                          featureType: "poi",
-                          elementType: "labels",
-                          stylers: [{ visibility: "off" }],
-                        },
-                      ],
-                    }}
+                    onLoad={() => setMapLoaded(true)}
                   >
                     {viewMode === "journey" && todoPath.length > 1 && (
-                      <Polyline
-                        path={todoPath}
-                        options={{
-                          strokeColor: pine,
-                          strokeOpacity: 0.85,
-                          strokeWeight: 4,
-                          icons: [
-                            {
-                              icon: { path: "M 0,-1 0,1", strokeOpacity: 1, scale: 3 },
-                              offset: "0",
-                              repeat: "14px",
-                            },
-                          ],
-                        }}
-                      />
+                      <Source id="journey-todo" type="geojson" data={toLineFeature(todoPath)}>
+                        <Layer
+                          id="journey-todo-line"
+                          type="line"
+                          paint={{
+                            "line-color": pine,
+                            "line-width": 4,
+                            "line-dasharray": [2, 2],
+                          }}
+                        />
+                      </Source>
                     )}
                     {viewMode === "journey" && donePath.length > 1 && (
-                      <Polyline
-                        path={donePath}
-                        options={{
-                          strokeColor: terracotta,
-                          strokeOpacity: 0.95,
-                          strokeWeight: 5,
-                        }}
-                      />
+                      <Source id="journey-done" type="geojson" data={toLineFeature(donePath)}>
+                        <Layer
+                          id="journey-done-line"
+                          type="line"
+                          paint={{ "line-color": terracotta, "line-width": 5 }}
+                        />
+                      </Source>
                     )}
+
                     {viewMode === "journey" &&
                       journeyStages.map((s) => {
                         const visited = s.spotId ? hasVisited(s.spotId) : false;
@@ -548,24 +567,17 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                         return (
                           <Marker
                             key={s.id}
-                            position={{ lat: s.lat, lng: s.lng }}
+                            longitude={s.lng}
+                            latitude={s.lat}
+                            anchor="center"
                             onClick={() => pickStage(s)}
-                            label={{
-                              text: String(s.order),
-                              color: "#ffffff",
-                              fontSize: "11px",
-                              fontWeight: "700",
-                            }}
-                            icon={{
-                              path: window.google.maps.SymbolPath.CIRCLE,
-                              scale: active ? 15 : 12,
-                              fillColor: visited ? terracotta : pine,
-                              fillOpacity: 1,
-                              strokeColor: "#ffffff",
-                              strokeWeight: active ? 3 : 2,
-                            }}
-                            zIndex={active ? 997 : 500}
-                          />
+                          >
+                            <NumberedPin
+                              n={s.order}
+                              color={active ? terracotta : visited ? terracotta : pine}
+                              scale={active ? 7.5 : 6}
+                            />
+                          </Marker>
                         );
                       })}
 
@@ -573,64 +585,48 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       checkpoints.map((c) => (
                         <Marker
                           key={c.id}
-                          position={{ lat: c.lat, lng: c.lng }}
+                          longitude={c.lng}
+                          latitude={c.lat}
+                          anchor="center"
                           onClick={() => pickCheckpoint(c)}
-                          icon={{
-                            path: window.google.maps.SymbolPath.CIRCLE,
-                            scale: activeCheckpointId === c.id ? 13 : 10,
-                            fillColor: activeCheckpointId === c.id ? terracotta : pine,
-                            fillOpacity: 1,
-                            strokeColor: "#ffffff",
-                            strokeWeight: 2,
-                          }}
-                        />
+                        >
+                          <CirclePin
+                            color={activeCheckpointId === c.id ? terracotta : pine}
+                            scale={activeCheckpointId === c.id ? 6.5 : 5}
+                          />
+                        </Marker>
                       ))}
 
                     {location && (
-                      <Marker
-                        position={{ lat: location.lat, lng: location.lng }}
-                        icon={{
-                          path: window.google.maps.SymbolPath.CIRCLE,
-                          scale: 8,
-                          fillColor: "#3b82f6",
-                          fillOpacity: 1,
-                          strokeColor: "#ffffff",
-                          strokeWeight: 2,
-                        }}
-                        zIndex={999}
-                      />
+                      <Marker longitude={location.lng} latitude={location.lat} anchor="center">
+                        <CirclePin color="#3b82f6" scale={4} />
+                      </Marker>
                     )}
 
                     {selectedPlace && (
                       <Marker
-                        position={{ lat: selectedPlace.lat, lng: selectedPlace.lng }}
-                        icon={{
-                          path: window.google.maps.SymbolPath.CIRCLE,
-                          scale: 11,
-                          fillColor: "#7c3aed",
-                          fillOpacity: 1,
-                          strokeColor: "#ffffff",
-                          strokeWeight: 2,
-                        }}
-                        zIndex={998}
-                      />
+                        longitude={selectedPlace.lng}
+                        latitude={selectedPlace.lat}
+                        anchor="center"
+                      >
+                        <CirclePin color="#7c3aed" scale={5.5} />
+                      </Marker>
                     )}
 
                     {pendingTap && (
-                      <Marker
-                        position={{ lat: pendingTap.lat, lng: pendingTap.lng }}
-                        icon={{
-                          path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                          scale: 6,
-                          fillColor: terracotta,
-                          fillOpacity: 1,
-                          strokeColor: "#ffffff",
-                          strokeWeight: 2,
-                        }}
-                        zIndex={1000}
-                      />
+                      <Marker longitude={pendingTap.lng} latitude={pendingTap.lat} anchor="center">
+                        <CirclePin color={terracotta} scale={4} ring={terracotta} />
+                      </Marker>
                     )}
-                  </GoogleMap>
+                  </Map>
+
+                  {!mapLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
+                      <p className="text-xs font-semibold text-stone-400 animate-pulse">
+                        Loading Map...
+                      </p>
+                    </div>
+                  )}
 
                   <MapSearchOverlay location={location} onPlaceSelected={pickPlace} />
 
@@ -678,7 +674,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                                   markVisited(stage.spotId);
                                   toast.success(`Visited ${stage.name}`);
                                 }
-                                mapRef.current?.panTo({ lat: stage.lat, lng: stage.lng });
+                                mapRef.current?.flyTo({ center: [stage.lng, stage.lat] });
                                 setShowDemoMenu(false);
                               }}
                               className="w-full text-left px-2.5 py-2 rounded-md hover:bg-stone-50 text-xs font-semibold text-stone-700 truncate"

@@ -1,9 +1,13 @@
 "use server";
 
-import { fetchGoogleMapsJson } from "@/lib/server/google-maps";
+import { fetchMapboxUrl } from "@/lib/server/mapbox";
 import { assertLatLng, enforceMapRateLimit } from "@/lib/server/maps-guardrails";
 
-const ROUTES_URL = "https://routes.googleapis.com/directions/v2:computeRoutes";
+const PROFILE: Record<string, string> = {
+  WALK: "walking",
+  DRIVE: "driving",
+  BICYCLE: "cycling",
+};
 
 export async function computeRoute({
   data,
@@ -18,53 +22,47 @@ export async function computeRoute({
 
   const origin = assertLatLng(data.origin);
   const destination = assertLatLng(data.destination);
-  const travelMode = data.travelMode || "WALK";
-  const res = await fetchGoogleMapsJson(ROUTES_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
-    },
-    body: JSON.stringify({
-      origin: { location: { latLng: { latitude: origin.lat, longitude: origin.lng } } },
-      destination: {
-        location: { latLng: { latitude: destination.lat, longitude: destination.lng } },
-      },
-      travelMode: travelMode,
-      polylineEncoding: "ENCODED_POLYLINE",
-    }),
-  });
+  const profile = PROFILE[data.travelMode || "WALK"];
+  const coords = `${origin.lng},${origin.lat};${destination.lng},${destination.lat}`;
+  const endpoint = `https://api.mapbox.com/directions/v5/mapbox/${profile}/${coords}.json`;
 
-  if (!res.ok) {
-    const body = await res.text();
+  try {
+    const res = await fetchMapboxUrl(endpoint, {
+      geometries: "polyline",
+      overview: "full",
+      steps: "false",
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      return {
+        route: null as null | {
+          encodedPolyline: string;
+          distanceMeters: number;
+          durationSeconds: number;
+        },
+        error: `Directions API ${res.status}: ${body.slice(0, 200)}`,
+      };
+    }
+
+    const json = (await res.json()) as {
+      routes?: Array<{ geometry?: string; distance?: number; duration?: number }>;
+    };
+    const r = json.routes?.[0];
+    if (!r?.geometry) {
+      return { route: null, error: "No route found" };
+    }
     return {
-      route: null as null | {
-        encodedPolyline: string;
-        distanceMeters: number;
-        durationSeconds: number;
+      route: {
+        encodedPolyline: r.geometry,
+        distanceMeters: Math.round(r.distance ?? 0),
+        durationSeconds: Math.round(r.duration ?? 0),
       },
-      error: `Routes API ${res.status}: ${body.slice(0, 200)}`,
+      error: null as string | null,
+    };
+  } catch (e) {
+    return {
+      route: null,
+      error: e instanceof Error ? e.message : "Route failed",
     };
   }
-
-  const json = (await res.json()) as {
-    routes?: Array<{
-      duration?: string;
-      distanceMeters?: number;
-      polyline?: { encodedPolyline?: string };
-    }>;
-  };
-  const r = json.routes?.[0];
-  if (!r?.polyline?.encodedPolyline) {
-    return { route: null, error: "No route found" };
-  }
-  const durationSeconds = r.duration ? parseInt(r.duration.replace(/s$/, ""), 10) : 0;
-  return {
-    route: {
-      encodedPolyline: r.polyline.encodedPolyline,
-      distanceMeters: r.distanceMeters ?? 0,
-      durationSeconds,
-    },
-    error: null as string | null,
-  };
 }

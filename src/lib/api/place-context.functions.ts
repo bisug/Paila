@@ -1,7 +1,7 @@
 "use server";
 
 import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
-import { fetchGoogleMapsUrl } from "@/lib/server/google-maps";
+import { getElevationMeters, getMapboxToken } from "@/lib/server/mapbox";
 import { assertLatLng, enforceMapRateLimit, sanitizePlaceName } from "@/lib/server/maps-guardrails";
 
 export type PlaceContext = {
@@ -24,19 +24,11 @@ export async function getPlaceContext({
   const coords = assertLatLng(data);
   const name = sanitizePlaceName(data.name);
 
-  // 1) Elevation (best-effort)
+  // 1) Elevation (best-effort, via Mapbox terrain-rgb)
   let elevationMeters: number | null = null;
-  if (process.env.GOOGLE_MAPS_API_KEY) {
+  if (getMapboxToken()) {
     try {
-      const res = await fetchGoogleMapsUrl("https://maps.googleapis.com/maps/api/elevation/json", {
-        locations: `${coords.lat},${coords.lng}`,
-      });
-      if (res.ok) {
-        const j = (await res.json()) as { results?: Array<{ elevation?: number }> };
-        if (typeof j.results?.[0]?.elevation === "number") {
-          elevationMeters = Math.round(j.results[0].elevation);
-        }
-      }
+      elevationMeters = await getElevationMeters(coords.lat, coords.lng);
     } catch {
       /* ignore elevation failures */
     }

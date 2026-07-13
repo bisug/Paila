@@ -1,6 +1,6 @@
 "use server";
 
-import { fetchGoogleMapsUrl } from "@/lib/server/google-maps";
+import { fetchMapboxUrl } from "@/lib/server/mapbox";
 import { assertLatLng, enforceMapRateLimit } from "@/lib/server/maps-guardrails";
 
 export async function snapPath({ data }: { data: { points: { lat: number; lng: number }[] } }) {
@@ -10,26 +10,32 @@ export async function snapPath({ data }: { data: { points: { lat: number; lng: n
   if (data.points.length > 100) throw new Error("Road snapping supports at most 100 points.");
 
   const points = data.points.map(assertLatLng);
-  const path = points.map((p) => `${p.lat},${p.lng}`).join("|");
-  const res = await fetchGoogleMapsUrl("https://roads.googleapis.com/v1/snapToRoads", {
-    interpolate: true,
-    path,
-  });
+  const coords = points.map((p) => `${p.lng},${p.lat}`).join(";");
+  const endpoint = `https://api.mapbox.com/matching/v5/mapbox/driving/${coords}.json`;
 
-  if (!res.ok) {
-    const body = await res.text();
+  try {
+    const res = await fetchMapboxUrl(endpoint, {
+      geometries: "geojson",
+      overview: "full",
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      return {
+        snapped: [] as { lat: number; lng: number }[],
+        error: `Map Matching ${res.status}: ${body.slice(0, 200)}`,
+      };
+    }
+
+    const json = (await res.json()) as {
+      matchings?: Array<{ geometry?: { coordinates?: [number, number][] } }>;
+    };
+    const coordsOut = json.matchings?.[0]?.geometry?.coordinates ?? [];
+    const snapped = coordsOut.map((c) => ({ lat: c[1], lng: c[0] }));
+    return { snapped, error: null as string | null };
+  } catch (e) {
     return {
       snapped: [] as { lat: number; lng: number }[],
-      error: `Roads API ${res.status}: ${body.slice(0, 200)}`,
+      error: e instanceof Error ? e.message : "Snap failed",
     };
   }
-
-  const json = (await res.json()) as {
-    snappedPoints?: Array<{ location: { latitude: number; longitude: number } }>;
-  };
-  const snapped = (json.snappedPoints ?? []).map((p) => ({
-    lat: p.location.latitude,
-    lng: p.location.longitude,
-  }));
-  return { snapped, error: null as string | null };
 }
