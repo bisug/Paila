@@ -1,5 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "./types";
 import { supabase as mockSupabase } from "./client";
 
 export async function createAuthenticatedSupabaseClient(token: string) {
