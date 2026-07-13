@@ -16,10 +16,8 @@ export type GuideVerificationSubmission = {
   created_at: string;
 };
 
-async function requireAdmin(token?: string) {
-  if (!token) throw new Error("Unauthorized");
-
-  const { supabase, userId } = await createAuthenticatedSupabaseClient(token);
+async function requireAdmin() {
+  const { supabase, userId } = await createAuthenticatedSupabaseClient();
   const { data, error } = await supabase
     .from("user_roles")
     .select("role")
@@ -57,8 +55,8 @@ async function signGuideIdUrls(submissions: GuideVerificationSubmission[]) {
   return imageUrls;
 }
 
-export async function listGuideVerificationReviewData({ data }: { data: { token?: string } }) {
-  const { supabase } = await requireAdmin(data.token);
+export async function listGuideVerificationReviewData() {
+  const { supabase } = await requireAdmin();
   const [submissionsResult, settingsResult] = await Promise.all([
     supabase.from("guide_verifications").select("*").order("created_at", { ascending: false }),
     supabase.from("admin_settings").select("admin_email").eq("id", 1).maybeSingle(),
@@ -76,12 +74,8 @@ export async function listGuideVerificationReviewData({ data }: { data: { token?
   };
 }
 
-export async function saveAdminNotificationEmail({
-  data,
-}: {
-  data: { token?: string; adminEmail: string };
-}) {
-  const { supabase } = await requireAdmin(data.token);
+export async function saveAdminNotificationEmail({ data }: { data: { adminEmail: string } }) {
+  const { supabase } = await requireAdmin();
   const { error } = await supabase
     .from("admin_settings")
     .update({
@@ -98,13 +92,12 @@ export async function reviewGuideVerification({
   data,
 }: {
   data: {
-    token?: string;
     id: string;
     status: "approved" | "rejected";
     reviewNote?: string | null;
   };
 }) {
-  const { supabase } = await requireAdmin(data.token);
+  const { supabase } = await requireAdmin();
   const { error } = await supabase
     .from("guide_verifications")
     .update({

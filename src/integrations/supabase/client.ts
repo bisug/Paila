@@ -508,8 +508,13 @@ export const supabase = {
   from(table: string) {
     return new Query(table);
   },
-  async rpc(fn: string) {
-    if (fn === "has_role") return { data: true, error: null };
+  async rpc(fn: string, params?: { _user_id?: string; _role?: string }) {
+    if (fn === "has_role") {
+      const role = params?._role ?? "admin";
+      const userId = params?._user_id ?? DEMO_USER_ID;
+      const has = (db.user_roles ?? []).some((r) => r.user_id === userId && r.role === role);
+      return { data: has, error: null };
+    }
     return { data: null, error: null };
   },
 } as any;

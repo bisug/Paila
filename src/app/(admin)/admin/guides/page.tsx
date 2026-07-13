@@ -22,10 +22,9 @@ export default function AdminGuidesPage() {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [accessToken, setAccessToken] = useState("");
 
-  const loadReviewData = useCallback(async (token: string) => {
-    const data = await listGuideVerificationReviewData({ data: { token } });
+  const loadReviewData = useCallback(async () => {
+    const data = await listGuideVerificationReviewData();
     setSubs(data.submissions);
     setImageUrls(data.imageUrls);
     setAdminEmail(data.adminEmail);
@@ -43,9 +42,8 @@ export default function AdminGuidesPage() {
       }
       if (cancelled) return;
 
-      setAccessToken(session.access_token);
       try {
-        await loadReviewData(session.access_token);
+        await loadReviewData();
         if (cancelled) return;
         setIsAdmin(true);
       } catch (err) {
@@ -65,28 +63,25 @@ export default function AdminGuidesPage() {
 
   async function saveAdminEmail() {
     setError("");
-    if (!accessToken) return;
     try {
-      await saveAdminNotificationEmail({ data: { token: accessToken, adminEmail } });
+      await saveAdminNotificationEmail({ data: { adminEmail } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save admin email");
     }
   }
 
   async function decide(sub: Submission, status: "approved" | "rejected") {
-    if (!accessToken) return;
     setBusy(sub.id);
     setError("");
     try {
       await reviewGuideVerification({
         data: {
-          token: accessToken,
           id: sub.id,
           status,
           reviewNote: notes[sub.id] ?? sub.review_note ?? null,
         },
       });
-      await loadReviewData(accessToken);
+      await loadReviewData();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to review submission");
     } finally {
