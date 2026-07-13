@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRightLeft, Mic, Sparkles, Volume2, X } from "lucide-react";
+import { ArrowRightLeft, Copy, Mic, Sparkles, Volume2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,14 +15,22 @@ import {
   type TranslatorLangKey,
 } from "@/lib/translator";
 
+type SpeechRecognitionAlternativeLike = { transcript: string };
+
+type SpeechRecognitionResultLike = {
+  isFinal: boolean;
+  length: number;
+  0: SpeechRecognitionAlternativeLike;
+};
+
+type SpeechRecognitionResultListLike = {
+  length: number;
+  [index: number]: SpeechRecognitionResultLike;
+};
+
 type SpeechRecognitionResultEventLike = {
-  results: {
-    [index: number]: {
-      [index: number]: {
-        transcript: string;
-      };
-    };
-  };
+  resultIndex: number;
+  results: SpeechRecognitionResultListLike;
 };
 
 type SpeechRecognitionLike = {
@@ -56,12 +64,15 @@ export function TranslatorView() {
   const [targetText, setTargetText] = useState("");
   const [isTranslating, setIsTranslating] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [interimText, setInterimText] = useState("");
+  const [speechSupported, setSpeechSupported] = useState(true);
   const [autoSpeak, setAutoSpeak] = useState(true);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [wordMeaning, setWordMeaning] = useState<string | null>(null);
   const [isFetchingMeaning, setIsFetchingMeaning] = useState(false);
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastSpokenRef = useRef("");
   const userPickedTarget = useRef(false);
 
@@ -70,16 +81,23 @@ export function TranslatorView() {
       (window as SpeechWindow).SpeechRecognition ??
       (window as SpeechWindow).webkitSpeechRecognition;
 
-    if (!SpeechRecognition) return;
+    if (!SpeechRecognition) {
+      setSpeechSupported(false);
+      return;
+    }
 
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.interimResults = true;
     recognition.onerror = (event) => {
       console.warn("Speech recognition error", event.error);
       setIsListening(false);
+      setInterimText("");
     };
-    recognition.onend = () => setIsListening(false);
+    recognition.onend = () => {
+      setIsListening(false);
+      setInterimText("");
+    };
     recognitionRef.current = recognition;
 
     return () => {
@@ -123,8 +141,8 @@ export function TranslatorView() {
           signal: controller.signal,
           body: JSON.stringify({
             sourceText: text,
-            sourceLang: TRANSLATOR_LANGUAGES[sourceLang].label,
-            targetLang: TRANSLATOR_LANGUAGES[targetLang].label,
+            sourceLang,
+            targetLang,
           }),
         });
 
@@ -191,6 +209,7 @@ export function TranslatorView() {
     if (isListening) {
       recognition?.stop();
       setIsListening(false);
+      setInterimText("");
       return;
     }
 
@@ -201,14 +220,23 @@ export function TranslatorView() {
 
     recognition.lang = TRANSLATOR_LANGUAGES[sourceLang].code;
     recognition.onresult = (event) => {
-      const transcript = event.results[0]?.[0]?.transcript;
-      if (!transcript) return;
-      setSourceText((current) => (current ? `${current} ${transcript}` : transcript));
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i];
+        const transcript = result?.[0]?.transcript ?? "";
+        if (result?.isFinal) {
+          setSourceText((current) => (current ? `${current} ${transcript}`.trim() : transcript));
+        } else {
+          interim += transcript;
+        }
+      }
+      setInterimText(interim);
     };
 
     try {
       recognition.start();
       setIsListening(true);
+      setInterimText("");
     } catch (error) {
       console.warn("Could not start speech recognition", error);
     }
@@ -251,21 +279,64 @@ export function TranslatorView() {
   function speakText(text: string, langKey: TranslatorLangKey) {
     if (!text) return;
 
-    if (!isSynthesizedDialect(langKey) && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      const voiceCode = preferredVoiceCode(langKey, window.speechSynthesis.getVoices());
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = voiceCode;
+    const isDialect = isSynthesizedDialect(langKey);
+    let spoken = text;
+    let ttsLang = TRANSLATOR_LANGUAGES[langKey].tlCode;
 
-      try {
-        window.speechSynthesis.speak(utterance);
-        return;
-      } catch (error) {
-        console.warn("Speech synthesis failed, falling back to tone playback", error);
-      }
+    // Dialects have no free speech engine; speak the romanized pronunciation.
+    if (isDialect) {
+      const roman = text.match(/\(([^)]+)\)/)?.[1];
+      spoken = roman ? roman.trim() : text.replace(/[^\p{L}\p{N}\s]/gu, "");
+      ttsLang = "en";
     }
 
-    playPhoneticTones(text);
+    const synthVoices = window.speechSynthesis?.getVoices?.() ?? [];
+    const hasNativeVoice =
+      !isDialect && synthVoices.some((voice) => voice.lang.toLowerCase().startsWith(ttsLang));
+
+    if (hasNativeVoice) {
+      speakWithSynthesis(spoken, TRANSLATOR_LANGUAGES[langKey].code);
+    } else {
+      playGoogleTts(spoken, ttsLang);
+    }
+  }
+
+  function speakWithSynthesis(text: string, voiceCode: string) {
+    if (!window.speechSynthesis) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = voiceCode;
+      window.speechSynthesis.speak(utterance);
+    } catch (error) {
+      console.warn("Speech synthesis failed, falling back to tone playback", error);
+      playPhoneticTones(text);
+    }
+  }
+
+  // Free, key-less speech via Google's TTS audio endpoint. Cross-browser and
+  // covers every supported language; falls back to native synthesis offline.
+  function playGoogleTts(text: string, ttsLang: string) {
+    if (!text) {
+      playPhoneticTones(text);
+      return;
+    }
+
+    try {
+      audioRef.current?.pause();
+      const url =
+        "https://translate.google.com/translate_tts" +
+        `?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=${encodeURIComponent(ttsLang)}`;
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.play().catch((err) => {
+        console.warn("Google TTS unavailable, using synthesis", err);
+        speakWithSynthesis(text, ttsLang);
+      });
+    } catch (err) {
+      console.warn("Google TTS failed, using synthesis", err);
+      speakWithSynthesis(text, ttsLang);
+    }
   }
 
   return (
@@ -337,6 +408,12 @@ export function TranslatorView() {
             className="min-h-36 flex-1 resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-xl font-semibold leading-snug text-stone-900 outline-none transition-colors placeholder:text-stone-300 focus:border-terracotta focus:bg-white focus:ring-2 focus:ring-terracotta/15 md:text-2xl"
           />
 
+          {isListening && interimText && (
+            <p aria-live="polite" className="mt-2 text-sm italic text-terracotta">
+              {interimText}
+            </p>
+          )}
+
           <div className="mt-4 space-y-3">
             {PHRASE_CATEGORIES.map((category) => (
               <div key={category.label}>
@@ -368,15 +445,31 @@ export function TranslatorView() {
               </p>
               <p className="mt-0.5 text-xs text-stone-500">Tap a translated word for meaning.</p>
             </div>
-            <button
-              type="button"
-              onClick={() => speakText(targetText, targetLang)}
-              disabled={!targetText}
-              className="grid h-11 w-11 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
-              aria-label="Play translation"
-            >
-              <Volume2 size={18} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard
+                    ?.writeText(targetText)
+                    .then(() => toast.success("Translation copied"))
+                    .catch(() => toast.error("Could not copy"));
+                }}
+                disabled={!targetText}
+                className="grid h-11 w-11 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
+                aria-label="Copy translation"
+              >
+                <Copy size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => speakText(targetText, targetLang)}
+                disabled={!targetText}
+                className="grid h-11 w-11 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
+                aria-label="Play translation"
+              >
+                <Volume2 size={18} />
+              </button>
+            </div>
           </div>
 
           <div className="min-h-36 flex-1 rounded-xl border border-stone-200 bg-stone-50 p-4">
@@ -418,6 +511,7 @@ export function TranslatorView() {
       <VoiceBar
         autoSpeak={autoSpeak}
         isListening={isListening}
+        speechSupported={speechSupported}
         onToggleAutoSpeak={() => setAutoSpeak((current) => !current)}
         onToggleListen={toggleListen}
       />
@@ -473,11 +567,13 @@ function LanguageSelect({
 function VoiceBar({
   autoSpeak,
   isListening,
+  speechSupported,
   onToggleAutoSpeak,
   onToggleListen,
 }: {
   autoSpeak: boolean;
   isListening: boolean;
+  speechSupported: boolean;
   onToggleAutoSpeak: () => void;
   onToggleListen: () => void;
 }) {
@@ -501,8 +597,15 @@ function VoiceBar({
         <button
           type="button"
           onClick={onToggleListen}
-          aria-label={isListening ? "Stop listening" : "Tap and speak to translate"}
-          className={`grid h-14 w-14 shrink-0 place-items-center rounded-full shadow-float transition-transform active:scale-95 ${
+          disabled={!speechSupported}
+          aria-label={
+            isListening
+              ? "Stop listening"
+              : speechSupported
+                ? "Tap and speak to translate"
+                : "Speech input not supported in this browser"
+          }
+          className={`grid h-14 w-14 shrink-0 place-items-center rounded-full shadow-float transition-transform active:scale-95 disabled:cursor-not-allowed disabled:bg-stone-300 disabled:shadow-none ${
             isListening ? "animate-pulse bg-red-500 ring-4 ring-red-500/25" : "bg-terracotta"
           }`}
         >
@@ -513,7 +616,11 @@ function VoiceBar({
           aria-live="polite"
           className="min-w-0 flex-1 truncate text-xs font-semibold text-stone-600 md:w-48"
         >
-          {isListening ? "Listening... tap mic to stop" : "Tap mic and speak to translate"}
+          {isListening
+            ? "Listening... tap mic to stop"
+            : speechSupported
+              ? "Tap mic and speak to translate"
+              : "Voice input needs Chrome, Edge, or Safari"}
         </p>
       </div>
     </div>
@@ -571,16 +678,6 @@ function WordMeaningModal({
       </div>
     </div>
   );
-}
-
-function preferredVoiceCode(langKey: TranslatorLangKey, voices: SpeechSynthesisVoice[]) {
-  if (langKey !== "ne") return TRANSLATOR_LANGUAGES[langKey].code;
-
-  const hasNepali = voices.some((voice) => voice.lang.startsWith("ne"));
-  if (hasNepali) return TRANSLATOR_LANGUAGES.ne.code;
-
-  const hasHindi = voices.some((voice) => voice.lang.startsWith("hi"));
-  return hasHindi ? TRANSLATOR_LANGUAGES.hi.code : TRANSLATOR_LANGUAGES.ne.code;
 }
 
 function playPhoneticTones(text: string) {
