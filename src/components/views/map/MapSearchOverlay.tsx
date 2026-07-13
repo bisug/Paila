@@ -87,6 +87,7 @@ export function MapSearchOverlay({ location, onPlaceSelected }: MapSearchOverlay
         <Search size={16} className="text-stone-400 shrink-0" />
         <input
           type="text"
+          aria-label="Search places"
           value={searchQuery}
           onChange={(e) => {
             const val = e.target.value;

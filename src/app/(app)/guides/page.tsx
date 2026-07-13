@@ -188,7 +188,7 @@ export default function GuidesIndex() {
             return (
               <li
                 key={g.id}
-                className="rounded-2xl border border-stone-200 bg-white p-4 flex items-center gap-3 hover:border-terracotta/40 hover:shadow-sm transition-all"
+                className="rounded-2xl border border-stone-200 bg-white p-4 flex items-center gap-3 hover:border-terracotta/40 hover:shadow-card-md transition-all"
               >
                 <Link
                   href={`/guides/${g.id}`}
@@ -248,7 +248,7 @@ export default function GuidesIndex() {
             return (
               <li
                 key={g.id}
-                className="rounded-2xl border border-stone-200 bg-white p-4 flex items-center gap-3 hover:border-terracotta/40 hover:shadow-sm transition-all"
+                className="rounded-2xl border border-stone-200 bg-white p-4 flex items-center gap-3 hover:border-terracotta/40 hover:shadow-card-md transition-all"
               >
                 <Link
                   href={`/guides/${g.id}`}

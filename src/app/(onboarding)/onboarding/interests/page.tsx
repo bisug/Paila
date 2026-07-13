@@ -76,7 +76,7 @@ export default function InterestsOnboarding() {
           <LanguageSwitcher compact />
         </div>
         <div className="text-center mb-8">
-          <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-terracotta/10 text-terracotta">
+          <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-card bg-terracotta/10 text-terracotta">
             <Sparkles size={22} />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-stone-900">
@@ -100,7 +100,7 @@ export default function InterestsOnboarding() {
               <button
                 key={id}
                 onClick={() => toggle(id)}
-                className={`relative flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-all active:scale-[0.98] ${
+                className={`relative flex flex-col items-start gap-2 rounded-card border p-4 text-left transition-all active:scale-[0.98] ${
                   active
                     ? "border-terracotta bg-terracotta/5 shadow-sm"
                     : "border-stone-200 bg-white hover:border-stone-300"
@@ -128,7 +128,7 @@ export default function InterestsOnboarding() {
           <button
             disabled={!canContinue || saving}
             onClick={() => save(Array.from(selected))}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-terracotta px-4 py-3 text-sm font-bold text-white shadow-card disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white shadow-card transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
             {saving ? (
               <Loader2 size={16} className="animate-spin" />

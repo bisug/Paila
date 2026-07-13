@@ -354,7 +354,7 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
     <div className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       <div
-        className="absolute left-0 top-0 h-full w-64 bg-white shadow-2xl flex flex-col"
+        className="absolute left-0 top-0 h-full w-64 bg-white shadow-tactile flex flex-col"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center gap-3 px-5 h-14 border-b border-stone-100">

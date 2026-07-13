@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function AuthCodeError() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-stone-100">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-card-md border border-stone-100 text-center">
+      <div className="w-full max-w-md rounded-modal bg-white p-8 shadow-tactile border border-stone-100 text-center">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
           <span className="text-3xl" role="img" aria-label="Warning">
             ⚠️
@@ -18,7 +18,7 @@ export default function AuthCodeError() {
         </p>
         <Link
           href="/login"
-          className="inline-block w-full rounded-xl bg-terracotta px-4 py-2.5 font-bold text-white hover:bg-terracotta/90 transition-colors"
+          className="inline-block w-full rounded-lg bg-primary px-4 py-2.5 font-bold text-white hover:bg-primary/90 transition-colors"
         >
           Back to Login
         </Link>

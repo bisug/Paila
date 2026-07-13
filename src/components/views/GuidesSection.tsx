@@ -47,7 +47,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
           return (
             <article
               key={g.id}
-              className="snap-start min-w-[260px] max-w-[260px] bg-white rounded-2xl p-4 shadow-sm border border-stone-100 shrink-0 flex flex-col"
+              className="snap-start min-w-[260px] max-w-[260px] bg-white rounded-2xl p-4 shadow-card border border-stone-100 shrink-0 flex flex-col"
             >
               <div className="flex items-start gap-3">
                 <img
@@ -122,7 +122,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Message ${g.name} on WhatsApp`}
-                  className="inline-flex items-center justify-center gap-1 rounded-lg bg-pine text-white text-xs font-semibold py-2 hover:bg-pine/90 transition-colors"
+                  className="inline-flex items-center justify-center gap-1 rounded-lg bg-pine text-white text-xs font-semibold h-11 hover:bg-pine/90 transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   Message
@@ -130,7 +130,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
                 <a
                   href={telHref}
                   aria-label={`Call ${g.name}`}
-                  className="inline-flex items-center justify-center gap-1 rounded-lg bg-terracotta text-white text-xs font-semibold py-2 hover:bg-terracotta/90 transition-colors"
+                  className="inline-flex items-center justify-center gap-1 rounded-lg bg-terracotta text-white text-xs font-semibold h-11 hover:bg-terracotta/90 transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5" />
                   Call

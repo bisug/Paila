@@ -55,7 +55,7 @@ export function LocationPermissionBanner({ onRetry, onDismiss }: Props) {
   };
 
   return (
-    <div className="absolute left-3 right-3 top-3 z-10 rounded-xl border border-destructive/30 bg-destructive/10 backdrop-blur-sm shadow-card-md">
+    <div className="absolute left-3 right-3 top-16 z-40 rounded-xl border border-destructive/30 bg-destructive/10 backdrop-blur-sm shadow-float">
       <div className="flex items-start gap-3 p-3">
         <div className="mt-0.5 rounded-full bg-destructive/15 p-1.5">
           <MapPinOff className="h-4 w-4 text-destructive" />

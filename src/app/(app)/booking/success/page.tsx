@@ -65,7 +65,7 @@ function SuccessContent() {
           <p className="text-stone-600">{error}</p>
           <Link
             href="/profile/bookings"
-            className="mt-4 inline-block rounded-xl bg-terracotta px-4 py-2 text-sm font-bold text-white"
+            className="mt-4 inline-block rounded-xl bg-terracotta px-4 py-3 text-sm font-bold text-white"
           >
             My bookings
           </Link>
@@ -93,7 +93,7 @@ function SuccessContent() {
           Your stay is locked in. We've also added a notification to your inbox.
         </p>
 
-        <div className="mt-6 rounded-2xl bg-white border border-stone-200 shadow-sm overflow-hidden text-left">
+        <div className="mt-6 rounded-card bg-white border border-border shadow-card overflow-hidden text-left">
           {booking.hotel_image && (
             <img
               src={booking.hotel_image}
