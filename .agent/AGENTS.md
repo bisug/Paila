@@ -55,10 +55,20 @@ The app runs with **zero env vars**: `src/integrations/supabase/client.ts` provi
 - **No nested interactive elements**: buttons must not contain buttons/links (a11y, enforced by e2e).
 - **Commits**: conventional-commit style (`feat:`, `fix:`, `chore:`, `ci:`, `docs:`, `build:`), one focused change per commit.
 
+## Security (mandatory)
+
+- **Secrets**: never commit secrets; env vars only (`.env.local`, gitignored). `SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY` are server-only — never expose via `NEXT_PUBLIC_*` or client bundles. New server env reads go in `src/lib/server/` or route handlers, and must be added to `.env.example`.
+- **Auth/authz**: every new route under `(app)`/`(admin)` inherits `src/proxy.ts` guards — verify it. Server actions must re-check auth server-side (`requireAdmin()` for admin paths); never trust client-supplied user IDs for ownership checks.
+- **RLS**: new tables need RLS policies in a migration; owner-only by default. Never use the service role key to bypass RLS on client-reachable paths.
+- **CSP**: keep `next.config.ts` strict; no new `unsafe-*` sources, no inline scripts. New external domains (maps, fonts, APIs) must be whitelisted explicitly.
+- **Input**: validate at trust boundaries (route handlers, server actions). No `dangerouslySetInnerHTML` without sanitization.
+- **Supply chain**: run `bun audit` after any dependency change; fix or justify findings before committing. Prefer `bun audit fix` within ranges; cross-major bumps need a test pass.
+- **Demo mode**: `isDemoEnabled()` flags must stay dev-only (`NODE_ENV !== "production"` guard in `src/lib/server/guardrails.ts`) — never let demo shortcuts ship to production.
+
 ## Gotchas
 
 - Repo root is the nested `Paila/` folder — terminals often land in the parent; `cd Paila` first.
 - `next.config.ts` changes need a dev-server restart.
-- `AGENTS.md`/`CLAUDE.md` are gitignored; `next dev` regenerates `AGENTS.md` stubs, so keep custom content merged in.
+- Root `AGENTS.md`/`CLAUDE.md` are gitignored stubs; `next dev` regenerates them. The real guide is this file (`.agent/AGENTS.md`, tracked).
 - Playwright `webServer` runs `bun run dev` and reuses an existing server on :3000 — kill stray dev servers if e2e behaves oddly.
 - `test-results/` and `playwright-report/` are gitignored; CI uploads them as artifacts on failure.

@@ -4,6 +4,9 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+### Changed
+- `.agent/AGENTS.md`: added mandatory Security section (secrets, auth/RLS, CSP, input validation, `bun audit` on dep changes, demo-mode guards).
+
 ### Fixed
 - `bun audit` clean: bumped transitive `brace-expansion` 5.0.7 → 5.0.9 (2 high DoS advisories, via eslint/minimatch).
 
