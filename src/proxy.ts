@@ -4,6 +4,22 @@ import { isSupabaseConfigured } from "@/lib/server/guardrails";
 
 const ADMIN_PREFIX = "/admin";
 
+// Route prefixes served by the (app) route group — the authenticated experience.
+const APP_PREFIXES = [
+  "/booking",
+  "/guide",
+  "/guides",
+  "/hotels",
+  "/impact",
+  "/map",
+  "/notifications",
+  "/preferences",
+  "/profile",
+  "/scan",
+  "/talk",
+  "/transport",
+];
+
 export async function proxy(request: NextRequest) {
   const response = NextResponse.next({ request });
 
@@ -33,7 +49,15 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (request.nextUrl.pathname.startsWith(ADMIN_PREFIX)) {
+  const { pathname } = request.nextUrl;
+
+  // Authenticated (app) routes require a session; send visitors to login.
+  const isAppRoute = pathname === "/" || APP_PREFIXES.some((p) => pathname.startsWith(p));
+  if (isAppRoute && !user) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (pathname.startsWith(ADMIN_PREFIX)) {
     if (!user) {
       return NextResponse.redirect(new URL("/", request.url));
     }
