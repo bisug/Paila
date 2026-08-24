@@ -980,59 +980,59 @@ function LocalEventsSection({
               return (
                 <div
                   key={`rec-${ev.id}`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={openCard}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      openCard();
-                    }
-                  }}
-                  className="relative shrink-0 w-[180px] text-left bg-white rounded-xl border border-stone-100 shadow-card overflow-hidden active:scale-[0.98] transition-transform cursor-pointer"
+                  className="relative shrink-0 w-[180px] text-left bg-white rounded-xl border border-stone-100 shadow-card overflow-hidden"
                 >
                   <button
                     type="button"
                     aria-label={`Not interested in ${ev.title}`}
                     title="Not interested"
-                    onClick={(e) => {
-                      e.stopPropagation();
+                    onClick={() => {
                       handleDismiss({ id: ev.id, category: ev.category, title: ev.title });
                     }}
                     className="absolute top-1 right-1 z-10 grid place-items-center w-9 h-9 rounded-full bg-white/90 text-stone-600 border border-stone-200 shadow-sm hover:bg-white hover:text-stone-900"
                   >
                     <X size={12} strokeWidth={2.5} />
                   </button>
-                  <div className="relative h-16">
-                    <img
-                      src={imageSrc(ev.image)}
-                      alt={ev.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <span
-                      className={`absolute top-1 left-1 inline-block rounded-full border px-1.5 py-0 text-[9px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
-                    >
-                      {ev.category}
-                    </span>
-                  </div>
-                  <div className="p-2">
-                    <p className="text-[11px] font-bold text-stone-900 leading-tight line-clamp-2">
-                      {ev.title}
-                    </p>
-                    <p className="mt-1 text-[10px] text-stone-500">
-                      {f.date} ·{" "}
-                      {ev.distanceKm < 1
-                        ? `${Math.round(ev.distanceKm * 1000)} m`
-                        : `${ev.distanceKm.toFixed(1)} km`}
-                    </p>
-                    {why && <p className="mt-1 text-[9px] font-semibold text-terracotta">{why}</p>}
+                  <button
+                    type="button"
+                    onClick={openCard}
+                    aria-label={`View ${ev.title}`}
+                    className="block w-full text-left active:scale-[0.98] transition-transform cursor-pointer"
+                  >
+                    <div className="relative h-16">
+                      <img
+                        src={imageSrc(ev.image)}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                      <span
+                        className={`absolute top-1 left-1 inline-block rounded-full border px-1.5 py-0 text-[9px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
+                      >
+                        {ev.category}
+                      </span>
+                    </div>
+                    <div className="p-2 pb-1">
+                      <p className="text-[11px] font-bold text-stone-900 leading-tight line-clamp-2">
+                        {ev.title}
+                      </p>
+                      <p className="mt-1 text-[10px] text-stone-500">
+                        {f.date} ·{" "}
+                        {ev.distanceKm < 1
+                          ? `${Math.round(ev.distanceKm * 1000)} m`
+                          : `${ev.distanceKm.toFixed(1)} km`}
+                      </p>
+                      {why && (
+                        <p className="mt-1 text-[9px] font-semibold text-terracotta">{why}</p>
+                      )}
+                    </div>
+                  </button>
+                  <div className="px-2 pb-2">
                     <button
                       type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         handleDismiss({ id: ev.id, category: ev.category, title: ev.title });
                       }}
-                      className="mt-1.5 text-[9px] font-semibold text-stone-400 hover:text-terracotta hover:underline"
+                      className="text-[9px] font-semibold text-stone-400 hover:text-terracotta hover:underline"
                     >
                       Not interested
                     </button>
