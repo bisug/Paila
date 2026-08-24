@@ -117,6 +117,7 @@ export function ScannerView() {
   const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
   const [hasTorch, setHasTorch] = useState(false);
   const [torchOn, setTorchOn] = useState(false);
+  const [qrData, setQrData] = useState<string | null>(null);
 
   // AI Scan state
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -126,10 +127,15 @@ export function ScannerView() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraRequestRef = useRef(0);
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+  const lastScanAtRef = useRef(0);
 
   // Stop camera function
   function stopCamera() {
+    cameraRequestRef.current += 1;
     if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    requestRef.current = null;
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach((track) => track.stop());
@@ -138,6 +144,7 @@ export function ScannerView() {
     setIsScanning(false);
     setTorchOn(false);
     setHasTorch(false);
+    contextRef.current = null;
   }
 
   function tick() {
@@ -145,16 +152,27 @@ export function ScannerView() {
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const ctx =
+      contextRef.current ?? canvas.getContext("2d", { willReadFrequently: true });
 
     if (!ctx || !(window as any).jsQR) {
+      setCameraError("QR scanner is still loading. Please try again.");
+      return;
+    }
+    contextRef.current = ctx;
+
+    const now = performance.now();
+    if (now - lastScanAtRef.current < 80) {
       requestRef.current = requestAnimationFrame(tick);
       return;
     }
+    lastScanAtRef.current = now;
 
     if (video.readyState === video.HAVE_ENOUGH_DATA) {
-      canvas.height = video.videoHeight;
-      canvas.width = video.videoWidth;
+      if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth;
+      }
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -163,10 +181,10 @@ export function ScannerView() {
       });
 
       if (code && code.data) {
-        // QR Code detected
         stopCamera();
         setSheetOpen(true);
-        setAiResult(null); // Ensure AI result is empty for QR
+        setAiResult(null);
+        setQrData(code.data);
         return;
       }
     }
@@ -179,16 +197,21 @@ export function ScannerView() {
     setCameraError("");
     setSheetOpen(false);
     setAiResult(null);
+    setQrData(null);
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setCameraError("Camera API not supported in this browser.");
       return;
     }
 
+    const requestId = cameraRequestRef.current;
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: mode } })
       .then((stream) => {
-        if (!videoRef.current) return;
+        if (requestId !== cameraRequestRef.current || !videoRef.current) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
         videoRef.current.srcObject = stream;
         videoRef.current.setAttribute("playsinline", "true");
         videoRef.current.play();
@@ -214,9 +237,7 @@ export function ScannerView() {
       });
   }
 
-  // Auto-start camera on mount
   useEffect(() => {
-    startScanner();
     return () => stopCamera();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -426,7 +447,14 @@ export function ScannerView() {
         {/* Loading state message */}
         {!isScanning && !cameraError && !isAnalyzing && (
           <p className="absolute bottom-4 left-0 right-0 text-center text-xs font-semibold text-white/70 bg-stone-900/40 py-1 backdrop-blur-sm">
-            Initializing camera...
+            Camera is off. Start when you are ready to scan.
+            <button
+              type="button"
+              onClick={() => startScanner()}
+              className="mx-auto mt-3 flex min-h-11 items-center justify-center gap-2 rounded-xl bg-terracotta px-5 py-3 text-sm font-bold text-white"
+            >
+              <Camera size={16} /> Start camera
+            </button>
           </p>
         )}
       </div>
@@ -452,7 +480,7 @@ export function ScannerView() {
                 {aiResult ? "Heritage Identified" : "Village Council Match"}
               </p>
               <h3 className="text-xl font-bold text-stone-900">
-                {aiResult ? aiResult.name : "Ama Sita — Verified ✓"}
+                {aiResult ? aiResult.name : "QR code scanned"}
               </h3>
             </div>
             <button
@@ -503,9 +531,12 @@ export function ScannerView() {
                 )}
               </div>
             </div>
-          ) : (
-            // Legacy QR Code Result
+          ) : qrData ? (
             <>
+              <div className="mb-4 rounded-xl border border-stone-100 bg-stone-50 p-4">
+                <h4 className="mb-2 font-bold text-stone-900">Scanned content</h4>
+                <p className="break-words text-sm text-stone-700">{qrData}</p>
+              </div>
               <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl bg-stone-100 p-1">
                 {(["profile", "ledger"] as LedgerTab[]).map((t) => (
                   <button
@@ -522,7 +553,7 @@ export function ScannerView() {
               </div>
               {tab === "profile" ? <VerifiedProfile /> : <FairPriceLedger />}
             </>
-          )}
+          ) : null}
         </div>
       )}
     </div>
