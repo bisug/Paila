@@ -151,7 +151,6 @@ paila/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml              # CI pipeline (typecheck → lint → build)
-├── audit/                      # UI/UX audit & remediation logs
 ├── e2e/                        # Playwright smoke tests (17 routes, mobile overflow, focus)
 ├── supabase/
 │   └── migrations/             # PostgreSQL schema migrations
@@ -391,7 +390,7 @@ Paila directly addresses:
 | Priority | Feature |
 |---|---|
 | 🔜 Near-term | Production-grade guide and homestay onboarding with real verification |
-| 🔜 Near-term | PWA with offline map caching (Service Workers) — mobile-first responsive pass completed (see `audit/responsiveness.md`) |
+| 🔜 Near-term | PWA with offline map caching (Service Workers) — mobile-first responsive pass completed |
 | 🔜 Near-term | Local payment gateway integration (eSewa, Khalti, ConnectIPS) |
 | 🔮 Future | Personalised itinerary generation via AI |
 | 🔮 Future | Community review and rating system with anti-fraud measures |
