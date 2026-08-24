@@ -240,7 +240,7 @@ Language detection is automatic via the browser, with a manual switcher availabl
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) **v22** or later
-- [npm](https://www.npmjs.com/) **v10** or later
+- [Bun](https://bun.sh/) **v1.4** or later (`curl -fsSL https://bun.sh/install | bash`)
 - A [Supabase](https://supabase.com/) project (free tier is sufficient)
 - A [Mapbox](https://account.mapbox.com/) account with a public access token
 - An [OpenAI](https://platform.openai.com/) API key (for AI translation and concierge features)
@@ -256,7 +256,7 @@ git clone https://github.com/bisug/Paila.git
 cd Paila
 
 # 2. Install dependencies
-npm install
+bun install
 
 # 3. Set up environment variables
 cp .env.example .env
@@ -268,7 +268,7 @@ cp .env.example .env
 # supabase/migrations/20260713090000_admin_promotion.sql
 
 # 5. Start the development server
-npm run dev
+bun run dev
 ```
 
 The application will be available at **[http://localhost:3000](http://localhost:3000)**.
@@ -300,13 +300,13 @@ Copy `.env.example` to `.env` and populate the following:
 
 | Command | Description |
 |---|---|
-| `npm run dev` | Start the development server with hot reload |
-| `npm run build` | Build the application for production |
-| `npm run start` | Start the production server (after `build`) |
-| `npm run lint` | Run ESLint across the codebase |
-| `npm run typecheck` | Run TypeScript type checking (`tsc --noEmit`) |
-| `npm run format` | Format all files with Prettier |
-| `npm run test:e2e` | Run end-to-end tests with Playwright |
+| `bun run dev` | Start the development server with hot reload |
+| `bun run build` | Build the application for production |
+| `bun run start` | Start the production server (after `build`) |
+| `bun run lint` | Run ESLint across the codebase |
+| `bun run typecheck` | Run TypeScript type checking (`tsc --noEmit`) |
+| `bun run format` | Format all files with Prettier |
+| `bun run test:e2e` | Run end-to-end tests with Playwright |
 
 ---
 
@@ -327,7 +327,7 @@ Vercel will automatically detect Next.js. The defaults are correct:
 | Setting | Value |
 |---|---|
 | Framework Preset | Next.js |
-| Build Command | `npm run build` |
+| Build Command | `bun run build` |
 | Output Directory | `.next` |
 | Root Directory | `./` |
 

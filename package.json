@@ -2,6 +2,7 @@
   "name": "paila",
   "private": true,
   "type": "module",
+  "packageManager": "bun@1.4.0",
   "sideEffects": false,
   "scripts": {
     "dev": "next dev",
