@@ -5,6 +5,7 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 ## [Unreleased]
 
 ### Changed
+- Updated all dependencies to latest: `@supabase/ssr` 0.12.5, `@supabase/supabase-js` 2.112.4, `lucide-react` 1.34.0, plus transitive bumps (browserslist data, eslint tooling, babel 7.x). `bun outdated` and `bun audit` clean.
 - `.agent/AGENTS.md`: added mandatory Security section (secrets, auth/RLS, CSP, input validation, `bun audit` on dep changes, demo-mode guards).
 
 ### Fixed
