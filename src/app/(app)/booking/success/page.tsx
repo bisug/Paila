@@ -29,6 +29,7 @@ function SuccessContent() {
   const router = useRouter();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -51,6 +52,8 @@ function SuccessContent() {
             setError(e instanceof Error ? e.message : "Failed to load");
           }
         }
+      } finally {
+        if (!cancelled) setLoaded(true);
       }
     })();
     return () => {
@@ -75,6 +78,21 @@ function SuccessContent() {
   }
 
   if (!booking) {
+    if (loaded) {
+      return (
+        <div className="min-h-screen grid place-items-center px-4 text-center">
+          <div>
+            <p className="text-stone-600">We couldn't find that booking.</p>
+            <Link
+              href="/profile/bookings"
+              className="mt-4 inline-block rounded-xl bg-terracotta px-4 py-3 text-sm font-bold text-white"
+            >
+              My bookings
+            </Link>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen grid place-items-center">
         <Loader2 className="animate-spin text-stone-400" />
