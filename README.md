@@ -258,8 +258,8 @@ cd Paila
 bun install
 
 # 3. Set up environment variables
-cp .env.example .env
-# Edit .env and fill in your values (see table below)
+cp .env.example .env.local
+# Edit .env.local and fill in your values (see table below)
 
 # 4. Apply the database schema
 # Go to your Supabase project → SQL Editor and run, in order:
@@ -279,9 +279,7 @@ Copy `.env.example` to `.env` and populate the following:
 | Variable | Required | Description |
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Your Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ✅ | Supabase anon / publishable key |
-| `NEXT_PUBLIC_SUPABASE_PROJECT_ID` | ⬜ | Supabase project ID |
-| `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY` | ⬜ | Server-side Supabase credentials (used by API routes) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anon key (enables real auth; without it the app runs in demo mode) |
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Service role key — **server-side only, never expose to client** |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | ✅ | Mapbox public token (maps, geocoding, directions) |
 | `MAPBOX_SECRET_TOKEN` | ⬜ | Server-side Mapbox token, if you restrict the public token |
