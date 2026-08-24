@@ -20,27 +20,43 @@ export default function NotificationsPage() {
   const router = useRouter();
   const [items, setItems] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) {
-        router.push("/login");
-        return;
-      }
-      const { data } = await supabase
-        .from("notifications")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(100);
-      setItems((data ?? []) as Notification[]);
-      setLoading(false);
-      const unreadIds = ((data as Notification[]) ?? []).filter((n) => !n.read).map((n) => n.id);
-      if (unreadIds.length > 0) {
-        await supabase.from("notifications").update({ read: true }).in("id", unreadIds);
+      try {
+        const { data: u } = await supabase.auth.getUser();
+        if (!u.user) {
+          router.push("/login");
+          return;
+        }
+        const { data, error: fetchError } = await supabase
+          .from("notifications")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(100);
+        if (fetchError) throw fetchError;
+        setItems((data ?? []) as Notification[]);
+      } catch {
+        setError("Notifications could not be loaded. Please try again.");
+      } finally {
+        setLoading(false);
       }
     })();
   }, [router]);
+
+  const markAsRead = async (id: string) => {
+    const previous = items;
+    setItems((current) => current.map((item) => (item.id === id ? { ...item, read: true } : item)));
+    const { error: updateError } = await supabase
+      .from("notifications")
+      .update({ read: true })
+      .eq("id", id);
+    if (updateError) {
+      setItems(previous);
+      setError("This notification could not be marked as read.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-stone-50 pb-12">
@@ -53,6 +69,11 @@ export default function NotificationsPage() {
         </h1>
       </header>
       <div className="px-4 pt-4">
+        {error && (
+          <p role="alert" className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </p>
+        )}
         {loading ? (
           <div className="flex justify-center py-12">
             <Loader2 className="animate-spin text-stone-400" />
@@ -83,12 +104,26 @@ export default function NotificationsPage() {
                   {n.link ? (
                     <Link
                       href={n.link}
+                      onClick={() => {
+                        if (!n.read) void markAsRead(n.id);
+                      }}
                       className="block rounded-card transition hover:shadow-card-md"
                     >
                       {card}
                     </Link>
                   ) : (
-                    card
+                    <div>
+                      {card}
+                      {!n.read && (
+                        <button
+                          type="button"
+                          onClick={() => void markAsRead(n.id)}
+                          className="mt-1 min-h-11 px-2 text-xs font-semibold text-pine underline underline-offset-2"
+                        >
+                          Mark as read
+                        </button>
+                      )}
+                    </div>
                   )}
                 </li>
               );
