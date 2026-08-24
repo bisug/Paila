@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { TFunction } from "i18next";
-import { ChevronRight, Footprints, Hotel as HotelIcon, Menu, Shield, User, X } from "lucide-react";
+import { Bell, ChevronRight, Footprints, Hotel as HotelIcon, Menu, Shield, User, X } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SidebarGuidesGroup } from "@/components/layout/SidebarGuidesGroup";
+import { supabase } from "@/integrations/supabase/client";
 import { navItems, navKeyFor } from "@/lib/data";
 
 type SyncState = {
@@ -46,6 +48,43 @@ function hotelActive(pathname: string) {
 
 function navLabel(t: TFunction, href: string, fallback: string) {
   return t(`nav.${navKeyFor(href)}`, fallback);
+}
+
+function useUnreadCount() {
+  const [unread, setUnread] = useState(0);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { count } = await supabase
+        .from("notifications")
+        .select("*", { count: "exact", head: true })
+        .eq("read", false);
+      if (!cancelled) setUnread(count ?? 0);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  return unread;
+}
+
+function NotificationsBell({ t, label }: { t: TFunction; label?: string }) {
+  const unread = useUnreadCount();
+  return (
+    <Link
+      href="/notifications"
+      aria-label={t("nav.notifications", "Notifications")}
+      title={label ?? t("nav.notifications", "Notifications")}
+      className="relative grid h-11 w-11 place-items-center rounded-lg text-stone-500 hover:bg-stone-100 transition-colors"
+    >
+      <Bell size={20} strokeWidth={1.8} />
+      {unread > 0 && (
+        <span className="absolute top-1.5 right-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white">
+          {unread > 9 ? "9+" : unread}
+        </span>
+      )}
+    </Link>
+  );
 }
 
 function SyncStatusBadge({
@@ -176,7 +215,8 @@ export function DesktopSidebar({
         {!minimized && (
           <>
             <span className="text-lg font-bold text-stone-900 tracking-tight">Paila</span>
-            <div className="ml-auto">
+            <div className="ml-auto flex items-center gap-1">
+              <NotificationsBell t={t} />
               <SyncStatusBadge
                 isOffline={isOffline}
                 label={isOffline ? t("status.offline") : t("status.online")}
@@ -296,6 +336,7 @@ export function MobileHeader({
       {title && <span className="hidden md:block text-base font-bold text-stone-900">{title}</span>}
 
       <div className="ml-auto flex items-center gap-2">
+        <NotificationsBell t={t} />
         <button
           onClick={onToggleDrawer}
           className="md:hidden h-11 w-11 flex items-center justify-center rounded-lg text-stone-500 hover:bg-stone-100 transition-colors"
