@@ -6,7 +6,7 @@ import { Compass, MapPin, BadgeCheck, Loader2, Bookmark, BookmarkCheck } from "l
 import { supabase } from "@/integrations/supabase/client";
 import { guides as mockGuides } from "@/lib/data";
 import { useGuideBookmarks } from "@/hooks/use-guide-bookmarks";
-import { PageFrame, PageHeader, Surface } from "@/components/ui/page";
+import { PageFrame, PageHeader, Surface } from "@/components/ui/page-primitives";
 
 type GuideRow = {
   id: string;
