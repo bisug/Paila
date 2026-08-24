@@ -27,7 +27,6 @@ type DesktopSidebarProps = ShellNavProps &
 type MobileHeaderProps = SyncState & {
   title: string;
   t: TFunction;
-  onOpenSos: () => void;
   onToggleDrawer: () => void;
 };
 
@@ -277,7 +276,6 @@ export function MobileHeader({
   t,
   isOffline,
   onOpenSync,
-  onOpenSos,
   onToggleDrawer,
 }: MobileHeaderProps) {
   return (
@@ -299,13 +297,6 @@ export function MobileHeader({
 
       <div className="ml-auto flex items-center gap-2">
         <button
-          onClick={onOpenSos}
-          className="md:hidden h-11 w-11 grid place-items-center rounded-full bg-red-600 text-white ring-2 ring-white shadow-sm hover:bg-red-700 transition-colors"
-          aria-label={t("actions.sos")}
-        >
-          <Shield size={16} strokeWidth={2.5} />
-        </button>
-        <button
           onClick={onToggleDrawer}
           className="md:hidden h-11 w-11 flex items-center justify-center rounded-lg text-stone-500 hover:bg-stone-100 transition-colors"
           aria-label={t("actions.menu")}
@@ -314,6 +305,19 @@ export function MobileHeader({
         </button>
       </div>
     </header>
+  );
+}
+
+export function MobileSosFab({ t, onOpenSos }: { t: TFunction; onOpenSos: () => void }) {
+  return (
+    <button
+      onClick={onOpenSos}
+      className="md:hidden landscape-hide fixed right-4 z-40 h-14 w-14 grid place-items-center rounded-full bg-red-600 text-white shadow-float ring-2 ring-white hover:bg-red-700 active:scale-95 transition-all"
+      aria-label={t("actions.sos")}
+      style={{ bottom: "calc(5rem + max(0px, env(safe-area-inset-bottom)))" }}
+    >
+      <Shield size={22} strokeWidth={2.5} />
+    </button>
   );
 }
 

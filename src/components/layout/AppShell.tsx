@@ -12,6 +12,7 @@ import {
   MobileBottomNav,
   MobileDrawer,
   MobileHeader,
+  MobileSosFab,
 } from "@/components/layout/AppShellNavigation";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -90,7 +91,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           t={t}
           isOffline={isOffline}
           onOpenSync={() => setSyncModalOpen(true)}
-          onOpenSos={() => setSosOpen(true)}
           onToggleDrawer={() => setSidebarOpen(!sidebarOpen)}
         />
 
@@ -100,6 +100,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <MobileBottomNav pathname={pathname} t={t} />
+
+      <MobileSosFab t={t} onOpenSos={() => setSosOpen(true)} />
 
       {sidebarOpen && (
         <MobileDrawer
