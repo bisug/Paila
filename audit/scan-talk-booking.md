@@ -47,13 +47,18 @@ Design system: `UI_UX_DESIGN_SYSTEM.md`, `src/styles.css`. Tokens (`rounded-card
 | TranslatorView | listening aria-live | Fixed → added `aria-live="polite"` to status text |
 | TranslatorView | speech unsupported | Fixed → Sonner `toast` instead of `window.alert` |
 | TranslatorView | swap/play targets | Fixed → `h-11 w-11` + grid column `44px` |
-| TranslatorView | clear target | Fixed → `h-9 w-9` |
+| TranslatorView | clear target | Fixed → `h-9 w-9`, later `h-11 w-11` (responsiveness pass) |
 | BookingModal | selected method | Fixed → `border-primary ring-2 ring-primary/10` |
 | BookingModal | login focus | Fixed → `focus:border-terracotta focus:ring-2 focus:ring-terracotta/30` |
 | BookingModal | back arrows | Fixed → `aria-label="Go back"` |
 | Booking success | card shadow | Fixed → `rounded-card shadow-card` |
 | Booking success | error CTA target | Fixed → `py-3` (44px) |
 | Booking success | no-data spin | Deferred → requires data-fetch/error-state logic change (out of UI-only scope); flagged for follow-up |
+
+## Follow-up (responsiveness pass, see `audit/responsiveness.md`)
+- **BookingModal off-screen bug**: overlays were `absolute inset-0` inside the page container, so the modal anchored to page content and vanished when scrolled. Fixed → `fixed inset-0` + desktop centering.
+- **ScannerView viewfinder stretch**: fallback `<img>` in flex flow stretched the container to 1350px on desktop. Fixed → absolutely positioned.
+- **ScannerView result sheet**: `absolute` → `fixed` (same scroll-anchoring class of bug).
 
 ## Deferred (with reason)
 - **Booking success no-data forever-spin**: resolving needs changing `getBooking` error handling / adding an empty state, which touches data-fetching logic explicitly out of scope. Flagged for a follow-up ticket.

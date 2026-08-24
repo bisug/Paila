@@ -48,7 +48,7 @@ Severity: High = broken a11y/interaction; Medium = consistency/contrast; Low = p
 
 ## Resolution summary
 
-- Fixed: 30
+- Fixed: 30 (+ responsiveness pass follow-ups: preferences back button `w-11 h-11`, "Back to feed" link `min-h-[44px]`, header `sticky top-14 md:top-16` — see `audit/responsiveness.md`)
 - Deferred: 2
   - `account/page` loading message — spinner is an accepted app-wide pattern; label not added to keep parity with other screens.
   - `preferences/page` filter/reset chips touch target — small chip affordance consistent with the rest of the app; enlarging to 44px would break the compact filter row layout.

@@ -43,7 +43,8 @@ unread pine tint, pine/terracotta brand accents) preserved.
 
 - **Found:** 23 distinct issues (4 High, 9 Medium, 10 Low).
 - **Fixed:** 19 (all High + most Medium/Low).
-- **Deferred:** 4 — all Low, with reasons: (1) touch-target < 44px is system-wide and should be fixed at the `.input`/`Button` token level, not per-file; (2) unread marker is a transient categorical accent; (3) impact loading state needs a data source, out of scope; (4) impact/page.tsx is a pass-through.
+- **Deferred:** 4 — all Low, with reasons: (1) touch-target < 44px is system-wide and should be fixed at the `.input`/`Button` token level, not per-file (the app-wide touch-target pass in `audit/responsiveness.md` raised individual controls but deliberately left the shared `.input`/`Button` tokens alone); (2) unread marker is a transient categorical accent; (3) impact loading state needs a data source, out of scope; (4) impact/page.tsx is a pass-through.
+- **Follow-up:** notifications back link and header stacking were reworked in the responsiveness pass (`h-11 w-11` target, `sticky top-14 md:top-16`) — see `audit/responsiveness.md`.
 
 ## Brand assumptions (flagged for owner confirmation)
 

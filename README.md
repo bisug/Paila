@@ -8,7 +8,7 @@
   <p>
     <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js" alt="Next.js" /></a>
     <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase" alt="Supabase" /></a>
-    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-6-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript" /></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-7-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript" /></a>
     <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-v4-06B6D4?style=for-the-badge&logo=tailwindcss" alt="Tailwind CSS" /></a>
     <a href="https://junctionxkathmandu.com/past-events/2026"><img src="https://img.shields.io/badge/JunctionX-Kathmandu_2026-blue?style=for-the-badge" alt="JunctionX Kathmandu 2026" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="MIT License" /></a>
@@ -65,7 +65,7 @@ The platform was built as a direct response to a challenge from the **[JunctionX
 |---|---|
 | 🏨 **Hotel & Homestay Discovery** | Browse and book local accommodations with verified listings |
 | 🧭 **Guide Verification** | Connect with trusted guides via a formal ID-based verification workflow |
-| 🗺️ **Interactive Footprint Map** | Explore Nepal's destinations with an embedded Google Maps experience |
+| 🗺️ **Interactive Footprint Map** | Explore Nepal's destinations with an embedded Mapbox experience |
 | 🤝 **AI Translator** | Break the language barrier with real-time AI-powered translation |
 | 📷 **ID Scanner** | Secure profile and booking flows with document scanning |
 | 🚌 **Transport Finder** | Discover local transport options for seamless travel |
@@ -85,19 +85,18 @@ The platform was built as a direct response to a challenge from the **[JunctionX
 | Layer | Technology |
 |---|---|
 | Framework | [Next.js 16](https://nextjs.org/) (App Router) + [React 19](https://react.dev/) |
-| Language | [TypeScript 6](https://www.typescriptlang.org/) |
+| Language | [TypeScript 7](https://www.typescriptlang.org/) |
 | Backend / Database | [Supabase](https://supabase.com/) (PostgreSQL, Auth, Storage, SSR) |
 | Styling | [Tailwind CSS v4](https://tailwindcss.com/), [Shadcn/UI](https://ui.shadcn.com/), [Radix UI](https://www.radix-ui.com/) |
 | State Management | [TanStack React Query v5](https://tanstack.com/query/latest) |
-| Forms & Validation | [React Hook Form](https://react-hook-form.com/) + [Zod v4](https://zod.dev/) |
+| Validation | [Zod v4](https://zod.dev/) |
 | Icons | [Lucide React](https://lucide.dev/) |
-| Charts | [Recharts](https://recharts.org/) |
 
 ### Integrations
 
 | Integration | Purpose |
 |---|---|
-| [Google Maps API](https://developers.google.com/maps) | Interactive maps and geolocation |
+| [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) (`react-map-gl`) | Interactive maps, geocoding, and directions |
 | [OpenAI API](https://platform.openai.com/) | AI translation and concierge features |
 | [i18next](https://www.i18next.com/) | Internationalisation (25 locales) |
 
@@ -120,7 +119,7 @@ Browser / Client
       │
       ▼
 ┌─────────────────────────────┐
-│   Next.js Edge Middleware   │  ← Session validation, route protection
+│   Next.js Proxy (proxy.ts)  │  ← Session validation, route protection
 └─────────────┬───────────────┘
               │
     ┌─────────┴──────────┐
@@ -152,9 +151,12 @@ paila/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml              # CI pipeline (typecheck → lint → build)
+├── audit/                      # UI/UX audit & remediation logs
+├── e2e/                        # Playwright smoke tests (17 routes, mobile overflow, focus)
 ├── supabase/
 │   └── migrations/             # PostgreSQL schema migrations
 ├── src/
+│   ├── proxy.ts                # Next.js 16 proxy (session validation, route protection)
 │   ├── app/                    # Next.js App Router root
 │   │   ├── (admin)/            # Route group: Admin dashboard & guide management
 │   │   ├── (app)/              # Route group: Authenticated user experience
@@ -181,7 +183,6 @@ paila/
 │   ├── components/
 │   │   ├── layout/             # Shell, sidebar, header components
 │   │   ├── modals/             # Dialog and modal components
-│   │   ├── navigation/         # Navigation bar components
 │   │   ├── ui/                 # Shadcn/UI base component library
 │   │   ├── views/              # Page-level feature view components
 │   │   │   ├── FootprintMap.tsx
@@ -194,7 +195,7 @@ paila/
 │   │   │   ├── ImpactDashboard.tsx
 │   │   │   └── AccountClient.tsx
 │   │   └── LanguageSwitcher.tsx
-│   ├── hooks/                  # Custom React hooks (useAuth, useGeolocation, …)
+│   ├── hooks/                  # Custom React hooks (useGeolocation, useGuideBookmarks, …)
 │   ├── integrations/           # SDK initialisation (Supabase client, OpenAI)
 │   ├── lib/                    # Utility functions, helpers, and constants
 │   ├── locales/                # i18next translation files (25 languages)
@@ -221,7 +222,7 @@ Authentication is managed by **Supabase Auth** and integrated into Next.js via `
 
 1. **Sign-in methods:** Magic Link, Google OAuth, Phone OTP
 2. **Session management:** Supabase session cookies are read by both server components and API routes via the SSR helper
-3. **Route protection:** `middleware.ts` intercepts every request, validates the session cookie, and redirects unauthenticated users away from `(app)` and `(admin)` route groups
+3. **Route protection:** `src/proxy.ts` (the Next.js 16 proxy) intercepts every request, validates the session cookie, and redirects unauthenticated users away from `(app)` and `(admin)` route groups
 4. **Auth callback:** `/auth` handles OAuth redirects and token exchange
 
 ### Internationalisation
@@ -241,8 +242,11 @@ Language detection is automatic via the browser, with a manual switcher availabl
 - [Node.js](https://nodejs.org/) **v22** or later
 - [npm](https://www.npmjs.com/) **v10** or later
 - A [Supabase](https://supabase.com/) project (free tier is sufficient)
-- A [Google Cloud](https://console.cloud.google.com/) project with the **Maps JavaScript API** enabled
+- A [Mapbox](https://account.mapbox.com/) account with a public access token
 - An [OpenAI](https://platform.openai.com/) API key (for AI translation and concierge features)
+
+> [!TIP]
+> **No env vars? Demo mode.** The app boots without any environment variables — `src/integrations/supabase/client.ts` falls back to an in-memory Supabase stand-in so the full UI is explorable locally. AI/map features light up once real keys are set.
 
 ### Installation
 
@@ -259,8 +263,9 @@ cp .env.example .env
 # Edit .env and fill in your values (see table below)
 
 # 4. Apply the database schema
-# Go to your Supabase project → SQL Editor and run:
+# Go to your Supabase project → SQL Editor and run, in order:
 # supabase/migrations/20260530071945_baseline_schema.sql
+# supabase/migrations/20260713090000_admin_promotion.sql
 
 # 5. Start the development server
 npm run dev
@@ -276,8 +281,11 @@ Copy `.env.example` to `.env` and populate the following:
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Your Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ✅ | Supabase anon / publishable key |
+| `NEXT_PUBLIC_SUPABASE_PROJECT_ID` | ⬜ | Supabase project ID |
+| `SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY` | ⬜ | Server-side Supabase credentials (used by API routes) |
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Service role key — **server-side only, never expose to client** |
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | ✅ | Google Maps JavaScript API key |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | ✅ | Mapbox public token (maps, geocoding, directions) |
+| `MAPBOX_SECRET_TOKEN` | ⬜ | Server-side Mapbox token, if you restrict the public token |
 | `OPENAI_API_KEY` | ✅ | OpenAI API key (translation & AI concierge) |
 | `OPENAI_BASE_URL` | ⬜ | Override for OpenAI-compatible endpoints (defaults to `api.openai.com`) |
 | `OPENAI_MODEL` | ⬜ | Model to use (e.g. `gpt-4o`, `gpt-4o-mini`) |
@@ -334,7 +342,7 @@ Click **Deploy**. Vercel will build, optimise, and distribute the app globally v
 ### Post-Deployment Checklist
 
 - [ ] Add your Vercel domain to Supabase **Auth → URL Configuration → Site URL** and **Redirect URLs** (e.g. `https://your-app.vercel.app/auth`)
-- [ ] Restrict your Google Maps API key to your production domain via HTTP referrer rules in [Google Cloud Console](https://console.cloud.google.com/)
+- [ ] Restrict your Mapbox public token to your production domain via **Allowed URLs** in your [Mapbox account](https://account.mapbox.com/)
 - [ ] Enable the **Google** OAuth provider in Supabase Auth settings
 - [ ] (Optional) Add a custom domain in the Vercel project settings
 
@@ -348,7 +356,7 @@ Click **Deploy**. Vercel will build, optimise, and distribute the app globally v
 | Supabase RLS | Row-Level Security policies enforce data isolation at the database level |
 | Server-only keys | `SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY` are never exposed to the client bundle |
 | OAuth redirect validation | Only allow-listed URLs in Supabase Auth can receive auth callbacks |
-| Maps API restriction | Restrict `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` by HTTP referrer or IP |
+| Maps token restriction | Restrict `NEXT_PUBLIC_MAPBOX_TOKEN` by allowed URLs in the Mapbox account |
 | Demo scanner flag | `ENABLE_DEMO_SCAN` must remain unset in production — it bypasses real document verification |
 | Payment processing | Do not collect raw card data; use only verified payment SDK providers (e.g. eSewa, Khalti) |
 
@@ -383,7 +391,7 @@ Paila directly addresses:
 | Priority | Feature |
 |---|---|
 | 🔜 Near-term | Production-grade guide and homestay onboarding with real verification |
-| 🔜 Near-term | Mobile-responsive PWA with offline map caching (Service Workers) |
+| 🔜 Near-term | PWA with offline map caching (Service Workers) — mobile-first responsive pass completed (see `audit/responsiveness.md`) |
 | 🔜 Near-term | Local payment gateway integration (eSewa, Khalti, ConnectIPS) |
 | 🔮 Future | Personalised itinerary generation via AI |
 | 🔮 Future | Community review and rating system with anti-fraud measures |

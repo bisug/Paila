@@ -42,5 +42,11 @@ shared UI chrome.
 - Use tokens (`bg-primary`, `text-muted-foreground`, `border-border`) not hard-coded
   `stone-*`/`slate-*` for chrome. Categorical palette objects in views stay as authored.
 - Every interactive element gets a visible `focus-visible` ring.
-- Touch targets ≥ 44px on mobile; no horizontal overflow at 375px.
+- Touch targets ≥ 44px on mobile (`min-h-[44px]` / `h-11 w-11`); enforced app-wide in the
+  responsiveness pass (`audit/responsiveness.md`).
+- No horizontal overflow at 375px (mobile-first priority viewport).
+- Modal/sheet overlays must be `fixed inset-0` — never `absolute` inside a page container
+  (scroll-anchoring bug, see `audit/responsiveness.md`). Desktop dialogs center via
+  `justify-center md:items-center` with `md:max-w-md`+ panels.
+- Page-level sticky headers sit below the app shell header: `sticky top-14 md:top-16`.
 - No data-fetching / auth / Supabase / i18n-key changes.
