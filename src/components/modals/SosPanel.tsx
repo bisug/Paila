@@ -136,18 +136,32 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
     : null;
 
   const resolveCurrentLocation = async (): Promise<SosLocation> => {
-    // Demo Mode: Always resolve to a static demo location immediately
     setIsLocating(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // simulate slight delay
-    const nextLocation = {
-      label: "28.2096, 83.9586",
-      lat: 28.2096,
-      lng: 83.9586,
-      accuracyMeters: 10,
-    };
-    setLocation(nextLocation);
-    setIsLocating(false);
-    return nextLocation;
+    if (!navigator.geolocation) {
+      setIsLocating(false);
+      return DEFAULT_LOCATION;
+    }
+
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          const nextLocation = {
+            label: `${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`,
+            lat: coords.latitude,
+            lng: coords.longitude,
+            accuracyMeters: coords.accuracy,
+          };
+          setLocation(nextLocation);
+          setIsLocating(false);
+          resolve(nextLocation);
+        },
+        () => {
+          setIsLocating(false);
+          resolve(DEFAULT_LOCATION);
+        },
+        { enableHighAccuracy: true, timeout: 10_000, maximumAge: 30_000 },
+      );
+    });
   };
 
   const handleCaptureLocation = async () => {
