@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
+    const isDev = process.env.NODE_ENV === "development";
     const securityHeaders = [
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -24,11 +25,12 @@ const nextConfig: NextConfig = {
         key: "Content-Security-Policy",
         value: [
           "default-src 'self'",
-          "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://maps.googleapis.com https://maps.gstatic.com",
+          // 'unsafe-eval' only in dev: React devtools stack reconstruction needs it
+          `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://cdn.jsdelivr.net https://api.mapbox.com https://js.mapbox.com`,
           "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://maps.googleapis.com https://maps.gstatic.com https://*.googleapis.com https://*.gstatic.com",
+          "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://api.mapbox.com https://*.mapbox.com",
           "media-src 'self' blob:",
-          "connect-src 'self' https://*.supabase.co https://maps.googleapis.com https://maps.gstatic.com https://*.googleapis.com https://*.gstatic.com https://api.open-meteo.com https://open.er-api.com https://api.dictionaryapi.dev https://translate.googleapis.com",
+          "connect-src 'self' https://*.supabase.co https://api.mapbox.com https://events.mapbox.com https://api.open-meteo.com https://open.er-api.com https://api.dictionaryapi.dev https://translate.googleapis.com",
           "frame-ancestors 'none'",
           "base-uri 'self'",
           "form-action 'self'",

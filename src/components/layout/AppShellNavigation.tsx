@@ -55,24 +55,30 @@ function SyncStatusBadge({
   onOpenSync,
   compact = false,
 }: SyncState & { compact?: boolean; label: string }) {
+  if (compact) {
+    return (
+      <button
+        onClick={onOpenSync}
+        aria-label={label}
+        title={label}
+        className="grid h-6 w-6 place-items-center rounded-full transition-colors hover:bg-stone-100"
+      >
+        <span
+          className={`h-2 w-2 rounded-full ${isOffline ? "bg-amber-500 animate-pulse" : "bg-pine"}`}
+        />
+      </button>
+    );
+  }
   return (
     <button
       onClick={onOpenSync}
-      className={`flex items-center border font-bold uppercase tracking-wider transition-all select-none ${
-        compact
-          ? "gap-1 rounded-full px-2 py-1 text-[8px]"
-          : "gap-1 rounded-full px-2.5 py-1 text-[10px] hover:bg-pine-tint/80"
-      } ${
+      className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider transition-all select-none ${
         isOffline
           ? "bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100"
-          : "bg-pine-tint border-pine/20 text-pine"
+          : "bg-pine-tint border-pine/20 text-pine hover:bg-pine-tint/80"
       }`}
     >
-      <span
-        className={`rounded-full ${
-          compact ? "h-[3px] w-[3px]" : "h-1.5 w-1.5"
-        } ${isOffline ? "bg-amber-500 animate-pulse" : "bg-pine"}`}
-      />
+      <span className={`h-1.5 w-1.5 rounded-full ${isOffline ? "bg-amber-500 animate-pulse" : "bg-pine"}`} />
       {label}
     </button>
   );
