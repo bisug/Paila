@@ -15,9 +15,9 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { getPlaceContext } from "@/lib/api/place-context.functions";
-import { getNearbyPlaces } from "@/lib/api/nearby-places.functions";
-import { addCheckpoint, removeCheckpoint } from "@/lib/api/checkpoints.functions";
+import { getPlaceContext } from "@/lib/actions/place-context";
+import { getNearbyPlaces } from "@/lib/actions/nearby-places";
+import { addCheckpoint, removeCheckpoint } from "@/lib/checkpoints";
 import { CULTURE_TIPS } from "@/lib/data";
 import { calculateDistance } from "@/lib/location";
 import { LOCAL_EVENTS } from "@/components/views/HomeFeed";

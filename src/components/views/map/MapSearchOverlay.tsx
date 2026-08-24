@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { Search, Loader2, X, MapPin } from "lucide-react";
-import { searchPlaces } from "@/lib/api/search-places.functions";
+import { searchPlaces } from "@/lib/actions/search-places";
 
 export type PlaceResult = {
   id: string;

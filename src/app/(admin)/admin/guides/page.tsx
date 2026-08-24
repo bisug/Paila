@@ -10,7 +10,7 @@ import {
   reviewGuideVerification,
   saveAdminNotificationEmail,
   type GuideVerificationSubmission as Submission,
-} from "@/lib/api/admin-guide-verifications.functions";
+} from "@/lib/actions/admin-guide-verifications";
 
 export default function AdminGuidesPage() {
   const router = useRouter();

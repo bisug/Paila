@@ -15,7 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { type Hotel, nprToUsdCents } from "@/lib/hotels";
 import { supabase } from "@/integrations/supabase/client";
-import { checkoutHotel } from "@/lib/api/bookings.functions";
+import { checkoutHotel } from "@/lib/actions/bookings";
 import { toast } from "sonner";
 
 function imageSrc(image: Hotel["images"][number]) {

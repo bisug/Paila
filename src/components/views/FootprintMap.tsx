@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 import { pine, terracotta } from "@/lib/data";
 import { useGeolocationTracker } from "@/hooks/use-geolocation";
-import { listCheckpoints, addCheckpoint, removeCheckpoint } from "@/lib/api/checkpoints.functions";
-import { reverseGeocode } from "@/lib/api/geocode.functions";
+import { listCheckpoints, addCheckpoint, removeCheckpoint } from "@/lib/checkpoints";
+import { reverseGeocode } from "@/lib/actions/geocode";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PlaceDetailPanel, type FocusedPlace } from "@/components/views/map/PlaceDetailPanel";
 import { LocationPermissionBanner } from "@/components/views/map/LocationPermissionBanner";

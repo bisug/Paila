@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, Calendar, Users, MapPin, ChevronLeft, BookOpen, RotateCcw } from "lucide-react";
-import { listMyBookings } from "@/lib/api/bookings.functions";
+import { listMyBookings } from "@/lib/actions/bookings";
 import { supabase } from "@/integrations/supabase/client";
 
 type Booking = Awaited<ReturnType<typeof listMyBookings>>[number];

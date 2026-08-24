@@ -31,8 +31,8 @@ import {
 } from "@/lib/data";
 import { PageHeader, SectionHeader } from "@/components/ui/page-primitives";
 import { MAPBOX_TOKEN, decodePolyline } from "@/lib/mapbox-loader";
-import { forwardGeocode } from "@/lib/api/geocode.functions";
-import { computeRoute } from "@/lib/api/compute-route.functions";
+import { forwardGeocode } from "@/lib/actions/geocode";
+import { computeRoute } from "@/lib/actions/compute-route";
 
 type Bookable = RoadOption | FlightOption;
 
