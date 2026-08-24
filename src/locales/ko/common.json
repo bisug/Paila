@@ -8,7 +8,8 @@
     "talk": "대화",
     "transport": "교통",
     "impact": "영향",
-    "profile": "프로필"
+    "profile": "프로필",
+    "notifications": "알림"
   },
   "actions": {
     "sos": "긴급 SOS",

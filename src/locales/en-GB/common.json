@@ -8,7 +8,8 @@
     "talk": "Talk",
     "transport": "Transport",
     "impact": "Impact",
-    "profile": "Profile"
+    "profile": "Profile",
+    "notifications": "Notifications"
   },
   "actions": {
     "sos": "Emergency SOS",

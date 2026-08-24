@@ -15,6 +15,7 @@
     "transport": "Transit",
     "impact": "Impact",
     "profile": "Profile",
+    "notifications": "Notifications",
     "hotels": "Hotels"
   },
   "actions": {
