@@ -4,6 +4,9 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+### Fixed
+- `bun audit` clean: bumped transitive `brace-expansion` 5.0.7 → 5.0.9 (2 high DoS advisories, via eslint/minimatch).
+
 ### Changed
 - Moved AI agent guide to `.agent/AGENTS.md` (tracked in git); root `AGENTS.md`/`CLAUDE.md` stubs stay gitignored.
 - Moved `CHANGELOG.md` and `CONTRIBUTING.md` into `docs/`; AI agents must read and update docs with every change (rule in `.agent/AGENTS.md`).
