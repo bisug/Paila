@@ -3,7 +3,16 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { TFunction } from "i18next";
-import { Bell, ChevronRight, Footprints, Hotel as HotelIcon, Menu, Shield, User, X } from "lucide-react";
+import {
+  Bell,
+  ChevronRight,
+  Footprints,
+  Hotel as HotelIcon,
+  Menu,
+  Shield,
+  User,
+  X,
+} from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SidebarGuidesGroup } from "@/components/layout/SidebarGuidesGroup";
 import { supabase } from "@/integrations/supabase/client";
@@ -116,7 +125,9 @@ function SyncStatusBadge({
           : "bg-pine-tint border-pine/20 text-pine hover:bg-pine-tint/80"
       }`}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${isOffline ? "bg-amber-500 animate-pulse" : "bg-pine"}`} />
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${isOffline ? "bg-amber-500 animate-pulse" : "bg-pine"}`}
+      />
       {label}
     </button>
   );

@@ -178,7 +178,9 @@ export default function ProfileMenu() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-bold text-foreground">Admin · Guide reviews</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Approve or reject submissions</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Approve or reject submissions
+                  </p>
                 </div>
                 <ChevronRight size={18} className="text-stone-300" />
               </Link>
@@ -235,11 +237,7 @@ export default function ProfileMenu() {
             disabled={loggingOut}
             className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 text-red-600 px-4 py-3.5 text-sm font-bold hover:bg-red-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loggingOut ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <LogOut size={16} />
-            )}
+            {loggingOut ? <Loader2 size={16} className="animate-spin" /> : <LogOut size={16} />}
             {loggingOut ? "Logging out…" : "Log Out"}
           </button>
         </div>

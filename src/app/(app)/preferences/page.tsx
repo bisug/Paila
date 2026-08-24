@@ -235,7 +235,9 @@ export default function PreferencesPage() {
                 <div className="text-center py-10">
                   <Search size={20} className="mx-auto text-muted-foreground mb-2" />
                   <p className="text-xs font-bold text-muted-foreground">No matches found</p>
-                  <p className="text-[10px] text-muted-foreground mt-1">Try a different search term.</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Try a different search term.
+                  </p>
                 </div>
               )}
 
@@ -248,7 +250,9 @@ export default function PreferencesPage() {
                   </h2>
                 </div>
                 {filteredByCategory.length === 0 && filteredPenalties.length === 0 ? (
-                  <p className="text-xs text-muted-foreground italic">No category-level adjustments.</p>
+                  <p className="text-xs text-muted-foreground italic">
+                    No category-level adjustments.
+                  </p>
                 ) : (
                   <div className="space-y-2">
                     {filteredByCategory.map(([cat, events]) => (
@@ -270,7 +274,9 @@ export default function PreferencesPage() {
                       >
                         <div className="min-w-0">
                           <p className="text-xs font-bold text-foreground">{cat}</p>
-                          <p className="text-[10px] text-muted-foreground">Showing fewer of these.</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            Showing fewer of these.
+                          </p>
                         </div>
                         <button
                           type="button"

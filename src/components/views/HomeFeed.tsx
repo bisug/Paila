@@ -1000,11 +1000,7 @@ function LocalEventsSection({
                     className="block w-full text-left active:scale-[0.98] transition-transform cursor-pointer"
                   >
                     <div className="relative h-16">
-                      <img
-                        src={imageSrc(ev.image)}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={imageSrc(ev.image)} alt="" className="w-full h-full object-cover" />
                       <span
                         className={`absolute top-1 left-1 inline-block rounded-full border px-1.5 py-0 text-[9px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
                       >

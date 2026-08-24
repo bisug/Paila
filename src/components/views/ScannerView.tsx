@@ -152,8 +152,7 @@ export function ScannerView() {
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    const ctx =
-      contextRef.current ?? canvas.getContext("2d", { willReadFrequently: true });
+    const ctx = contextRef.current ?? canvas.getContext("2d", { willReadFrequently: true });
 
     if (!ctx || !(window as any).jsQR) {
       setCameraError("QR scanner is still loading. Please try again.");
@@ -370,7 +369,10 @@ export function ScannerView() {
 
         {/* Error message / Fallback UI */}
         {cameraError && (
-          <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-20 gap-4 bg-stone-950/80 backdrop-blur-sm">
+          <div
+            role="alert"
+            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-20 gap-4 bg-stone-950/80 backdrop-blur-sm"
+          >
             <p className="text-sm font-semibold text-red-400 max-w-[250px]">{cameraError}</p>
             <button
               type="button"

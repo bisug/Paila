@@ -65,8 +65,7 @@ export async function getElevationMeters(lat: number, lng: number): Promise<numb
     if (!png.width || !png.height) return null;
 
     const fx = ((lng + 180) / 360) * n - x;
-    const fy =
-      ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n - y;
+    const fy = ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n - y;
     const px = Math.min(png.width - 1, Math.max(0, Math.round(fx * (png.width - 1))));
     const py = Math.min(png.height - 1, Math.max(0, Math.round(fy * (png.height - 1))));
 

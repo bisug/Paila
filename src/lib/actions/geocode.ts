@@ -1,7 +1,11 @@
 "use server";
 
 import { fetchMapboxUrl } from "@/lib/server/mapbox";
-import { assertLatLng, enforceMapRateLimit, sanitizePlaceSearchQuery } from "@/lib/server/maps-guardrails";
+import {
+  assertLatLng,
+  enforceMapRateLimit,
+  sanitizePlaceSearchQuery,
+} from "@/lib/server/maps-guardrails";
 
 export async function reverseGeocode({ data }: { data: { lat: number; lng: number } }) {
   await enforceMapRateLimit("maps:reverse-geocode", 60, 60_000);
@@ -35,7 +39,8 @@ export async function reverseGeocode({ data }: { data: { lat: number; lng: numbe
       };
     }
 
-    const name = top.text || top.place_name || `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`;
+    const name =
+      top.text || top.place_name || `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`;
     return {
       name,
       address: top.place_name ?? null,

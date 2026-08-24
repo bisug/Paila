@@ -43,4 +43,3 @@ export function extractTranslation(data: unknown): string {
     .map((segment) => (Array.isArray(segment) ? ((segment[0] as string) ?? "") : ""))
     .join("");
 }
-

@@ -151,7 +151,10 @@ export function AccountClient({ user }: { user: User }) {
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="avatarUrl" className="text-xs font-semibold text-muted-foreground mb-1 block">
+                <label
+                  htmlFor="avatarUrl"
+                  className="text-xs font-semibold text-muted-foreground mb-1 block"
+                >
                   Profile Picture URL
                 </label>
                 <input
@@ -165,7 +168,10 @@ export function AccountClient({ user }: { user: User }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="firstName" className="text-xs font-semibold text-muted-foreground mb-1 block">
+                  <label
+                    htmlFor="firstName"
+                    className="text-xs font-semibold text-muted-foreground mb-1 block"
+                  >
                     First Name
                   </label>
                   <input
@@ -177,7 +183,10 @@ export function AccountClient({ user }: { user: User }) {
                   />
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="text-xs font-semibold text-muted-foreground mb-1 block">
+                  <label
+                    htmlFor="lastName"
+                    className="text-xs font-semibold text-muted-foreground mb-1 block"
+                  >
                     Last Name
                   </label>
                   <input
@@ -192,7 +201,10 @@ export function AccountClient({ user }: { user: User }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="middleName" className="text-xs font-semibold text-muted-foreground mb-1 block">
+                  <label
+                    htmlFor="middleName"
+                    className="text-xs font-semibold text-muted-foreground mb-1 block"
+                  >
                     Middle Name
                   </label>
                   <input
@@ -204,7 +216,12 @@ export function AccountClient({ user }: { user: User }) {
                   />
                 </div>
                 <div>
-                  <label htmlFor="age" className="text-xs font-semibold text-muted-foreground mb-1 block">Age</label>
+                  <label
+                    htmlFor="age"
+                    className="text-xs font-semibold text-muted-foreground mb-1 block"
+                  >
+                    Age
+                  </label>
                   <input
                     id="age"
                     type="number"
@@ -216,7 +233,9 @@ export function AccountClient({ user }: { user: User }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-muted-foreground mb-1 block">Gender</label>
+                <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+                  Gender
+                </label>
                 <div
                   role="radiogroup"
                   aria-label="Gender"
@@ -271,7 +290,9 @@ export function AccountClient({ user }: { user: User }) {
                 </div>
                 <div>
                   <p className="text-[11px] text-muted-foreground font-medium">Contact info</p>
-                  <p className="text-sm font-semibold text-foreground">{user.email || user.phone}</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {user.email || user.phone}
+                  </p>
                 </div>
                 <BadgeCheck size={16} className="text-pine ml-auto" />
               </div>

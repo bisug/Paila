@@ -61,10 +61,7 @@ export async function proxy(request: NextRequest) {
     if (!user) {
       return NextResponse.redirect(new URL("/", request.url));
     }
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id);
+    const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
     const isAdmin = roles?.some((r: { role: string }) => r.role === "admin");
     if (!isAdmin) {
       return NextResponse.redirect(new URL("/", request.url));

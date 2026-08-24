@@ -194,7 +194,10 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
 
             <div className="mt-4 space-y-3">
               <div className="block">
-                <label htmlFor="checkIn" className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide">
+                <label
+                  htmlFor="checkIn"
+                  className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide"
+                >
                   <Calendar size={11} className="inline mr-1" />
                   {t("hotels.checkIn", "Check in")}
                 </label>
@@ -208,7 +211,10 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
                 />
               </div>
               <div className="block">
-                <label htmlFor="checkOut" className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide">
+                <label
+                  htmlFor="checkOut"
+                  className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide"
+                >
                   <Calendar size={11} className="inline mr-1" />
                   {t("hotels.checkOut", "Check out")}
                 </label>
@@ -222,7 +228,10 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
                 />
               </div>
               <div className="block">
-                <label htmlFor="guests" className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide">
+                <label
+                  htmlFor="guests"
+                  className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wide"
+                >
                   <Users size={11} className="inline mr-1" />
                   {t("hotels.guests", "Guests")}
                 </label>
@@ -283,7 +292,9 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
   return (
     <div className="rounded-xl bg-card border border-border p-3">
       <div className="grid place-items-center text-terracotta mb-1">{icon}</div>
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{label}</p>
+      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+        {label}
+      </p>
       <p className="text-xs font-bold text-foreground truncate" title={value}>
         {value}
       </p>

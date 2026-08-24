@@ -11,14 +11,14 @@ Paila is a Next.js 16 (App Router, Turbopack) + React 19 + TypeScript travel pla
 
 ## Scripts
 
-| Command | Purpose |
-| --- | --- |
-| `bun run dev` | Dev server (Turbopack) |
-| `bun run build` | Production build |
-| `bun run lint` | ESLint |
-| `bun run typecheck` | `tsc --noEmit` |
-| `bun run format` | Prettier |
-| `bun run test:e2e` | Playwright smoke suite (38 tests, desktop + mobile) |
+| Command             | Purpose                                             |
+| ------------------- | --------------------------------------------------- |
+| `bun run dev`       | Dev server (Turbopack)                              |
+| `bun run build`     | Production build                                    |
+| `bun run lint`      | ESLint                                              |
+| `bun run typecheck` | `tsc --noEmit`                                      |
+| `bun run format`    | Prettier                                            |
+| `bun run test:e2e`  | Playwright smoke suite (38 tests, desktop + mobile) |
 
 Run `typecheck`, `lint`, and `test:e2e` before pushing; CI runs the same.
 

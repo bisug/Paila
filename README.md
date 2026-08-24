@@ -53,7 +53,7 @@
 
 ## Overview
 
-**Paila** (पाइला — *Nepali for "footstep"*) is a full-stack web platform designed to transform how tourists experience Nepal while directly empowering local communities. It connects travellers with verified local guides, authenticated homestays, and community businesses — fostering transparent, fair, and culturally rich tourism.
+**Paila** (पाइला — _Nepali for "footstep"_) is a full-stack web platform designed to transform how tourists experience Nepal while directly empowering local communities. It connects travellers with verified local guides, authenticated homestays, and community businesses — fostering transparent, fair, and culturally rich tourism.
 
 The platform was built as a direct response to a challenge from the **[JunctionX Kathmandu 2026](https://junctionxkathmandu.com/past-events/2026)** hackathon, in alignment with the **UNDP – NTB Sustainable Tourism Project**.
 
@@ -61,20 +61,20 @@ The platform was built as a direct response to a challenge from the **[JunctionX
 
 ## Features
 
-| Feature | Description |
-|---|---|
-| 🏨 **Hotel & Homestay Discovery** | Browse and book local accommodations with verified listings |
-| 🧭 **Guide Verification** | Connect with trusted guides via a formal ID-based verification workflow |
-| 🗺️ **Interactive Footprint Map** | Explore Nepal's destinations with an embedded Mapbox experience |
-| 🤝 **AI Translator** | Break the language barrier with real-time AI-powered translation |
-| 📷 **ID Scanner** | Secure profile and booking flows with document scanning |
-| 🚌 **Transport Finder** | Discover local transport options for seamless travel |
-| 💬 **AI Concierge (Talk)** | An intelligent assistant for travel queries and recommendations |
-| 📊 **Community Impact Dashboard** | Visualise how tourist spending benefits local communities |
-| 👤 **Traveller & Business Profiles** | Separate account types for tourists and local service providers |
-| 🔔 **Notifications** | Real-time in-app notifications for bookings and updates |
-| 🌐 **25-language Support** | Full i18n support covering major global and regional languages |
-| 🛡️ **Admin Dashboard** | Guide verification management and admin controls |
+| Feature                              | Description                                                             |
+| ------------------------------------ | ----------------------------------------------------------------------- |
+| 🏨 **Hotel & Homestay Discovery**    | Browse and book local accommodations with verified listings             |
+| 🧭 **Guide Verification**            | Connect with trusted guides via a formal ID-based verification workflow |
+| 🗺️ **Interactive Footprint Map**     | Explore Nepal's destinations with an embedded Mapbox experience         |
+| 🤝 **AI Translator**                 | Break the language barrier with real-time AI-powered translation        |
+| 📷 **ID Scanner**                    | Secure profile and booking flows with document scanning                 |
+| 🚌 **Transport Finder**              | Discover local transport options for seamless travel                    |
+| 💬 **AI Concierge (Talk)**           | An intelligent assistant for travel queries and recommendations         |
+| 📊 **Community Impact Dashboard**    | Visualise how tourist spending benefits local communities               |
+| 👤 **Traveller & Business Profiles** | Separate account types for tourists and local service providers         |
+| 🔔 **Notifications**                 | Real-time in-app notifications for bookings and updates                 |
+| 🌐 **25-language Support**           | Full i18n support covering major global and regional languages          |
+| 🛡️ **Admin Dashboard**               | Guide verification management and admin controls                        |
 
 ---
 
@@ -82,31 +82,31 @@ The platform was built as a direct response to a challenge from the **[JunctionX
 
 ### Core
 
-| Layer | Technology |
-|---|---|
-| Framework | [Next.js 16](https://nextjs.org/) (App Router) + [React 19](https://react.dev/) |
-| Language | [TypeScript 7](https://www.typescriptlang.org/) |
-| Backend / Database | [Supabase](https://supabase.com/) (PostgreSQL, Auth, Storage, SSR) |
-| Styling | [Tailwind CSS v4](https://tailwindcss.com/), [Shadcn/UI](https://ui.shadcn.com/), [Radix UI](https://www.radix-ui.com/) |
-| State Management | [TanStack React Query v5](https://tanstack.com/query/latest) |
-| Validation | [Zod v4](https://zod.dev/) |
-| Icons | [Lucide React](https://lucide.dev/) |
+| Layer              | Technology                                                                                                              |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Framework          | [Next.js 16](https://nextjs.org/) (App Router) + [React 19](https://react.dev/)                                         |
+| Language           | [TypeScript 7](https://www.typescriptlang.org/)                                                                         |
+| Backend / Database | [Supabase](https://supabase.com/) (PostgreSQL, Auth, Storage, SSR)                                                      |
+| Styling            | [Tailwind CSS v4](https://tailwindcss.com/), [Shadcn/UI](https://ui.shadcn.com/), [Radix UI](https://www.radix-ui.com/) |
+| State Management   | [TanStack React Query v5](https://tanstack.com/query/latest)                                                            |
+| Validation         | [Zod v4](https://zod.dev/)                                                                                              |
+| Icons              | [Lucide React](https://lucide.dev/)                                                                                     |
 
 ### Integrations
 
-| Integration | Purpose |
-|---|---|
+| Integration                                                            | Purpose                                     |
+| ---------------------------------------------------------------------- | ------------------------------------------- |
 | [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) (`react-map-gl`) | Interactive maps, geocoding, and directions |
-| [OpenAI API](https://platform.openai.com/) | AI translation and concierge features |
-| [i18next](https://www.i18next.com/) | Internationalisation (25 locales) |
+| [OpenAI API](https://platform.openai.com/)                             | AI translation and concierge features       |
+| [i18next](https://www.i18next.com/)                                    | Internationalisation (25 locales)           |
 
 ### Tooling
 
-| Tool | Purpose |
-|---|---|
-| [Playwright](https://playwright.dev/) | End-to-end testing |
+| Tool                                                             | Purpose                     |
+| ---------------------------------------------------------------- | --------------------------- |
+| [Playwright](https://playwright.dev/)                            | End-to-end testing          |
 | [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) | Code quality and formatting |
-| [GitHub Actions](https://github.com/features/actions) | CI: typecheck, lint, build |
+| [GitHub Actions](https://github.com/features/actions)            | CI: typecheck, lint, build  |
 
 ---
 
@@ -205,13 +205,13 @@ paila/
 
 The PostgreSQL schema is managed via Supabase migrations. Core tables:
 
-| Table | Purpose |
-|---|---|
-| `profiles` | User profile data; supports `traveller` and `business` account types |
+| Table                 | Purpose                                                                       |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `profiles`            | User profile data; supports `traveller` and `business` account types          |
 | `guide_verifications` | Guide ID verification submissions with `pending / approved / rejected` status |
-| `user_interests` | Tourist interest tags and onboarding state |
-| `user_roles` | Role-based access control (`admin` role via enum) |
-| `admin_settings` | Singleton admin configuration table |
+| `user_interests`      | Tourist interest tags and onboarding state                                    |
+| `user_roles`          | Role-based access control (`admin` role via enum)                             |
+| `admin_settings`      | Singleton admin configuration table                                           |
 
 Row-Level Security (RLS) policies and a `touch_updated_at` trigger are applied to all mutable tables.
 
@@ -276,17 +276,17 @@ The application will be available at **[http://localhost:3000](http://localhost:
 
 Copy `.env.example` to `.env` and populate the following:
 
-| Variable | Required | Description |
-|---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Your Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anon key (enables real auth; without it the app runs in demo mode) |
-| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Service role key — **server-side only, never expose to client** |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | ✅ | Mapbox public token (maps, geocoding, directions) |
-| `MAPBOX_SECRET_TOKEN` | ⬜ | Server-side Mapbox token, if you restrict the public token |
-| `OPENAI_API_KEY` | ✅ | OpenAI API key (translation & AI concierge) |
-| `OPENAI_BASE_URL` | ⬜ | Override for OpenAI-compatible endpoints (defaults to `api.openai.com`) |
-| `OPENAI_MODEL` | ⬜ | Model to use (e.g. `gpt-4o`, `gpt-4o-mini`) |
-| `ENABLE_DEMO_SCAN` | ⬜ | Set to `true` locally to enable the mock document scanner. **Never set in production.** |
+| Variable                        | Required | Description                                                                             |
+| ------------------------------- | -------- | --------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | ✅       | Your Supabase project URL                                                               |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅       | Supabase anon key (enables real auth; without it the app runs in demo mode)             |
+| `SUPABASE_SERVICE_ROLE_KEY`     | ✅       | Service role key — **server-side only, never expose to client**                         |
+| `NEXT_PUBLIC_MAPBOX_TOKEN`      | ✅       | Mapbox public token (maps, geocoding, directions)                                       |
+| `MAPBOX_SECRET_TOKEN`           | ⬜       | Server-side Mapbox token, if you restrict the public token                              |
+| `OPENAI_API_KEY`                | ✅       | OpenAI API key (translation & AI concierge)                                             |
+| `OPENAI_BASE_URL`               | ⬜       | Override for OpenAI-compatible endpoints (defaults to `api.openai.com`)                 |
+| `OPENAI_MODEL`                  | ⬜       | Model to use (e.g. `gpt-4o`, `gpt-4o-mini`)                                             |
+| `ENABLE_DEMO_SCAN`              | ⬜       | Set to `true` locally to enable the mock document scanner. **Never set in production.** |
 
 > [!CAUTION]
 > Never commit your `.env` file. It is already listed in `.gitignore`. `SUPABASE_SERVICE_ROLE_KEY` grants full database access and must only ever exist on the server side.
@@ -295,15 +295,15 @@ Copy `.env.example` to `.env` and populate the following:
 
 ## Available Scripts
 
-| Command | Description |
-|---|---|
-| `bun run dev` | Start the development server with hot reload |
-| `bun run build` | Build the application for production |
-| `bun run start` | Start the production server (after `build`) |
-| `bun run lint` | Run ESLint across the codebase |
+| Command             | Description                                   |
+| ------------------- | --------------------------------------------- |
+| `bun run dev`       | Start the development server with hot reload  |
+| `bun run build`     | Build the application for production          |
+| `bun run start`     | Start the production server (after `build`)   |
+| `bun run lint`      | Run ESLint across the codebase                |
 | `bun run typecheck` | Run TypeScript type checking (`tsc --noEmit`) |
-| `bun run format` | Format all files with Prettier |
-| `bun run test:e2e` | Run end-to-end tests with Playwright |
+| `bun run format`    | Format all files with Prettier                |
+| `bun run test:e2e`  | Run end-to-end tests with Playwright          |
 
 ---
 
@@ -321,12 +321,12 @@ The application is optimised for deployment on **[Vercel](https://vercel.com)**.
 
 Vercel will automatically detect Next.js. The defaults are correct:
 
-| Setting | Value |
-|---|---|
-| Framework Preset | Next.js |
-| Build Command | `bun run build` |
-| Output Directory | `.next` |
-| Root Directory | `./` |
+| Setting          | Value           |
+| ---------------- | --------------- |
+| Framework Preset | Next.js         |
+| Build Command    | `bun run build` |
+| Output Directory | `.next`         |
+| Root Directory   | `./`            |
 
 ### Step 3 — Set Environment Variables
 
@@ -347,15 +347,15 @@ Click **Deploy**. Vercel will build, optimise, and distribute the app globally v
 
 ## Security
 
-| Practice | Details |
-|---|---|
-| Secret management | Never commit `.env`; use Vercel environment variables for production secrets |
-| Supabase RLS | Row-Level Security policies enforce data isolation at the database level |
-| Server-only keys | `SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY` are never exposed to the client bundle |
-| OAuth redirect validation | Only allow-listed URLs in Supabase Auth can receive auth callbacks |
-| Maps token restriction | Restrict `NEXT_PUBLIC_MAPBOX_TOKEN` by allowed URLs in the Mapbox account |
-| Demo scanner flag | `ENABLE_DEMO_SCAN` must remain unset in production — it bypasses real document verification |
-| Payment processing | Do not collect raw card data; use only verified payment SDK providers (e.g. eSewa, Khalti) |
+| Practice                  | Details                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------- |
+| Secret management         | Never commit `.env`; use Vercel environment variables for production secrets                |
+| Supabase RLS              | Row-Level Security policies enforce data isolation at the database level                    |
+| Server-only keys          | `SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY` are never exposed to the client bundle     |
+| OAuth redirect validation | Only allow-listed URLs in Supabase Auth can receive auth callbacks                          |
+| Maps token restriction    | Restrict `NEXT_PUBLIC_MAPBOX_TOKEN` by allowed URLs in the Mapbox account                   |
+| Demo scanner flag         | `ENABLE_DEMO_SCAN` must remain unset in production — it bypasses real document verification |
+| Payment processing        | Do not collect raw card data; use only verified payment SDK providers (e.g. eSewa, Khalti)  |
 
 ---
 
@@ -363,18 +363,19 @@ Click **Deploy**. Vercel will build, optimise, and distribute the app globally v
 
 Paila was built during **[JunctionX Kathmandu 2026 & FinnoFest](https://junctionxkathmandu.com/past-events/2026)** — a 36-hour immersive cross-border hackathon.
 
-| | |
-|---|---|
-| **Dates** | May 29–31, 2026 |
-| **Venue** | AITM College, Khumaltar, Lalitpur, Nepal |
+|                     |                                                 |
+| ------------------- | ----------------------------------------------- |
+| **Dates**           | May 29–31, 2026                                 |
+| **Venue**           | AITM College, Khumaltar, Lalitpur, Nepal        |
 | **Challenge Track** | Hospitality & Heritage (Smart Cities & Tourism) |
-| **Organisers** | SUMS Nepal · Cogknit · HackJunction Finland |
+| **Organisers**      | SUMS Nepal · Cogknit · HackJunction Finland     |
 
 ### The Challenge
 
-> *Build a mobile app, web platform, AI tool, or digital system that delivers a smooth and trustworthy journey for tourists while directly empowering local communities to earn more, participate actively, and preserve their culture.*
+> _Build a mobile app, web platform, AI tool, or digital system that delivers a smooth and trustworthy journey for tourists while directly empowering local communities to earn more, participate actively, and preserve their culture._
 
 Paila directly addresses:
+
 - ✅ Smart discovery and booking of homestays, guides, and local experiences
 - ✅ Trust & safety through verified profiles and admin-moderated guide approvals
 - ✅ AI-powered multi-language support for tourists and locals
@@ -385,15 +386,15 @@ Paila directly addresses:
 
 ## Roadmap
 
-| Priority | Feature |
-|---|---|
-| 🔜 Near-term | Production-grade guide and homestay onboarding with real verification |
+| Priority     | Feature                                                                                 |
+| ------------ | --------------------------------------------------------------------------------------- |
+| 🔜 Near-term | Production-grade guide and homestay onboarding with real verification                   |
 | 🔜 Near-term | PWA with offline map caching (Service Workers) — mobile-first responsive pass completed |
-| 🔜 Near-term | Local payment gateway integration (eSewa, Khalti, ConnectIPS) |
-| 🔮 Future | Personalised itinerary generation via AI |
-| 🔮 Future | Community review and rating system with anti-fraud measures |
-| 🔮 Future | Native mobile apps (iOS / Android) |
-| 🔮 Future | Integration with Nepal Tourism Board's official listing registry |
+| 🔜 Near-term | Local payment gateway integration (eSewa, Khalti, ConnectIPS)                           |
+| 🔮 Future    | Personalised itinerary generation via AI                                                |
+| 🔮 Future    | Community review and rating system with anti-fraud measures                             |
+| 🔮 Future    | Native mobile apps (iOS / Android)                                                      |
+| 🔮 Future    | Integration with Nepal Tourism Board's official listing registry                        |
 
 ---
 
@@ -401,11 +402,11 @@ Paila directly addresses:
 
 Built with ❤️ by **Runtime Terrors** from [Lincoln International College](https://licnepal.edu.np), Nepal. We would like to thank the college for providing us the opportunity to participate in this hackathon.
 
-| Name | Role | Certificate |
-|---|---|---|
-| **Sankalpa Bastakoti** | Idea Lead & Team Lead | [View →](https://junctionxkathmandu.com/certificates/JXK26-1e0b0b9f4b3e) |
-| **Parima Shrestha** | Documentation & Presentation | [View →](https://junctionxkathmandu.com/certificates/JXK26-bb40f7a2a41d) |
-| **Bisu Ghalan** | Builder / Developer | [View →](https://junctionxkathmandu.com/certificates/JXK26-be95862b1cf4) |
+| Name                   | Role                         | Certificate                                                              |
+| ---------------------- | ---------------------------- | ------------------------------------------------------------------------ |
+| **Sankalpa Bastakoti** | Idea Lead & Team Lead        | [View →](https://junctionxkathmandu.com/certificates/JXK26-1e0b0b9f4b3e) |
+| **Parima Shrestha**    | Documentation & Presentation | [View →](https://junctionxkathmandu.com/certificates/JXK26-bb40f7a2a41d) |
+| **Bisu Ghalan**        | Builder / Developer          | [View →](https://junctionxkathmandu.com/certificates/JXK26-be95862b1cf4) |
 
 ---
 

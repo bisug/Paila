@@ -91,11 +91,7 @@ export default function SettingsPage() {
             <Bell size={18} className="text-muted-foreground" />
             <p className="text-sm font-bold text-foreground">Notifications</p>
           </div>
-          <Switch
-            checked={notifications}
-            onChange={setNotifications}
-            label="Notifications"
-          />
+          <Switch checked={notifications} onChange={setNotifications} label="Notifications" />
         </div>
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">

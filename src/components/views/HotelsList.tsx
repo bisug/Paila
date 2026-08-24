@@ -85,11 +85,16 @@ export function HotelsList() {
       <div className="mb-5 rounded-card bg-card border border-border shadow-card p-3 md:p-3.5">
         <div className="mb-3 flex items-center gap-2 border-b border-border pb-2 md:hidden">
           <SlidersHorizontal size={15} className="text-terracotta" />
-          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Filters</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            Filters
+          </span>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.8fr_0.8fr_0.8fr_auto] lg:items-end">
           <div className="flex min-w-0 flex-col gap-1">
-            <label htmlFor="district" className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+            <label
+              htmlFor="district"
+              className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground"
+            >
               {t("hotels.district", "District")}
             </label>
             <select
@@ -108,7 +113,10 @@ export function HotelsList() {
 
           <div className="grid grid-cols-2 gap-2 sm:contents">
             <div className="flex min-w-0 flex-col gap-1">
-              <label htmlFor="minPrice" className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              <label
+                htmlFor="minPrice"
+                className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground"
+              >
                 {t("hotels.minPrice", "Min NPR")}
               </label>
               <input
@@ -127,7 +135,10 @@ export function HotelsList() {
               />
             </div>
             <div className="flex min-w-0 flex-col gap-1">
-              <label htmlFor="maxPrice" className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              <label
+                htmlFor="maxPrice"
+                className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground"
+              >
                 {t("hotels.maxPrice", "Max NPR")}
               </label>
               <input
@@ -155,7 +166,10 @@ export function HotelsList() {
           )}
 
           <div className="flex min-w-0 flex-col gap-1">
-            <label htmlFor="minRating" className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+            <label
+              htmlFor="minRating"
+              className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground"
+            >
               {t("hotels.minRating", "Min rating")}
             </label>
             <select

@@ -299,8 +299,16 @@ export default function GuideVerifyPage() {
           )}
         </Field>
 
-        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
-        {success && <p role="status" className="text-sm text-pine">{success}</p>}
+        {error && (
+          <p role="alert" className="text-sm text-red-600">
+            {error}
+          </p>
+        )}
+        {success && (
+          <p role="status" className="text-sm text-pine">
+            {success}
+          </p>
+        )}
 
         <button
           type="submit"

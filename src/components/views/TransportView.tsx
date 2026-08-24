@@ -581,7 +581,9 @@ export function TransportView() {
               </Map>
               {!mapLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
-                  <p className="text-xs font-semibold text-stone-400 animate-pulse">Loading Map...</p>
+                  <p className="text-xs font-semibold text-stone-400 animate-pulse">
+                    Loading Map...
+                  </p>
                 </div>
               )}
             </>
