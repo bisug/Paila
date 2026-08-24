@@ -4,6 +4,10 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+### Changed
+- Moved `CHANGELOG.md` and `CONTRIBUTING.md` into `docs/`; AI agents must read and update docs with every change (rule in `AGENTS.md`).
+- CI hardened: bun pinned via `packageManager`, concurrency group, `format:check` step, chromium-only Playwright install, failure artifact upload.
+
 ## 2026-08-24
 
 ### Changed
