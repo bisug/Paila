@@ -393,7 +393,7 @@ export function TranslatorView() {
               <button
                 type="button"
                 onClick={() => handleSourceTextChange("")}
-                className="grid h-9 w-9 place-items-center rounded-lg text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700"
+                className="grid h-11 w-11 place-items-center rounded-lg text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700"
                 aria-label="Clear source text"
               >
                 <X size={17} />
@@ -426,7 +426,7 @@ export function TranslatorView() {
                       key={phrase}
                       type="button"
                       onClick={() => handleSourceTextChange(phrase)}
-                      className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:border-terracotta/40 hover:text-terracotta"
+                      className="rounded-full border border-stone-200 bg-white px-3 py-2.5 min-h-[44px] text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:border-terracotta/40 hover:text-terracotta"
                     >
                       {phrase}
                     </button>
@@ -552,7 +552,7 @@ function LanguageSelect({
       <select
         value={value}
         onChange={(event) => onChange(event.target.value as TranslatorLangKey)}
-        className={`h-10 w-full appearance-none rounded-xl border border-stone-200 bg-stone-50 px-3 text-sm font-semibold text-stone-700 outline-none transition-colors focus:bg-white focus:ring-2 ${focusClass}`}
+        className={`h-11 w-full appearance-none rounded-xl border border-stone-200 bg-stone-50 px-3 text-sm font-semibold text-stone-700 outline-none transition-colors focus:bg-white focus:ring-2 ${focusClass}`}
       >
         {Object.entries(TRANSLATOR_LANGUAGES).map(([key, lang]) => (
           <option key={key} value={key}>
@@ -584,7 +584,7 @@ function VoiceBar({
           type="button"
           onClick={onToggleAutoSpeak}
           aria-pressed={autoSpeak}
-          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors ${
+          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-2 min-h-[44px] text-[10px] font-bold uppercase tracking-wider transition-colors ${
             autoSpeak
               ? "border-pine/30 bg-pine/10 text-pine"
               : "border-stone-200 bg-white text-stone-400"
@@ -656,7 +656,7 @@ function WordMeaningModal({
           <button
             type="button"
             onClick={onClose}
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-stone-100 text-stone-500 transition-colors hover:bg-stone-200"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-stone-100 text-stone-500 transition-colors hover:bg-stone-200"
             aria-label="Close word meaning"
           >
             <X size={16} />

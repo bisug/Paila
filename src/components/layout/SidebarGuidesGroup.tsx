@@ -110,7 +110,7 @@ export function SidebarGuidesGroup({
             key={item.href}
             href={item.href}
             onClick={onNavigate}
-            className={`relative flex items-center ${minimized ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3"} py-2.5 rounded-xl text-sm font-semibold transition-all group ${
+            className={`relative flex items-center ${minimized ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3"} py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition-all group ${
               active
                 ? "bg-terracotta/10 text-terracotta"
                 : "text-stone-500 hover:bg-stone-100 hover:text-stone-900"

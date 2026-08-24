@@ -26,7 +26,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
         <h2 className="text-xs font-bold uppercase tracking-wider text-stone-400">
           Local Guides Near You
         </h2>
-        <Link href="/guide/verify" className="text-[11px] font-semibold text-pine hover:underline">
+        <Link href="/guide/verify" className="inline-flex items-center min-h-[44px] text-[11px] font-semibold text-pine hover:underline">
           Are you a guide? Get verified →
         </Link>
       </div>

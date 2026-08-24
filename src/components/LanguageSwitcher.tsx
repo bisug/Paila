@@ -27,7 +27,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
         aria-label={mounted ? t("language.change") : "Change language"}
         suppressHydrationWarning
         className={`flex items-center gap-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:bg-stone-50 transition-colors ${
-          compact ? "h-8 px-2 text-xs font-semibold" : "h-9 px-3 text-sm font-semibold"
+          compact ? "h-8 px-2 text-xs font-semibold" : "h-11 px-3 text-sm font-semibold"
         }`}
       >
         <Globe size={compact ? 13 : 15} className="text-stone-500" />
@@ -50,7 +50,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
                   setLanguage(lang.code as LangCode);
                   setOpen(false);
                 }}
-                className={`flex w-full items-center gap-2 px-3 py-2 text-sm text-left hover:bg-stone-50 transition-colors ${
+                className={`flex w-full items-center gap-2 px-3 py-2.5 min-h-[44px] text-sm text-left hover:bg-stone-50 transition-colors ${
                   active ? "font-bold text-terracotta" : "font-medium text-stone-700"
                 }`}
               >

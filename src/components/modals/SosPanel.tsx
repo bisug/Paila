@@ -224,7 +224,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-950/50 p-4 backdrop-blur-sm md:items-center md:justify-center">
+    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-stone-950/50 p-4 backdrop-blur-sm md:items-center md:justify-center">
       <div
         className="no-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-[34px] border border-white/50 bg-white/[0.94] p-5 shadow-tactile backdrop-blur-2xl md:max-w-md"
         style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
@@ -234,14 +234,14 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
             <p className="text-xs font-black uppercase tracking-[0.18em] text-red-600">
               {amsOpen ? "AMS Medical Check" : isOffline ? "Offline SOS Armed" : "Emergency SOS"}
             </p>
-            <h2 className="mt-1 text-2xl font-black text-slate-950">
+            <h2 className="mt-1 text-2xl font-black text-stone-950">
               {amsOpen ? "Lake Louise Score" : "Safety checkpoint panel"}
             </h2>
           </div>
           <button
             type="button"
             onClick={amsOpen ? () => setAmsOpen(false) : onClose}
-            className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-slate-200 text-slate-700 transition-colors hover:bg-slate-300"
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300"
             aria-label={amsOpen ? "Back to SOS panel" : "Close SOS panel"}
           >
             {amsOpen ? <ArrowLeft size={20} /> : <X size={20} />}
@@ -269,7 +269,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
             <div
               className={`rounded-[28px] p-4 text-white shadow-xl ${
                 checkInStatus.overdue
-                  ? "animate-soft-pulse bg-slate-900"
+                  ? "animate-soft-pulse bg-stone-900"
                   : isOffline
                     ? "bg-amber-600"
                     : "bg-red-600"
@@ -419,7 +419,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                   {smsHref && (
                     <a
                       href={smsHref}
-                      className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 text-xs font-black text-white transition-transform active:scale-[0.98]"
+                      className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-stone-900 text-xs font-black text-white transition-transform active:scale-[0.98]"
                     >
                       <MessageSquare size={14} />
                       Open SMS
@@ -504,7 +504,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                 <a
                   key={link.id}
                   href={`tel:${sanitizePhoneNumber(link.number)}`}
-                  className="flex min-h-14 items-center justify-between rounded-2xl border border-stone-100 bg-white px-4 text-sm font-black text-slate-900 shadow-md transition-transform active:scale-[0.98]"
+                  className="flex min-h-14 items-center justify-between rounded-2xl border border-stone-100 bg-white px-4 text-sm font-black text-stone-900 shadow-md transition-transform active:scale-[0.98]"
                 >
                   <span className="flex min-w-0 items-center gap-3">
                     <PhoneCall className="shrink-0 text-red-600" size={18} />
@@ -661,7 +661,7 @@ function AmsPanel({
                   onClick={() => q.setter(val)}
                   className={`rounded-xl border py-2 text-xs font-bold transition-colors ${
                     q.value === val
-                      ? "border-slate-900 bg-slate-900 text-white shadow-sm"
+                      ? "border-stone-900 bg-stone-900 text-white shadow-sm"
                       : "border-stone-200 bg-stone-50 text-stone-600 hover:bg-stone-100"
                   }`}
                 >

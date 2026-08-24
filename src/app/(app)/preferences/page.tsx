@@ -117,11 +117,11 @@ export default function PreferencesPage() {
 
   return (
     <div className="min-h-screen bg-background pb-16">
-      <header className="sticky top-0 z-10 bg-card/95 backdrop-blur border-b border-border">
+      <header className="sticky top-14 md:top-16 z-10 bg-card/95 backdrop-blur border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link
             href="/"
-            className="grid place-items-center w-9 h-9 rounded-full bg-muted text-foreground hover:bg-accent"
+            className="grid place-items-center w-11 h-11 rounded-full bg-muted text-foreground hover:bg-accent"
             aria-label="Back"
           >
             <ArrowLeft size={18} />
@@ -221,7 +221,7 @@ export default function PreferencesPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-1 mt-4 text-xs font-bold text-terracotta hover:underline"
+              className="inline-flex items-center gap-1 mt-4 px-2 py-2.5 min-h-[44px] text-xs font-bold text-terracotta hover:underline"
             >
               <ArrowLeft size={12} /> Back to feed
             </Link>

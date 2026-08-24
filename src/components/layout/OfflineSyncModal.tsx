@@ -48,7 +48,7 @@ export function OfflineSyncModal({
   onSyncNow,
 }: OfflineSyncModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-stone-950/50 p-4 backdrop-blur-sm animate-fade-in">
       <div
         className="w-full md:max-w-md max-h-[85vh] overflow-y-auto rounded-[30px] bg-white p-6 shadow-float animate-slide-up"
         style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
@@ -62,7 +62,8 @@ export function OfflineSyncModal({
           </div>
           <button
             onClick={onClose}
-            className="h-9 w-9 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition-colors"
+            className="h-11 w-11 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition-colors"
+            aria-label="Close offline sync"
           >
             <X size={16} />
           </button>

@@ -59,9 +59,9 @@ export function BookingModal({
   // ── 1. Success confirmation screen ───────────────────────────────────────
   if (step === "success") {
     return (
-      <div className="absolute inset-0 z-50 flex items-end p-4 bg-stone-950/50 backdrop-blur-sm animate-fade-in">
+      <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm animate-fade-in">
         <div
-          className="w-full max-h-[90vh] overflow-y-auto rounded-modal bg-white p-6 shadow-float text-center animate-slide-up"
+          className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white p-6 shadow-float text-center animate-slide-up"
           style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
         >
           <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full bg-pine-tint relative">
@@ -131,9 +131,9 @@ export function BookingModal({
   // ── 2. Processing Screen ─────────────────────────────────────────────────
   if (step === "processing") {
     return (
-      <div className="absolute inset-0 z-50 flex items-end p-4 bg-stone-950/50 backdrop-blur-sm animate-fade-in">
+      <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm animate-fade-in">
         <div
-          className="w-full max-h-[90vh] overflow-y-auto rounded-modal bg-white px-5 py-12 shadow-float text-center flex flex-col items-center justify-center animate-slide-up"
+          className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white px-5 py-12 shadow-float text-center flex flex-col items-center justify-center animate-slide-up"
           style={{ paddingBottom: "max(3rem, env(safe-area-inset-bottom))" }}
         >
           <Loader2 size={42} className="animate-spin text-terracotta mb-4" />
@@ -157,9 +157,9 @@ export function BookingModal({
       : "bg-purple-600 hover:bg-purple-700";
 
     return (
-      <div className="absolute inset-0 z-50 flex items-end p-4 bg-stone-950/50 backdrop-blur-sm animate-fade-in">
+      <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm animate-fade-in">
         <div
-          className="w-full max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float animate-slide-up"
+          className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float animate-slide-up"
           style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
         >
           <div className="mx-auto pt-3 pb-1 w-10">
@@ -181,7 +181,7 @@ export function BookingModal({
                 type="button"
                 onClick={() => setStep("select_method")}
                 aria-label="Go back"
-                className="h-9 w-9 shrink-0 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200"
+                className="h-11 w-11 shrink-0 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200"
               >
                 ←
               </button>
@@ -243,9 +243,9 @@ export function BookingModal({
   // ── 4. Method Selection Screen ───────────────────────────────────────────
   if (step === "select_method") {
     return (
-      <div className="absolute inset-0 z-50 flex items-end p-4 bg-stone-950/50 backdrop-blur-sm animate-fade-in">
+      <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm animate-fade-in">
         <div
-          className="w-full max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float animate-slide-up"
+          className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float animate-slide-up"
           style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
         >
           <div className="mx-auto pt-3 pb-1 w-10">
@@ -265,7 +265,7 @@ export function BookingModal({
                 type="button"
                 onClick={() => setStep("form")}
                 aria-label="Go back"
-                className="h-9 w-9 shrink-0 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200"
+                className="h-11 w-11 shrink-0 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200"
               >
                 ←
               </button>
@@ -331,9 +331,9 @@ export function BookingModal({
 
   // ── 5. Standard Booking Form (Step 1) ──────────────────────────────────
   return (
-    <div className="absolute inset-0 z-50 flex items-end p-4 bg-stone-950/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm">
       <div
-        className="w-full max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float"
+        className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float"
         style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
       >
         {/* Sheet handle */}
@@ -354,7 +354,7 @@ export function BookingModal({
             <button
               type="button"
               onClick={onClose}
-              className="h-9 w-9 shrink-0 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition-colors"
+              className="h-11 w-11 shrink-0 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition-colors"
               aria-label="Close booking"
             >
               <X size={16} />

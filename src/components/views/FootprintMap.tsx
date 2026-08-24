@@ -475,7 +475,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                 <button
                   type="button"
                   onClick={() => setViewMode("journey")}
-                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition-colors ${
+                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-2 min-h-[44px] text-[11px] font-bold transition-colors ${
                     viewMode === "journey"
                       ? "bg-white text-terracotta shadow-sm"
                       : "text-stone-500 hover:text-stone-800"
@@ -488,7 +488,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                 <button
                   type="button"
                   onClick={() => setViewMode("pins")}
-                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition-colors ${
+                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-2 min-h-[44px] text-[11px] font-bold transition-colors ${
                     viewMode === "pins"
                       ? "bg-white text-terracotta shadow-sm"
                       : "text-stone-500 hover:text-stone-800"

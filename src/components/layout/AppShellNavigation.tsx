@@ -60,7 +60,7 @@ function SyncStatusBadge({
       onClick={onOpenSync}
       className={`flex items-center border font-bold uppercase tracking-wider transition-all select-none ${
         compact
-          ? "gap-0.5 rounded-full px-1 py-[1px] text-[7px]"
+          ? "gap-1 rounded-full px-2 py-1 text-[8px]"
           : "gap-1 rounded-full px-2.5 py-1 text-[10px] hover:bg-pine-tint/80"
       } ${
         isOffline
@@ -294,14 +294,14 @@ export function MobileHeader({
       <div className="ml-auto flex items-center gap-2">
         <button
           onClick={onOpenSos}
-          className="md:hidden h-8 w-8 grid place-items-center rounded-full bg-red-600 text-white ring-2 ring-white shadow-sm hover:bg-red-700 transition-colors"
+          className="md:hidden h-11 w-11 grid place-items-center rounded-full bg-red-600 text-white ring-2 ring-white shadow-sm hover:bg-red-700 transition-colors"
           aria-label={t("actions.sos")}
         >
-          <Shield size={14} strokeWidth={2.5} />
+          <Shield size={16} strokeWidth={2.5} />
         </button>
         <button
           onClick={onToggleDrawer}
-          className="md:hidden h-8 w-8 flex items-center justify-center rounded-lg text-stone-500 hover:bg-stone-100 transition-colors"
+          className="md:hidden h-11 w-11 flex items-center justify-center rounded-lg text-stone-500 hover:bg-stone-100 transition-colors"
           aria-label={t("actions.menu")}
         >
           <Menu size={20} />
@@ -364,10 +364,10 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
           <span className="font-bold text-stone-900">Paila</span>
           <button
             onClick={onClose}
-            className="ml-auto h-8 w-8 grid place-items-center rounded-lg text-stone-400 hover:bg-stone-100"
+            className="ml-auto h-11 w-11 grid place-items-center rounded-lg text-stone-400 hover:bg-stone-100"
             aria-label="Close navigation"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
@@ -379,7 +379,7 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                className={`flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
                   active ? "bg-terracotta/10 text-terracotta" : "text-stone-500 hover:bg-stone-100"
                 }`}
               >
@@ -391,7 +391,7 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
           <Link
             href="/hotels"
             onClick={onClose}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
               hotelActive(pathname)
                 ? "bg-terracotta/10 text-terracotta"
                 : "text-stone-500 hover:bg-stone-100"
@@ -408,7 +408,7 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
               onOpenSos();
               onClose();
             }}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+            className="flex items-center gap-3 w-full px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
           >
             <Shield size={20} strokeWidth={2} />
             Emergency SOS
@@ -416,7 +416,7 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
           <Link
             href="/profile"
             onClick={onClose}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+            className="flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
           >
             <User size={20} strokeWidth={1.8} />
             Profile

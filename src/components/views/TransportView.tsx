@@ -492,7 +492,7 @@ export function TransportView() {
               placeholder="From (e.g. Kathmandu)"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
-              className="w-full text-sm font-semibold text-stone-900 placeholder-stone-400 outline-none pb-2 border-b border-stone-100 focus:border-terracotta transition-colors bg-transparent"
+              className="w-full min-h-[44px] text-sm font-semibold text-stone-900 placeholder-stone-400 outline-none border-b border-stone-100 focus:border-terracotta transition-colors bg-transparent"
             />
           </div>
         </div>
@@ -508,7 +508,7 @@ export function TransportView() {
               value={to}
               onChange={(e) => setTo(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && searchRoute()}
-              className="w-full text-sm font-semibold text-stone-900 placeholder-stone-400 outline-none pb-2 border-b border-stone-100 focus:border-terracotta transition-colors bg-transparent"
+              className="w-full min-h-[44px] text-sm font-semibold text-stone-900 placeholder-stone-400 outline-none border-b border-stone-100 focus:border-terracotta transition-colors bg-transparent"
             />
           </div>
         </div>
@@ -779,7 +779,8 @@ function BuyTicketModal({
           </div>
           <button
             onClick={onClose}
-            className="h-9 w-9 grid place-items-center rounded-full hover:bg-stone-100 text-stone-500"
+            className="h-11 w-11 grid place-items-center rounded-full hover:bg-stone-100 text-stone-500"
+            aria-label="Close ticket"
           >
             <X size={18} />
           </button>

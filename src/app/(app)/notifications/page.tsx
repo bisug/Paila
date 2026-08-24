@@ -60,8 +60,12 @@ export default function NotificationsPage() {
 
   return (
     <div className="min-h-screen bg-stone-50 pb-12">
-      <header className="sticky top-0 z-10 border-b border-stone-200 bg-white px-4 py-3 flex items-center gap-3">
-        <Link href="/" aria-label="Back to home" className="text-stone-500">
+      <header className="sticky top-14 md:top-16 z-10 border-b border-stone-200 bg-white px-4 py-3 flex items-center gap-3">
+        <Link
+          href="/"
+          aria-label="Back to home"
+          className="grid h-11 w-11 place-items-center rounded-lg text-stone-500 hover:bg-stone-100 transition-colors"
+        >
           <ArrowLeft size={20} />
         </Link>
         <h1 className="text-base font-bold text-stone-900 flex items-center gap-2">

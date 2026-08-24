@@ -364,7 +364,7 @@ export function ScannerView() {
           <img
             src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85"
             alt="Camera preview background"
-            className="object-cover opacity-20"
+            className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
         )}
 
@@ -466,7 +466,7 @@ export function ScannerView() {
           aria-modal="true"
           aria-label="Scan result"
           aria-live="polite"
-          className="absolute inset-x-0 bottom-0 z-50 rounded-t-sheet bg-white px-4 pt-5 shadow-float"
+          className="fixed inset-x-0 bottom-0 z-50 rounded-t-sheet bg-white px-4 pt-5 shadow-float"
           style={{
             paddingBottom: "max(2rem, env(safe-area-inset-bottom))",
             maxHeight: "80vh",
@@ -490,7 +490,7 @@ export function ScannerView() {
                 setAiResult(null);
                 startScanner(); // restart camera when closing
               }}
-              className="h-9 w-9 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition-colors shrink-0"
+              className="h-11 w-11 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition-colors shrink-0"
               aria-label="Close scan result"
             >
               <X size={16} />

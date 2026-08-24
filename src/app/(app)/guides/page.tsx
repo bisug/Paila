@@ -121,7 +121,7 @@ export default function GuidesIndex() {
           <p className="text-stone-600 mb-2">Submit your guide ID to appear here.</p>
           <Link
             href="/guide/verify"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-terracotta hover:underline"
+            className="inline-flex items-center gap-1.5 min-h-[44px] text-xs font-bold text-terracotta hover:underline"
           >
             Get verified →
           </Link>
@@ -133,7 +133,7 @@ export default function GuidesIndex() {
           type="button"
           onClick={() => setShowSavedOnly(false)}
           aria-pressed={!showSavedOnly}
-          className={`px-3 py-1.5 rounded-lg transition-colors ${
+          className={`px-4 py-2.5 min-h-[44px] rounded-lg transition-colors ${
             !showSavedOnly ? "bg-stone-900 text-white" : "text-stone-500 hover:text-stone-900"
           }`}
         >
@@ -143,7 +143,7 @@ export default function GuidesIndex() {
           type="button"
           onClick={() => setShowSavedOnly(true)}
           aria-pressed={showSavedOnly}
-          className={`px-3 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1.5 ${
+          className={`px-3 py-2.5 min-h-[44px] rounded-lg transition-colors inline-flex items-center gap-1.5 ${
             showSavedOnly ? "bg-stone-900 text-white" : "text-stone-500 hover:text-stone-900"
           }`}
         >

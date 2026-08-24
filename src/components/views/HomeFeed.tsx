@@ -110,7 +110,7 @@ function AlertChip({ alert, onOpen }: { alert: LocalAlert; onOpen: (a: LocalAler
       type="button"
       onClick={() => onOpen(alert)}
       aria-label={`${s.label} alert in ${alert.location}: ${alert.message}`}
-      className={`inline-flex items-center gap-1.5 pl-2 pr-2.5 py-0.5 rounded-md border border-stone-200 border-l-2 ${s.stripe} bg-stone-50 text-[11px] font-semibold text-stone-700 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/40 transition-colors`}
+      className={`inline-flex items-center gap-1.5 pl-2 pr-2.5 min-h-[44px] rounded-md border border-stone-200 border-l-2 ${s.stripe} bg-stone-50 text-[11px] font-semibold text-stone-700 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta/40 transition-colors`}
     >
       <Icon size={12} className={`shrink-0 ${s.icon}`} aria-hidden="true" />
       <span className="truncate max-w-[60vw]">{alert.message}</span>
@@ -999,7 +999,7 @@ function LocalEventsSection({
                       e.stopPropagation();
                       handleDismiss({ id: ev.id, category: ev.category, title: ev.title });
                     }}
-                    className="absolute top-1 right-1 z-10 grid place-items-center w-6 h-6 rounded-full bg-white/90 text-stone-600 border border-stone-200 shadow-sm hover:bg-white hover:text-stone-900"
+                    className="absolute top-1 right-1 z-10 grid place-items-center w-9 h-9 rounded-full bg-white/90 text-stone-600 border border-stone-200 shadow-sm hover:bg-white hover:text-stone-900"
                   >
                     <X size={12} strokeWidth={2.5} />
                   </button>
@@ -1093,7 +1093,7 @@ function LocalEventsSection({
               key={cat}
               type="button"
               onClick={() => setActiveCategory(cat as EventCategory | "All")}
-              className={`shrink-0 rounded-full border px-3 py-1 text-[11px] font-bold transition-colors ${
+              className={`shrink-0 rounded-full border px-3 py-2 min-h-[44px] text-[11px] font-bold transition-colors ${
                 active
                   ? "bg-stone-900 text-white border-stone-900"
                   : isTopPick
@@ -1206,7 +1206,7 @@ function LocalEventsSection({
                     setExpandedId(nextOpen ? ev.id : null);
                     if (nextOpen) trackInteraction(ev.category, 1);
                   }}
-                  className="mt-2 w-full text-[11px] font-bold text-terracotta hover:underline text-center"
+                  className="mt-2 w-full py-2.5 min-h-[44px] text-[11px] font-bold text-terracotta hover:underline text-center"
                 >
                   {open ? "Show less" : "View details"}
                 </button>
@@ -1698,13 +1698,13 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
               placeholder="Search hotels, places near you…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-10 w-full rounded-xl border border-stone-200 bg-white pl-9 pr-4 text-sm text-stone-800 placeholder-stone-400 focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/15 transition-colors"
+              className="h-11 w-full rounded-xl border border-stone-200 bg-white pl-9 pr-4 text-sm text-stone-800 placeholder-stone-400 focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/15 transition-colors"
             />
           </div>
           <button
             onClick={handleUseMyLocation}
             disabled={isLoadingLocation}
-            className="h-10 w-10 shrink-0 grid place-items-center rounded-xl border border-stone-200 bg-white text-stone-500 hover:text-terracotta active:scale-95 transition-all"
+            className="h-11 w-11 shrink-0 grid place-items-center rounded-xl border border-stone-200 bg-white text-stone-500 hover:text-terracotta active:scale-95 transition-all"
             aria-label="Use My Location"
             title="Use My Location"
           >
@@ -1873,7 +1873,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
                   <button
                     type="button"
                     onClick={() => markVisited(rec.spotId)}
-                    className="shrink-0 border-l border-stone-100 px-2 text-[10px] font-bold uppercase tracking-wider text-stone-500 hover:bg-stone-50"
+                    className="shrink-0 border-l border-stone-100 px-3 min-w-[44px] text-[10px] font-bold uppercase tracking-wider text-stone-500 hover:bg-stone-50"
                     aria-label={`Mark ${rec.spotLabel} as visited`}
                     title={`Mark ${rec.spotLabel} as visited`}
                   >
