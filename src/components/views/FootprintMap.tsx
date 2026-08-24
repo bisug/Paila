@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import Map, { Marker, Source, Layer, type MapRef } from "react-map-gl";
+import Map, { Marker, Source, Layer, type MapRef } from "react-map-gl/mapbox";
 import type { MapMouseEvent } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
