@@ -1,8 +1,8 @@
-// Mapbox client config + helpers (client-safe; no server secrets here).
-export const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
+// Free/OpenStreetMap map stack (client-safe): MapLibre + OpenFreeMap tiles.
+// Polyline decoding matches the Google/OSRM encoded-polyline format.
+export const MAP_STYLE_LIGHT = "https://tiles.openfreemap.org/styles/liberty";
+export const MAP_STYLE_POSITRON = "https://tiles.openfreemap.org/styles/positron";
 
-// Decode a Google/Mapbox-format encoded polyline into { lat, lng } points.
-// Mapbox Directions with geometries=polyline uses the same encoding as Google.
 export function decodePolyline(str: string): { lat: number; lng: number }[] {
   const coords: { lat: number; lng: number }[] = [];
   let index = 0;

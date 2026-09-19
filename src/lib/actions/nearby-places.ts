@@ -1,13 +1,10 @@
 "use server";
 
-import { fetchMapboxUrl, getMapboxToken } from "@/lib/server/mapbox";
 import {
   assertLatLng,
   enforceMapRateLimit,
   normalizeRadiusMeters,
 } from "@/lib/server/maps-guardrails";
-
-const GEOCODE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places";
 
 export type NearbyPlace = {
   id: string;
@@ -20,79 +17,97 @@ export type NearbyPlace = {
   userRatingCount: number | null;
 };
 
-const EXPLORE_CATS = [
-  "museum",
-  "monument",
-  "temple",
-  "shrine",
-  "park",
-  "garden",
-  "viewpoint",
-  "attraction",
-  "arts",
-  "culture",
-  "heritage",
-  "historic",
-];
-const HOTSPOT_CATS = ["restaurant", "cafe", "bar", "pub", "lodging", "hotel", "food", "nightlife"];
+// OSM tag filters per category group (Overpass regexes).
+const EXPLORE_FILTER =
+  '["tourism"~"^(museum|monument|attraction|viewpoint|artwork|gallery|zoo)$"];["historic"~"^."];["leisure"~"^(park|garden)$"]';
+const HOTSPOT_FILTER =
+  '["amenity"~"^(restaurant|cafe|bar|pub|fast_food|nightclub)$"];["tourism"~"^(hotel|hostel|guest_house)$"]';
 
-async function searchNearby(
-  lat: number,
-  lng: number,
-  radiusMeters: number,
-): Promise<NearbyPlace[]> {
-  const endpoint = `${GEOCODE_URL}/${lng},${lat}.json`;
-  const res = await fetchMapboxUrl(endpoint, {
-    types: "poi",
-    limit: 20,
-    proximity: `${lng},${lat}`,
-  });
-  if (!res.ok) return [];
-  const j = (await res.json()) as {
-    features?: Array<{
-      id: string;
-      text?: string;
-      place_name?: string;
-      center?: [number, number];
-      properties?: { category?: string[] };
-    }>;
+type OverpassElement = {
+  type: "node" | "way" | "relation";
+  id: number;
+  lat?: number;
+  lon?: number;
+  center?: { lat: number; lon: number };
+  tags?: Record<string, string>;
+};
+
+function toPlace(el: OverpassElement): NearbyPlace | null {
+  const lat = el.lat ?? el.center?.lat;
+  const lng = el.lon ?? el.center?.lon;
+  const name = el.tags?.name;
+  if (lat === undefined || lng === undefined || !name) return null;
+  const tags = el.tags ?? {};
+  const types = [tags.tourism, tags.amenity, tags.historic, tags.leisure].filter(
+    (t): t is string => !!t,
+  );
+  const street = tags["addr:street"];
+  const city = tags["addr:city"];
+  return {
+    id: `${el.type}/${el.id}`,
+    name,
+    address: [street, city].filter(Boolean).join(", "),
+    lat,
+    lng,
+    types,
+    rating: null,
+    userRatingCount: null,
   };
-  return (j.features ?? [])
-    .filter((p) => p.center)
-    .map((p) => ({
-      id: p.id,
-      name: p.text ?? p.place_name ?? "Unknown",
-      address: p.place_name ?? "",
-      lat: p.center![1],
-      lng: p.center![0],
-      types: p.properties?.category ?? [],
-      rating: null,
-      userRatingCount: null,
-    }));
 }
 
 export async function getNearbyPlaces({
   data,
 }: {
-  data: { lat: number; lng: number; radiusMeters?: number };
-}): Promise<{ explore: NearbyPlace[]; hotspots: NearbyPlace[]; error: string | null }> {
-  await enforceMapRateLimit("maps:nearby", 30, 60_000);
+  data: {
+    lat: number;
+    lng: number;
+    radiusMeters: number;
+  };
+}) {
+  await enforceMapRateLimit("maps:nearby", 20, 60_000);
 
-  const center = assertLatLng(data);
-  normalizeRadiusMeters(data.radiusMeters, 8000, 20000);
-  if (!getMapboxToken()) {
-    return { explore: [], hotspots: [], error: "Missing Mapbox access token" };
-  }
+  const coords = assertLatLng(data);
+  const radius = normalizeRadiusMeters(data.radiusMeters, 3000, 20_000);
+
+  // One Overpass request covers both groups; classify locally by tags.
+  const query =
+    `[out:json][timeout:15];` +
+    `nwr(around:${radius},${coords.lat},${coords.lng})${EXPLORE_FILTER};` +
+    `nwr(around:${radius},${coords.lat},${coords.lng})${HOTSPOT_FILTER};` +
+    `out center 40;`;
+
   try {
-    const places = await searchNearby(center.lat, center.lng, data.radiusMeters ?? 8000);
-    const match = (cats: string[], keys: string[]) =>
-      cats.some((c) => keys.some((k) => c.toLowerCase().includes(k)));
-    const explore = places.filter((p) => match(p.types, EXPLORE_CATS));
-    const hotspots = places.filter(
-      (p) => !match(p.types, EXPLORE_CATS) && match(p.types, HOTSPOT_CATS),
-    );
-    return { explore, hotspots, error: null };
+    const res = await fetch(`https://overpass-api.de/api/interpreter`, {
+      method: "POST",
+      body: new URLSearchParams({ data: query }),
+      signal: AbortSignal.timeout(15_000),
+      headers: { "User-Agent": "Paila/1.0 (https://github.com/bisug/Paila; prototype)" },
+    });
+    if (!res.ok) {
+      return { explore: [], hotspots: [], error: `Overpass ${res.status}` };
+    }
+    const json = (await res.json()) as { elements?: OverpassElement[] };
+
+    const exploreTags =
+      /^(museum|monument|attraction|viewpoint|artwork|gallery|zoo|.*historic.*|park|garden)$/;
+    const explore: NearbyPlace[] = [];
+    const hotspots: NearbyPlace[] = [];
+    for (const el of json.elements ?? []) {
+      const place = toPlace(el);
+      if (!place) continue;
+      if (place.types.some((t) => exploreTags.test(t))) explore.push(place);
+      else hotspots.push(place);
+    }
+    return {
+      explore: explore.slice(0, 20),
+      hotspots: hotspots.slice(0, 20),
+      error: null as string | null,
+    };
   } catch (e) {
-    return { explore: [], hotspots: [], error: e instanceof Error ? e.message : "Search failed" };
+    return {
+      explore: [],
+      hotspots: [],
+      error: e instanceof Error ? e.message : "Nearby search failed",
+    };
   }
 }

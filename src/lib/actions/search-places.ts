@@ -1,9 +1,18 @@
 "use server";
 
-import { fetchMapboxUrl } from "@/lib/server/mapbox";
+import { fetchJson } from "@/lib/server/osm";
 import { enforceMapRateLimit, sanitizePlaceSearchQuery } from "@/lib/server/maps-guardrails";
 
-const GEOCODE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places";
+type NominatimPlace = {
+  osm_type?: string;
+  osm_id?: number;
+  name?: string;
+  display_name?: string;
+  lat?: string;
+  lon?: string;
+  category?: string;
+  type?: string;
+};
 
 export async function searchPlaces({
   data,
@@ -17,46 +26,39 @@ export async function searchPlaces({
   await enforceMapRateLimit("maps:search", 30, 60_000);
 
   const query = sanitizePlaceSearchQuery(data.query);
-  const params: Record<string, string | number | boolean | undefined> = {
-    types: "poi",
-    limit: 10,
-  };
+  const params = new URLSearchParams({
+    q: query,
+    format: "jsonv2",
+    limit: "10",
+    addressdetails: "0",
+    dedupe: "1",
+  });
   if (data.bias) {
-    params.proximity = `${data.bias.lng},${data.bias.lat}`;
+    const d = 0.5;
+    params.set(
+      "viewbox",
+      `${data.bias.lng - d},${data.bias.lat + d},${data.bias.lng + d},${data.bias.lat - d}`,
+    );
+    params.set("bounded", "0");
   }
 
-  const endpoint = `${GEOCODE_URL}/${encodeURIComponent(query)}.json`;
   try {
-    const res = await fetchMapboxUrl(endpoint, params);
-    if (!res.ok) {
-      const text = await res.text();
-      return { places: [], error: `Places API ${res.status}: ${text.slice(0, 200)}` };
-    }
-
-    const json = (await res.json()) as {
-      features?: Array<{
-        id: string;
-        text?: string;
-        place_name?: string;
-        center?: [number, number];
-        properties?: { category?: string[] };
-      }>;
-    };
-
-    const places = (json.features ?? [])
-      .filter((p) => p.center)
+    const rows = await fetchJson<NominatimPlace[]>(
+      `https://nominatim.openstreetmap.org/search?${params}`,
+    );
+    const places = (rows ?? [])
+      .filter((p) => p.lat && p.lon)
       .map((p) => ({
-        id: p.id,
-        name: p.text ?? p.place_name ?? "Unknown",
-        address: p.place_name ?? "",
-        lat: p.center![1],
-        lng: p.center![0],
-        types: p.properties?.category ?? [],
+        id: p.osm_type && p.osm_id ? `${p.osm_type}/${p.osm_id}` : `${p.lat},${p.lon}`,
+        name: p.name || p.display_name?.split(",")[0]?.trim() || "Unknown",
+        address: p.display_name ?? "",
+        lat: Number(p.lat),
+        lng: Number(p.lon),
+        types: [p.category, p.type].filter((t): t is string => !!t),
         rating: null as number | null,
         userRatingCount: null as number | null,
         priceLevel: null as string | null,
       }));
-
     return { places, error: null as string | null };
   } catch (e) {
     return { places: [], error: e instanceof Error ? e.message : "Search failed" };

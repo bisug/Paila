@@ -1,7 +1,7 @@
 "use server";
 
 import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
-import { getElevationMeters, getMapboxToken } from "@/lib/server/mapbox";
+import { getElevationMeters } from "@/lib/server/osm";
 import { assertLatLng, enforceMapRateLimit, sanitizePlaceName } from "@/lib/server/maps-guardrails";
 
 export type PlaceContext = {
@@ -24,14 +24,12 @@ export async function getPlaceContext({
   const coords = assertLatLng(data);
   const name = sanitizePlaceName(data.name);
 
-  // 1) Elevation (best-effort, via Mapbox terrain-rgb)
+  // 1) Elevation (best-effort, via free Open-Meteo elevation API)
   let elevationMeters: number | null = null;
-  if (getMapboxToken()) {
-    try {
-      elevationMeters = await getElevationMeters(coords.lat, coords.lng);
-    } catch {
-      /* ignore elevation failures */
-    }
+  try {
+    elevationMeters = await getElevationMeters(coords.lat, coords.lng);
+  } catch {
+    /* ignore elevation failures */
   }
 
   if (!hasAiProvider()) {

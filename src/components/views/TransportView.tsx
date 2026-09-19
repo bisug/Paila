@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import Map, { Source, Layer, type MapRef } from "react-map-gl/mapbox";
-import "mapbox-gl/dist/mapbox-gl.css";
+import Map, { Source, Layer, type MapRef } from "react-map-gl/maplibre";
+import "maplibre-gl/dist/maplibre-gl.css";
 import {
   Bus,
   Car,
@@ -30,7 +30,7 @@ import {
   type TransportMode,
 } from "@/lib/data";
 import { PageHeader, SectionHeader } from "@/components/ui/page-primitives";
-import { MAPBOX_TOKEN, decodePolyline } from "@/lib/mapbox-loader";
+import { MAP_STYLE_LIGHT, decodePolyline } from "@/lib/maps";
 import { forwardGeocode } from "@/lib/actions/geocode";
 import { computeRoute } from "@/lib/actions/compute-route";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -379,7 +379,7 @@ export function TransportView() {
       window.scrollTo({ top: window.innerHeight * 0.4, behavior: "smooth" });
   }, []);
 
-  const mapLoadError = !MAPBOX_TOKEN ? "Mapbox is not configured or failed to load." : null;
+  const mapLoadError: string | null = null;
 
   const filtered = useMemo(() => {
     const f = from.trim().toLowerCase();
@@ -549,13 +549,12 @@ export function TransportView() {
             <>
               <Map
                 ref={mapRef}
-                mapboxAccessToken={MAPBOX_TOKEN}
                 initialViewState={{
                   latitude: defaultCenter.lat,
                   longitude: defaultCenter.lng,
                   zoom: 7,
                 }}
-                mapStyle="mapbox://styles/mapbox/streets-v12"
+                mapStyle={MAP_STYLE_LIGHT}
                 style={mapContainerStyle}
                 onLoad={() => setMapLoaded(true)}
               >

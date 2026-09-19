@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import Map, { Marker, Source, Layer, type MapRef } from "react-map-gl/mapbox";
-import type { MapMouseEvent } from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import Map, { Marker, Source, Layer, type MapRef } from "react-map-gl/maplibre";
+import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
+import "maplibre-gl/dist/maplibre-gl.css";
 import {
   MapPin,
   Navigation,
@@ -27,7 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { journeyStages, journeyTitle, journeySubtitle, type JourneyStage } from "@/lib/journey";
 import { useVisitTracker } from "@/hooks/use-visit-tracker";
 import { JourneyStageList } from "@/components/views/JourneyStageList";
-import { MAPBOX_TOKEN } from "@/lib/mapbox-loader";
+import { MAP_STYLE_POSITRON } from "@/lib/maps";
 
 type Checkpoint = {
   id: string;
@@ -141,7 +141,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
   const reverseGeocodeFn = reverseGeocode;
   const queryClient = useQueryClient();
 
-  const mapLoadError = !MAPBOX_TOKEN ? "Mapbox is not configured or failed to load." : null;
+  const mapLoadError: string | null = null;
 
   const {
     location,
@@ -299,7 +299,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
   };
 
   const handleMapClick = useCallback(
-    async (e: MapMouseEvent) => {
+    async (e: MapLayerMouseEvent) => {
       if (!tapMode) return;
       const { lng, lat } = e.lngLat;
       if (isAuthed !== true) {
@@ -526,13 +526,12 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                 <>
                   <Map
                     ref={mapRef}
-                    mapboxAccessToken={MAPBOX_TOKEN}
                     initialViewState={{
                       latitude: DEFAULT_CENTER.lat,
                       longitude: DEFAULT_CENTER.lng,
                       zoom: 5,
                     }}
-                    mapStyle="mapbox://styles/mapbox/outdoors-v12"
+                    mapStyle={MAP_STYLE_POSITRON}
                     style={mapContainerStyle}
                     onClick={handleMapClick}
                     onLoad={() => setMapLoaded(true)}

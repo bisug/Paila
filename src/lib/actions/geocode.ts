@@ -1,55 +1,43 @@
 "use server";
 
-import { fetchMapboxUrl } from "@/lib/server/mapbox";
+import { fetchJson } from "@/lib/server/osm";
 import {
   assertLatLng,
   enforceMapRateLimit,
   sanitizePlaceSearchQuery,
 } from "@/lib/server/maps-guardrails";
 
+type NominatimPlace = {
+  osm_type?: string;
+  osm_id?: number;
+  display_name?: string;
+  name?: string;
+  lat?: string;
+  lon?: string;
+};
+
+function pinName(lat: number, lng: number) {
+  return `Pin ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+}
+
 export async function reverseGeocode({ data }: { data: { lat: number; lng: number } }) {
   await enforceMapRateLimit("maps:reverse-geocode", 60, 60_000);
 
   const coords = assertLatLng(data);
-  const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coords.lng},${coords.lat}.json`;
+  const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.lat}&lon=${coords.lng}&zoom=16&addressdetails=0`;
   try {
-    const res = await fetchMapboxUrl(endpoint, {
-      types: "poi,address,place,locality,neighborhood",
-      limit: 1,
-    });
-    if (!res.ok) {
-      return {
-        name: `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`,
-        address: null as string | null,
-        placeId: null as string | null,
-        error: `Geocode ${res.status}`,
-      };
-    }
-
-    const json = (await res.json()) as {
-      features?: Array<{ id?: string; text?: string; place_name?: string }>;
-    };
-    const top = json.features?.[0];
-    if (!top) {
-      return {
-        name: `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`,
-        address: null,
-        placeId: null,
-        error: null,
-      };
-    }
-
+    const place = await fetchJson<NominatimPlace>(url);
     const name =
-      top.text || top.place_name || `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`;
+      place.name || place.display_name?.split(",")[0]?.trim() || pinName(coords.lat, coords.lng);
     return {
       name,
-      address: top.place_name ?? null,
-      placeId: top.id ?? null,
+      address: place.display_name ?? null,
+      placeId: place.osm_type && place.osm_id ? `${place.osm_type}/${place.osm_id}` : null,
       error: null as string | null,
     };
   } catch (e) {
     return {
-      name: `Pin ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`,
+      name: pinName(coords.lat, coords.lng),
       address: null,
       placeId: null,
       error: e instanceof Error ? e.message : "Geocode failed",
@@ -65,16 +53,29 @@ export async function forwardGeocode({
   await enforceMapRateLimit("maps:forward-geocode", 30, 60_000);
 
   const query = sanitizePlaceSearchQuery(data.query);
-  const params: Record<string, string | number | boolean | undefined> = { limit: 1 };
-  if (data.bias) params.proximity = `${data.bias.lng},${data.bias.lat}`;
-  const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json`;
+  // Nominatim has no proximity parameter; a viewbox around the user nudges
+  // result ranking toward their area without excluding farther matches.
+  const params = new URLSearchParams({
+    q: query,
+    format: "jsonv2",
+    limit: "1",
+    addressdetails: "0",
+  });
+  if (data.bias) {
+    const d = 0.5; // ~50 km box around the bias point
+    params.set(
+      "viewbox",
+      `${data.bias.lng - d},${data.bias.lat + d},${data.bias.lng + d},${data.bias.lat - d}`,
+    );
+    params.set("bounded", "0");
+  }
   try {
-    const res = await fetchMapboxUrl(endpoint, params);
-    if (!res.ok) return { point: null, error: `Geocode ${res.status}` };
-    const json = (await res.json()) as { features?: Array<{ center?: [number, number] }> };
-    const c = json.features?.[0]?.center;
-    if (!c) return { point: null, error: "No match found." };
-    return { point: { lat: c[1], lng: c[0] }, error: null };
+    const places = await fetchJson<NominatimPlace[]>(
+      `https://nominatim.openstreetmap.org/search?${params}`,
+    );
+    const top = places?.[0];
+    if (!top?.lat || !top?.lon) return { point: null, error: "No match found." };
+    return { point: { lat: Number(top.lat), lng: Number(top.lon) }, error: null };
   } catch (e) {
     return { point: null, error: e instanceof Error ? e.message : "Geocode failed" };
   }

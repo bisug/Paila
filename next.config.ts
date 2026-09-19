@@ -26,11 +26,11 @@ const nextConfig: NextConfig = {
         value: [
           "default-src 'self'",
           // 'unsafe-eval' only in dev: React devtools stack reconstruction needs it
-          `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://cdn.jsdelivr.net https://api.mapbox.com https://js.mapbox.com`,
+          `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://cdn.jsdelivr.net`,
           "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://api.mapbox.com https://*.mapbox.com",
+          "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://tiles.openfreemap.org",
           "media-src 'self' blob:",
-          "connect-src 'self' https://*.supabase.co https://api.mapbox.com https://events.mapbox.com https://api.open-meteo.com https://open.er-api.com https://api.dictionaryapi.dev https://translate.googleapis.com",
+          "connect-src 'self' https://*.supabase.co https://tiles.openfreemap.org https://api.open-meteo.com https://open.er-api.com https://api.dictionaryapi.dev https://translate.googleapis.com https://router.project-osrm.org https://nominatim.openstreetmap.org",
           "frame-ancestors 'none'",
           "base-uri 'self'",
           "form-action 'self'",
