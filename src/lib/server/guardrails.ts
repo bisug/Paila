@@ -64,9 +64,9 @@ export function isDemoEnabled(name: string): boolean {
   return process.env.NODE_ENV !== "production" && process.env[name] === "true";
 }
 
-/** True when a real Supabase project is wired (anon key present). */
+/** True when a real Supabase project is wired (both URL and anon key present). */
 export function isSupabaseConfigured(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL);
 }
 
 /** Demo mode: no real Supabase and not a production build. */

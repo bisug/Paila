@@ -100,15 +100,21 @@ function SuccessContent() {
     );
   }
 
+  const confirmed = booking.status === "confirmed";
+
   return (
     <div className="min-h-screen bg-stone-50 px-4 pt-8 pb-20">
       <div className="mx-auto max-w-md text-center">
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-pine/10 text-pine">
           <CheckCircle2 size={36} />
         </div>
-        <h1 className="mt-5 text-2xl font-bold text-stone-900">Booking confirmed</h1>
+        <h1 className="mt-5 text-2xl font-bold text-stone-900">
+          {confirmed ? "Booking confirmed" : "Booking requested"}
+        </h1>
         <p className="mt-2 text-sm text-stone-500">
-          Your stay is locked in. We've also added a notification to your inbox.
+          {confirmed
+            ? "Your stay is locked in. We've also added a notification to your inbox."
+            : "Your booking is saved and pending confirmation. We'll notify you once it's confirmed."}
         </p>
 
         <div className="mt-6 rounded-card bg-white border border-border shadow-card overflow-hidden text-left">
@@ -132,7 +138,9 @@ function SuccessContent() {
               <Users size={12} /> {booking.guests} guest{booking.guests === 1 ? "" : "s"}
             </p>
             <div className="flex justify-between pt-3 border-t border-stone-100">
-              <span className="text-sm font-medium text-stone-600">Total paid</span>
+              <span className="text-sm font-medium text-stone-600">
+                {confirmed ? "Total paid" : "Total (due at check-in)"}
+              </span>
               <span className="text-sm font-bold text-stone-900">
                 NPR {booking.total_npr.toLocaleString()}
               </span>

@@ -54,7 +54,19 @@ export async function addCheckpoint({
     .select("id, place_id, name, address, lat, lng, created_at")
     .single();
 
-  if (error) throw new Error(error.message);
+  // A concurrent add for the same place can win the race against the unique
+  // index on (user_id, place_id); fall back to the row the winner inserted.
+  if (error) {
+    if (error.code === "23505" && data.placeId) {
+      const { data: existing } = await supabase
+        .from("checkpoints")
+        .select("id, place_id, name, address, lat, lng, created_at")
+        .eq("place_id", data.placeId)
+        .maybeSingle();
+      if (existing) return { checkpoint: existing };
+    }
+    throw new Error(error.message);
+  }
   return { checkpoint: inserted };
 }
 
