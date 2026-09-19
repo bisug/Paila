@@ -29,9 +29,9 @@ export async function POST(request: Request) {
     );
 
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
   }
