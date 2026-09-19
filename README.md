@@ -16,7 +16,8 @@
 
   <p>
     <a href="https://github.com/bisug/Paila/issues">Report a Bug</a> ·
-    <a href="https://github.com/bisug/Paila/issues">Request a Feature</a>
+    <a href="https://github.com/bisug/Paila/issues">Request a Feature</a> ·
+    <a href="docs/README.md"><strong>📖 Documentation & Wiki</strong></a>
   </p>
 </div>
 
