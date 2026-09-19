@@ -351,3 +351,15 @@ select {
     @apply w-full rounded-xl border border-input bg-white px-3 py-2.5 text-sm font-medium text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-terracotta focus:ring-2 focus:ring-terracotta/30 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground dark:bg-card;
   }
 }
+
+/* ─── Reduced motion: collapse animations/transitions for vestibular safety ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
