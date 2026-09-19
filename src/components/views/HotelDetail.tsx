@@ -206,7 +206,17 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
                   type="date"
                   value={checkIn}
                   min={todayPlus(0)}
-                  onChange={(e) => setCheckIn(e.target.value)}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setCheckIn(next);
+                    // Keep the range valid instead of letting an existing
+                    // check-out sit before the new check-in.
+                    if (checkOut <= next) {
+                      const d = new Date(next);
+                      d.setDate(d.getDate() + 1);
+                      setCheckOut(d.toISOString().slice(0, 10));
+                    }
+                  }}
                   className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground h-11 focus:outline-none focus:ring-2 focus:ring-terracotta/30"
                 />
               </div>

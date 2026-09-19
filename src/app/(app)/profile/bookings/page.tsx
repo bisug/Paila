@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, Calendar, Users, MapPin, ChevronLeft, BookOpen, RotateCcw } from "lucide-react";
-import { listMyBookings } from "@/lib/actions/bookings";
+import { listMyBookings, cancelBooking } from "@/lib/actions/bookings";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type Booking = Awaited<ReturnType<typeof listMyBookings>>[number];
 
@@ -29,6 +30,7 @@ export default function MyBookingsPage() {
   const [bookings, setBookings] = useState<Booking[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -53,6 +55,25 @@ export default function MyBookingsPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  async function cancel(id: string) {
+    if (!window.confirm("Cancel this booking request?")) return;
+    setCancellingId(id);
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      await cancelBooking({ data: { id, token: session?.access_token } });
+      setBookings(
+        (prev) => prev?.map((b) => (b.id === id ? { ...b, status: "cancelled" } : b)) ?? prev,
+      );
+      toast.success("Booking request cancelled");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to cancel booking");
+    } finally {
+      setCancellingId(null);
+    }
+  }
 
   if (error) {
     return (
@@ -150,6 +171,16 @@ export default function MyBookingsPage() {
                 <p className="mt-2 text-sm font-bold text-stone-900 tabular-nums">
                   NPR {b.total_npr.toLocaleString()}
                 </p>
+                {b.status === "pending" && (
+                  <button
+                    type="button"
+                    disabled={cancellingId === b.id}
+                    onClick={() => cancel(b.id)}
+                    className="mt-2 min-h-11 text-xs font-semibold text-red-600 hover:text-red-700 disabled:opacity-50"
+                  >
+                    {cancellingId === b.id ? "Cancelling…" : "Cancel request"}
+                  </button>
+                )}
               </div>
             </li>
           ))}

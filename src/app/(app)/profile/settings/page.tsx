@@ -2,44 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Bell, Moon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LANGUAGES, setLanguage, type LangCode } from "@/lib/i18n";
-
-function Switch({
-  checked,
-  onChange,
-  label,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-      onClick={() => onChange(!checked)}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-        checked ? "bg-primary" : "bg-border"
-      }`}
-    >
-      <span
-        className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all ${
-          checked ? "right-0.5" : "left-0.5"
-        }`}
-      />
-    </button>
-  );
-}
 
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const current = LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
-  const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const [, setTick] = useState(0);
 
   return (
     <div className="min-h-screen bg-background px-4 pt-5 pb-28">
@@ -69,7 +39,10 @@ export default function SettingsPage() {
             return (
               <button
                 key={lang.code}
-                onClick={() => setLanguage(lang.code as LangCode)}
+                onClick={() => {
+                  setLanguage(lang.code as LangCode);
+                  setTick((n) => n + 1);
+                }}
                 aria-pressed={active}
                 className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm text-left transition-colors ${
                   active
@@ -85,22 +58,9 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <div className="flex items-center gap-3">
-            <Bell size={18} className="text-muted-foreground" />
-            <p className="text-sm font-bold text-foreground">Notifications</p>
-          </div>
-          <Switch checked={notifications} onChange={setNotifications} label="Notifications" />
-        </div>
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-3">
-            <Moon size={18} className="text-muted-foreground" />
-            <p className="text-sm font-bold text-foreground">Dark Mode</p>
-          </div>
-          <Switch checked={darkMode} onChange={setDarkMode} label="Dark Mode" />
-        </div>
-      </div>
+      {/* Notification and dark-mode toggles were removed: they were visual-only
+          state with no backing behavior. Re-add only once wired to real
+          preferences (dark mode needs the .dark token set applied app-wide). */}
     </div>
   );
 }

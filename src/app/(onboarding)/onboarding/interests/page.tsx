@@ -126,7 +126,7 @@ export default function InterestsOnboarding() {
 
         <div className="sticky bottom-4 mt-8 flex flex-col gap-2">
           <button
-            disabled={!canContinue || saving}
+            disabled={!userId || !canContinue || saving}
             onClick={() => save(Array.from(selected))}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white shadow-card transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
@@ -142,7 +142,7 @@ export default function InterestsOnboarding() {
             )}
           </button>
           <button
-            disabled={saving}
+            disabled={!userId || saving}
             onClick={() => save([])}
             className="w-full rounded-xl bg-transparent px-4 py-2.5 text-xs font-semibold text-stone-500 hover:text-stone-900"
           >

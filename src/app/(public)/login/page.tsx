@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   AlertCircle,
   ArrowRight,
@@ -60,9 +60,18 @@ export default function LoginPage() {
   const [phoneOtp, setPhoneOtp] = useState("");
   const [verifyingPhone, setVerifyingPhone] = useState(false);
   const [resendingPhone, setResendingPhone] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   const passwordIssues = useMemo(() => getPasswordIssues(password), [password]);
   const isSignup = authMode === "signup";
+
+  // Throttle SMS resends: Supabase rate-limits them anyway, and an instant
+  // retry button just lets users burn the quota and get a raw API error.
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const id = window.setInterval(() => setResendCooldown((v) => Math.max(0, v - 1)), 1000);
+    return () => window.clearInterval(id);
+  }, [resendCooldown]);
 
   function resetFeedback() {
     setError("");
@@ -243,7 +252,7 @@ export default function LoginPage() {
 
   async function resendPhoneOtp() {
     resetFeedback();
-    if (!pendingPhone) return;
+    if (!pendingPhone || resendCooldown > 0) return;
 
     setResendingPhone(true);
     try {
@@ -254,6 +263,7 @@ export default function LoginPage() {
 
       if (resendError) throw resendError;
       setNotice("A new verification code was sent.");
+      setResendCooldown(30);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not resend the verification code.");
     } finally {
@@ -502,10 +512,14 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={resendPhoneOtp}
-                  disabled={resendingPhone || verifyingPhone}
+                  disabled={resendingPhone || verifyingPhone || resendCooldown > 0}
                   className="rounded-xl border border-pine/20 bg-white px-3 py-2.5 text-xs font-bold text-pine disabled:opacity-60"
                 >
-                  {resendingPhone ? "Sending..." : "Resend"}
+                  {resendingPhone
+                    ? "Sending..."
+                    : resendCooldown > 0
+                      ? `Resend in ${resendCooldown}s`
+                      : "Resend"}
                 </button>
                 <button
                   type="submit"

@@ -33,6 +33,7 @@ import { PageHeader, SectionHeader } from "@/components/ui/page-primitives";
 import { MAPBOX_TOKEN, decodePolyline } from "@/lib/mapbox-loader";
 import { forwardGeocode } from "@/lib/actions/geocode";
 import { computeRoute } from "@/lib/actions/compute-route";
+import * as Dialog from "@radix-ui/react-dialog";
 
 type Bookable = RoadOption | FlightOption;
 
@@ -729,18 +730,22 @@ function BuyTicketModal({
   const [seats, setSeats] = useState(1);
   const [name, setName] = useState("");
   const [step, setStep] = useState<"form" | "confirmed">("form");
-  const [pnr, setPnr] = useState("");
+  const [reference, setReference] = useState("");
 
   useEffect(() => {
     if (option) {
       setSeats(1);
       setName("");
       setStep("form");
-      setPnr("");
+      setReference("");
     }
   }, [option]);
 
   if (!option) return null;
+
+  // Capture the narrowed value: TypeScript does not carry parameter narrowing
+  // into the `finish` closure below.
+  const bookedOptionId = option.id;
 
   const isFlight = option.mode === "flight";
   const maxSeats =
@@ -756,144 +761,188 @@ function BuyTicketModal({
         : "Shared Jeep"
       : "Private Taxi";
 
+  // Prototype flow: no ticket is issued, so this is a local reference shown to
+  // the user rather than a booking number any operator could look up.
   function confirm() {
     const code = (isFlight ? "FL" : "RD") + Math.random().toString(36).slice(2, 7).toUpperCase();
-    setPnr(code);
+    setReference(code);
     setStep("confirmed");
-    setTimeout(() => onConfirm(option!.id), 2200);
+  }
+
+  // Closing from the confirmation step still records the purchase; the previous
+  // auto-close timer yanked the reference away mid-read.
+  function finish() {
+    if (step === "confirmed") onConfirm(bookedOptionId);
+    else onClose();
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-stone-900/50 backdrop-blur-sm p-0 md:p-4"
-      onClick={onClose}
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) finish();
+      }}
     >
-      <div
-        className="w-full md:max-w-md bg-white rounded-t-sheet md:rounded-modal shadow-tactile border border-stone-100 overflow-hidden pb-safe"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between p-4 border-b border-stone-100">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
-              {isFlight ? "Flight ticket" : "Ride ticket"}
-            </p>
-            <p className="text-base font-bold text-stone-900 mt-0.5">{title}</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="h-11 w-11 grid place-items-center rounded-full hover:bg-stone-100 text-stone-500"
-            aria-label="Close ticket"
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        {step === "form" ? (
-          <>
-            <div className="p-4 space-y-4">
-              <div className="rounded-xl bg-stone-50 border border-stone-100 p-3 grid grid-cols-2 gap-3 text-xs">
-                <div>
-                  <p className="text-stone-400 font-medium mb-0.5">Route</p>
-                  <p className="font-semibold text-stone-800">
-                    {option.route.from} → {option.route.to}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-stone-400 font-medium mb-0.5">Departure</p>
-                  <p className="font-semibold text-stone-800">
-                    {isFlight ? option.scheduledDeparture : option.departure}
-                  </p>
-                </div>
-              </div>
-
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm animate-fade-in" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          onInteractOutside={(e) => e.preventDefault()}
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4"
+        >
+          <Dialog.Title className="sr-only">{title}</Dialog.Title>
+          <div className="w-full md:max-w-md bg-white rounded-t-sheet md:rounded-modal shadow-tactile border border-stone-100 overflow-hidden pb-safe">
+            <div className="flex items-center justify-between p-4 border-b border-stone-100">
               <div>
-                <label className="text-xs font-bold text-stone-700 mb-1.5 block">
-                  Lead passenger
-                </label>
-                <input
-                  type="text"
-                  placeholder="Full name as on ID"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full text-sm font-medium text-stone-900 placeholder-stone-400 outline-none px-3 py-2.5 rounded-lg border border-stone-200 focus:border-terracotta transition-colors bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-stone-700 mb-1.5 block">Seats</label>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setSeats((s) => Math.max(1, s - 1))}
-                    className="h-11 w-11 grid place-items-center rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700"
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <span className="text-base font-bold text-stone-900 w-6 text-center">
-                    {seats}
-                  </span>
-                  <button
-                    onClick={() => setSeats((s) => Math.min(maxSeats, s + 1))}
-                    disabled={seats >= maxSeats}
-                    className="h-11 w-11 grid place-items-center rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-40"
-                  >
-                    <Plus size={14} />
-                  </button>
-                  <span className="text-[11px] font-medium text-stone-500 ml-1">
-                    {maxSeats} max available
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between rounded-xl bg-stone-900 text-white p-3">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
-                    Total
-                  </p>
-                  <p className="text-lg font-bold">
-                    {total.toLocaleString()} {option.priceUnit}
-                  </p>
-                </div>
-                <p className="text-[11px] text-stone-300">
-                  {seats} × {option.price.toLocaleString()}
+                <p className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+                  {isFlight ? "Flight ticket" : "Ride ticket"}
                 </p>
+                <p className="text-base font-bold text-stone-900 mt-0.5">{title}</p>
               </div>
+              <button
+                type="button"
+                onClick={finish}
+                className="h-11 w-11 grid place-items-center rounded-full hover:bg-stone-100 text-stone-500"
+                aria-label="Close ticket"
+              >
+                <X size={18} />
+              </button>
             </div>
 
-            <div className="p-4 border-t border-stone-100 flex gap-2">
-              <button
-                onClick={onClose}
-                className="flex-1 py-2.5 min-h-[44px] rounded-lg text-sm font-bold bg-stone-100 text-stone-700 hover:bg-stone-200"
-              >
-                Cancel
-              </button>
-              <button
-                disabled={!name.trim()}
-                onClick={confirm}
-                className="flex-1 py-2.5 min-h-[44px] rounded-lg text-sm font-bold bg-terracotta text-white hover:opacity-90 disabled:opacity-50"
-              >
-                Pay & Confirm
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="p-6 text-center">
-            <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-600 mb-3">
-              <CheckCircle2 size={28} />
-            </div>
-            <p className="text-base font-bold text-stone-900">Ticket confirmed</p>
-            <p className="text-xs text-stone-500 mt-1">A copy was sent to your wallet.</p>
-            <div className="mt-4 rounded-xl border border-dashed border-stone-300 p-4 text-left bg-stone-50">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
-                Booking reference
-              </p>
-              <p className="text-lg font-bold text-stone-900 tracking-widest mt-0.5">{pnr}</p>
-              <p className="text-[11px] text-stone-600 mt-2">
-                {seats} seat{seats > 1 ? "s" : ""} · {name}
-              </p>
-            </div>
+            {step === "form" ? (
+              <>
+                <div className="p-4 space-y-4">
+                  <div className="rounded-xl bg-stone-50 border border-stone-100 p-3 grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <p className="text-stone-500 font-medium mb-0.5">Route</p>
+                      <p className="font-semibold text-stone-800">
+                        {option.route.from} → {option.route.to}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-stone-500 font-medium mb-0.5">Departure</p>
+                      <p className="font-semibold text-stone-800">
+                        {isFlight ? option.scheduledDeparture : option.departure}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="lead-passenger"
+                      className="text-xs font-bold text-stone-700 mb-1.5 block"
+                    >
+                      Lead passenger
+                    </label>
+                    <input
+                      id="lead-passenger"
+                      type="text"
+                      autoComplete="name"
+                      placeholder="Full name as on ID"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full text-sm font-medium text-stone-900 placeholder-stone-400 outline-none px-3 py-2.5 rounded-lg border border-stone-200 focus:border-terracotta transition-colors bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <span className="text-xs font-bold text-stone-700 mb-1.5 block">Seats</span>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setSeats((s) => Math.max(1, s - 1))}
+                        disabled={seats <= 1}
+                        aria-label="Remove one seat"
+                        className="h-11 w-11 grid place-items-center rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-40"
+                      >
+                        <Minus size={14} aria-hidden="true" />
+                      </button>
+                      <span
+                        aria-live="polite"
+                        className="text-base font-bold text-stone-900 w-6 text-center"
+                      >
+                        {seats}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setSeats((s) => Math.min(maxSeats, s + 1))}
+                        disabled={seats >= maxSeats}
+                        aria-label="Add one seat"
+                        className="h-11 w-11 grid place-items-center rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-40"
+                      >
+                        <Plus size={14} aria-hidden="true" />
+                      </button>
+                      <span className="text-[11px] font-medium text-stone-500 ml-1">
+                        {maxSeats} max available
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded-xl bg-stone-900 text-white p-3">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-stone-300">
+                        Total
+                      </p>
+                      <p className="text-lg font-bold">
+                        {total.toLocaleString()} {option.priceUnit}
+                      </p>
+                    </div>
+                    <p className="text-[11px] text-stone-300">
+                      {seats} × {option.price.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 border-t border-stone-100 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="flex-1 py-2.5 min-h-[44px] rounded-lg text-sm font-bold bg-stone-100 text-stone-700 hover:bg-stone-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!name.trim()}
+                    onClick={confirm}
+                    className="flex-1 py-2.5 min-h-[44px] rounded-lg text-sm font-bold bg-terracotta text-white hover:opacity-90 disabled:opacity-50"
+                  >
+                    Reserve seats
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="p-6 text-center">
+                <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-600 mb-3">
+                  <CheckCircle2 size={28} />
+                </div>
+                <p className="text-base font-bold text-stone-900">Reservation recorded</p>
+                <p className="text-xs text-stone-500 mt-1">
+                  Prototype flow — no ticket was issued and nothing was charged.
+                </p>
+                <div className="mt-4 rounded-xl border border-dashed border-stone-300 p-4 text-left bg-stone-50">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                    Prototype reference
+                  </p>
+                  <p className="text-lg font-bold text-stone-900 tracking-widest mt-0.5">
+                    {reference}
+                  </p>
+                  <p className="text-[11px] text-stone-600 mt-2">
+                    {seats} seat{seats > 1 ? "s" : ""} · {name}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={finish}
+                  className="mt-4 w-full py-3 min-h-[44px] rounded-lg text-sm font-bold bg-stone-900 text-white hover:bg-stone-800"
+                >
+                  Done
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

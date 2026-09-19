@@ -35,7 +35,7 @@ function SuccessContent() {
     let cancelled = false;
     (async () => {
       if (!id) {
-        setError("Missing booking ID");
+        setError("This link is missing a booking reference.");
         return;
       }
       try {
@@ -47,9 +47,12 @@ function SuccessContent() {
       } catch (e) {
         if (!cancelled) {
           if (e instanceof Error && e.message.toLowerCase().includes("unauthorized")) {
-            router.push("/login");
+            router.push(`/login?next=${encodeURIComponent(`/booking/success?id=${id}`)}`);
           } else {
-            setError(e instanceof Error ? e.message : "Failed to load");
+            console.error("load booking failed", e);
+            setError(
+              "We couldn't load this booking. It may have been removed or belongs to a different account.",
+            );
           }
         }
       } finally {

@@ -54,7 +54,11 @@ export async function proxy(request: NextRequest) {
   // Authenticated (app) routes require a session; send visitors to login.
   const isAppRoute = pathname === "/" || APP_PREFIXES.some((p) => pathname.startsWith(p));
   if (isAppRoute && !user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    // Preserve the destination so login can return the user to it (open-redirect
+    // is handled by getSafeRedirectPath on the login side).
+    return NextResponse.redirect(
+      new URL(`/login?next=${encodeURIComponent(pathname)}`, request.url),
+    );
   }
 
   if (pathname.startsWith(ADMIN_PREFIX)) {

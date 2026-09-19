@@ -13,6 +13,11 @@ const SEED: VisitMap = {
   ghandruk: { count: 0, lastVisitedAt: "" },
 };
 
+// Honest resets: "Reset visits" clears to zero, the seed only fills a
+// first-load with no stored value.
+const ZERO: VisitRecord = { count: 0, lastVisitedAt: "" };
+const EMPTY: VisitMap = { pokhara: ZERO, sarangkot: ZERO, ghandruk: ZERO };
+
 function read(): VisitMap {
   if (typeof window === "undefined") return SEED;
   try {
@@ -20,9 +25,9 @@ function read(): VisitMap {
     if (!raw) return SEED;
     const parsed = JSON.parse(raw) as Partial<VisitMap>;
     return {
-      pokhara: parsed.pokhara ?? SEED.pokhara,
-      sarangkot: parsed.sarangkot ?? SEED.sarangkot,
-      ghandruk: parsed.ghandruk ?? SEED.ghandruk,
+      pokhara: parsed.pokhara ?? ZERO,
+      sarangkot: parsed.sarangkot ?? ZERO,
+      ghandruk: parsed.ghandruk ?? ZERO,
     };
   } catch {
     return SEED;
@@ -61,8 +66,8 @@ export function useVisitTracker() {
   }, []);
 
   const resetVisits = useCallback(() => {
-    write(SEED);
-    setVisits(SEED);
+    write(EMPTY);
+    setVisits(EMPTY);
   }, []);
 
   const getVisitCount = useCallback((spotId: SpotId) => visits[spotId]?.count ?? 0, [visits]);

@@ -108,3 +108,24 @@ export async function getBooking({ data }: { data: { id: string; token?: string 
   if (!row) throw new Error("Booking not found");
   return row;
 }
+
+export async function cancelBooking({ data }: { data: { id: string; token?: string } }) {
+  if (!data.token) throw new Error("Unauthorized");
+
+  const { supabase, userId } = await createAuthenticatedSupabaseClient(data.token);
+
+  // Guarded on 'pending' in the WHERE clause so a confirmed stay can never be
+  // cancelled here, even under a race; the row-level policy is a second net.
+  const { data: updated, error } = await supabase
+    .from("bookings")
+    .update({ status: "cancelled" })
+    .eq("id", data.id)
+    .eq("user_id", userId)
+    .eq("status", "pending")
+    .select("id")
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!updated) throw new Error("This booking can no longer be cancelled.");
+  return { ok: true as const };
+}

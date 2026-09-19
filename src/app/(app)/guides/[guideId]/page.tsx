@@ -47,6 +47,7 @@ export default function GuideProfile() {
         .from("guide_verifications")
         .select("id,full_name,place")
         .eq("id", guideId)
+        .eq("status", "approved")
         .maybeSingle();
       if (cancelled) return;
       setVerified((data ?? null) as VerifiedRow | null);
@@ -81,7 +82,7 @@ export default function GuideProfile() {
     <div className="px-4 md:px-6 py-5">
       <button
         type="button"
-        onClick={() => router.back()}
+        onClick={() => (window.history.length > 1 ? router.back() : router.push("/guides"))}
         className="inline-flex items-center gap-1.5 text-sm text-stone-600 hover:text-stone-900 mb-4"
         aria-label="Back"
       >
@@ -227,7 +228,10 @@ export default function GuideProfile() {
           )}
           <button
             type="button"
-            className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-pine text-white text-sm font-semibold hover:bg-pine/90 focus-visible:ring-2 focus-visible:ring-pine focus-visible:ring-offset-2"
+            disabled
+            aria-disabled="true"
+            title="Messaging isn't available yet"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-pine text-white text-sm font-semibold opacity-50 cursor-not-allowed focus-visible:ring-2 focus-visible:ring-pine focus-visible:ring-offset-2"
           >
             <MessageCircle size={14} />
             Message
@@ -267,9 +271,10 @@ function BookingSlotPicker({
           <Check size={16} />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-bold text-pine">Request sent</p>
+          <p className="text-sm font-bold text-pine">Request recorded (prototype)</p>
           <p className="text-xs text-stone-600 mt-0.5">
-            {guideName} will confirm your {dayLabels[dayIdx]} · {slot} slot shortly.
+            Demo only — nothing was sent and no slot is saved. {guideName} would confirm your{" "}
+            {dayLabels[dayIdx]} · {slot} slot here.
           </p>
         </div>
       </div>
@@ -364,7 +369,7 @@ function BookingSlotPicker({
             return;
           }
           setBooked(true);
-          toast.success(`Slot requested: ${dayLabels[dayIdx]} · ${slot}`);
+          toast.success(`Prototype: ${dayLabels[dayIdx]} · ${slot} request not sent`);
         }}
         className="w-full h-10 rounded-xl bg-terracotta text-white text-sm font-semibold hover:bg-terracotta/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2"
       >

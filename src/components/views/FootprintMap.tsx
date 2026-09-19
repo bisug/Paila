@@ -715,7 +715,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                         <button
                           type="button"
                           onClick={clearPendingTap}
-                          className="shrink-0 p-1 text-stone-400 hover:text-stone-600"
+                          className="shrink-0 grid h-11 w-11 place-items-center text-stone-500 hover:text-stone-700"
                           aria-label="Cancel"
                         >
                           <X size={14} />

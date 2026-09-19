@@ -18,6 +18,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SidebarGuidesGroup } from "@/components/layout/SidebarGuidesGroup";
 import { supabase } from "@/integrations/supabase/client";
 import { navItems, navKeyFor } from "@/lib/data";
+import { NOTIFICATIONS_CHANGED_EVENT } from "@/lib/notifications";
 
 type SyncState = {
   isOffline: boolean;
@@ -64,15 +65,20 @@ function useUnreadCount() {
   const [unread, setUnread] = useState(0);
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    const load = async () => {
       const { count } = await supabase
         .from("notifications")
         .select("*", { count: "exact", head: true })
         .eq("read", false);
       if (!cancelled) setUnread(count ?? 0);
-    })();
+    };
+    void load();
+    // The notifications page owns the writes, so it tells us when to re-count
+    // instead of the badge polling forever to stay in sync.
+    window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, load);
     return () => {
       cancelled = true;
+      window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, load);
     };
   }, []);
   return unread;
@@ -380,7 +386,10 @@ export function MobileBottomNav({ pathname, t }: ShellNavProps) {
       className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-stone-100 md:hidden landscape-hide"
       style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom))" }}
     >
-      <div className="grid grid-cols-5">
+      <div
+        className="grid"
+        style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
+      >
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = routeActive(pathname, item.href);

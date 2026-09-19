@@ -684,6 +684,8 @@ function AmsPanel({
                   key={val}
                   type="button"
                   onClick={() => q.setter(val)}
+                  aria-pressed={q.value === val}
+                  aria-label={`${q.title}: ${q.desc[val]}`}
                   className={`rounded-xl border py-2 text-xs font-bold transition-colors ${
                     q.value === val
                       ? "border-stone-900 bg-stone-900 text-white shadow-sm"

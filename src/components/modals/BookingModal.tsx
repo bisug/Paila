@@ -62,9 +62,9 @@ export function BookingModal({
   const [step, setStep] = useState<CheckoutStep>("form");
   const [method, setMethod] = useState<PaymentMethod>("esewa");
 
-  // Wallet login state
-  const [phone, setPhone] = useState("98");
-  const [pin, setPin] = useState("");
+  // Wallet login state. Only the phone number is collected: the previous PIN
+  // field asked for a real credential while telling the user not to enter one.
+  const [phone, setPhone] = useState("");
   const [loginError, setLoginError] = useState("");
 
   // Processing delay simulation
@@ -79,12 +79,8 @@ export function BookingModal({
 
   const handleWalletSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length < 10 || !/^9[78]\d{8}$/.test(phone)) {
+    if (!/^9[78]\d{8}$/.test(phone)) {
       setLoginError("Please enter a valid 10-digit Nepalese mobile number.");
-      return;
-    }
-    if (pin.length < 4) {
-      setLoginError("Please enter a valid 4-digit wallet PIN.");
       return;
     }
     setLoginError("");
@@ -107,10 +103,17 @@ export function BookingModal({
           </div>
 
           <p className="text-[11px] font-bold uppercase tracking-widest text-pine mb-1">
-            Booking Confirmed
+            Prototype Booking Recorded
           </p>
           <p className="text-xl font-bold text-stone-900 mb-1">{experience.title}</p>
           <p className="text-sm text-stone-500">{experience.place}</p>
+
+          <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 px-3 py-2.5 text-left">
+            <p className="text-[11px] font-semibold text-amber-900 leading-snug">
+              No payment was taken, no wallet was charged, and {experience.host} has not been
+              notified. This screen shows the intended confirmation layout.
+            </p>
+          </div>
 
           <div className="mt-4 rounded-xl bg-stone-50 border border-stone-100 px-4 py-3 text-left">
             <div className="flex justify-between text-sm mb-1">
@@ -129,7 +132,7 @@ export function BookingModal({
               <span className="font-bold text-stone-700 capitalize">{method} wallet</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-stone-500">Directly transferred</span>
+              <span className="text-stone-500">Mock amount</span>
               <span className="font-bold text-pine">{experience.price} NPR</span>
             </div>
           </div>
@@ -147,8 +150,8 @@ export function BookingModal({
             </div>
           </div>
 
-          <p className="mt-4 text-xs text-stone-400">
-            100% goes directly to {experience.host}'s eSewa wallet. No commission.
+          <p className="mt-4 text-xs text-stone-500">
+            On the live flow 100% goes to {experience.host}'s eSewa wallet, with no commission.
           </p>
 
           <button
@@ -223,42 +226,41 @@ export function BookingModal({
             </div>
 
             {loginError && (
-              <p className="mb-4 text-xs font-semibold text-red-500 bg-red-50 border border-red-100 rounded-xl p-3">
+              <p
+                role="alert"
+                className="mb-4 text-xs font-semibold text-red-600 bg-red-50 border border-red-100 rounded-xl p-3"
+              >
                 {loginError}
               </p>
             )}
 
             <form onSubmit={handleWalletSubmit} className="space-y-4">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-stone-600">
+                <label
+                  htmlFor="wallet-phone"
+                  className="mb-1 block text-xs font-semibold text-stone-600"
+                >
                   Mobile Number
                 </label>
                 <input
+                  id="wallet-phone"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="98XXXXXXXX"
+                  aria-invalid={!!loginError}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
                   maxLength={10}
                   className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-semibold outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
                 />
               </div>
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-stone-600">
-                  Wallet Password/PIN
-                </label>
-                <input
-                  type="password"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
-                  maxLength={6}
-                  className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-bold tracking-[0.5em] outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
-                />
-              </div>
 
-              <div className="flex gap-2.5 p-3 rounded-xl bg-blue-50 border border-blue-100 text-[10px] text-blue-800 font-medium leading-normal">
+              <div className="flex gap-2.5 p-3 rounded-xl bg-blue-50 border border-blue-100 text-[11px] text-blue-800 font-medium leading-normal">
                 <ShieldCheck size={16} className="shrink-0 mt-0.5" />
                 <span>
-                  Simulation: This is a safe checkout mockup. Do not enter actual credentials. Mock
-                  values are approved.
+                  Prototype checkout: no wallet is charged and no payment request is sent. Your
+                  number is only used to label this mockup.
                 </span>
               </div>
 
@@ -266,7 +268,7 @@ export function BookingModal({
                 type="submit"
                 className={`w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-sm active:scale-[0.98] transition-all ${btnColor}`}
               >
-                Pay Rs. {experience.price}
+                Continue mock payment · Rs. {experience.price}
               </button>
             </form>
           </div>
@@ -398,10 +400,16 @@ export function BookingModal({
 
           {/* Date picker */}
           <div className="mb-4">
-            <label className="mb-1.5 block text-xs font-semibold text-stone-600">Select Date</label>
+            <label
+              htmlFor="booking-date"
+              className="mb-1.5 block text-xs font-semibold text-stone-600"
+            >
+              Select Date
+            </label>
             <div className="flex items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5 focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/15 transition-all">
-              <CalendarDays size={16} className="text-terracotta shrink-0" />
+              <CalendarDays size={16} className="text-terracotta shrink-0" aria-hidden="true" />
               <input
+                id="booking-date"
                 type="date"
                 value={selectedDate}
                 min={today}

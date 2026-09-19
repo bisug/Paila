@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Bell, ArrowLeft, Loader2, CheckCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { announceNotificationsChanged } from "@/lib/notifications";
 
 type Notification = {
   id: string;
@@ -27,7 +28,8 @@ export default function NotificationsPage() {
       try {
         const { data: u } = await supabase.auth.getUser();
         if (!u.user) {
-          router.push("/login");
+          // Keep the destination so login returns the user here instead of home.
+          router.push("/login?next=%2Fnotifications");
           return;
         }
         const { data, error: fetchError } = await supabase
@@ -55,7 +57,9 @@ export default function NotificationsPage() {
     if (updateError) {
       setItems(previous);
       setError("This notification could not be marked as read.");
+      return;
     }
+    announceNotificationsChanged();
   };
 
   return (
@@ -96,7 +100,7 @@ export default function NotificationsPage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="text-sm font-bold text-stone-900">{n.title}</h3>
-                    <span className="text-[10px] text-stone-400 whitespace-nowrap">
+                    <span className="text-[11px] text-stone-500 whitespace-nowrap">
                       {new Date(n.created_at).toLocaleDateString()}
                     </span>
                   </div>

@@ -989,7 +989,7 @@ function LocalEventsSection({
                     onClick={() => {
                       handleDismiss({ id: ev.id, category: ev.category, title: ev.title });
                     }}
-                    className="absolute top-1 right-1 z-10 grid place-items-center w-9 h-9 rounded-full bg-white/90 text-stone-600 border border-stone-200 shadow-sm hover:bg-white hover:text-stone-900"
+                    className="absolute top-1 right-1 z-10 grid place-items-center w-9 h-9 rounded-full bg-white/90 text-stone-600 border border-stone-200 shadow-sm hover:bg-white hover:text-stone-900 after:absolute after:-inset-1 after:content-['']"
                   >
                     <X size={12} strokeWidth={2.5} />
                   </button>
@@ -1002,7 +1002,7 @@ function LocalEventsSection({
                     <div className="relative h-16">
                       <img src={imageSrc(ev.image)} alt="" className="w-full h-full object-cover" />
                       <span
-                        className={`absolute top-1 left-1 inline-block rounded-full border px-1.5 py-0 text-[9px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
+                        className={`absolute top-1 left-1 inline-block rounded-full border px-1.5 py-0 text-[10px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
                       >
                         {ev.category}
                       </span>
@@ -1018,7 +1018,7 @@ function LocalEventsSection({
                           : `${ev.distanceKm.toFixed(1)} km`}
                       </p>
                       {why && (
-                        <p className="mt-1 text-[9px] font-semibold text-terracotta">{why}</p>
+                        <p className="mt-1 text-[11px] font-semibold text-terracotta">{why}</p>
                       )}
                     </div>
                   </button>
@@ -1028,7 +1028,7 @@ function LocalEventsSection({
                       onClick={() => {
                         handleDismiss({ id: ev.id, category: ev.category, title: ev.title });
                       }}
-                      className="text-[9px] font-semibold text-stone-400 hover:text-terracotta hover:underline"
+                      className="inline-flex min-h-11 items-center text-[11px] font-semibold text-stone-500 hover:text-terracotta hover:underline"
                     >
                       Not interested
                     </button>
@@ -1038,14 +1038,17 @@ function LocalEventsSection({
             })}
           </div>
           {lastDismissed && (
-            <div className="mt-2 flex items-center justify-between rounded-lg border border-stone-200 bg-white px-2.5 py-1.5">
-              <p className="text-[10px] text-stone-600 truncate pr-2">
+            <div
+              role="status"
+              className="mt-2 flex items-center justify-between rounded-lg border border-stone-200 bg-white px-2.5 py-1.5"
+            >
+              <p className="text-[11px] text-stone-600 truncate pr-2">
                 Hidden “{lastDismissed.title}”. We’ll show fewer {lastDismissed.category} events.
               </p>
               <button
                 type="button"
                 onClick={handleUndoDismiss}
-                className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold text-terracotta hover:underline"
+                className="shrink-0 inline-flex min-h-9 items-center gap-1 text-[11px] font-bold text-terracotta hover:underline"
               >
                 <Undo2 size={11} strokeWidth={2.5} /> Undo
               </button>

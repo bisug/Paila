@@ -23,13 +23,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarMinimized, setSidebarMinimized] = useState(false);
 
-  const [isOnline, setIsOnline] = useState(true);
+  // Read the real value on first render so an offline user does not see a green
+  // "online" badge flip to amber. Guard on `window`: Node also exposes a global
+  // `navigator` whose `onLine` is `undefined`, which would render "Offline" in SSR.
+  const [isOnline, setIsOnline] = useState(() =>
+    typeof window === "undefined" ? true : navigator.onLine,
+  );
   const [forceOffline, setForceOffline] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setIsOnline(navigator.onLine);
     const savedForce = localStorage.getItem("force_offline") === "true";
     setForceOffline(savedForce);
     const handleOnline = () => setIsOnline(true);

@@ -506,6 +506,9 @@ export function ScannerView() {
             </div>
           ) : aiResult ? (
             <div className="space-y-4 pb-4">
+              <p className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-[11px] font-semibold text-amber-900 leading-snug">
+                Prototype recognition — this sample result is returned for every image.
+              </p>
               <div className="bg-stone-50 rounded-xl p-4 border border-stone-100">
                 <h4 className="font-bold text-stone-900 mb-1">History</h4>
                 <p className="text-sm text-stone-600 leading-relaxed">{aiResult.history}</p>
