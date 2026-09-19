@@ -1,13 +1,5 @@
 import { headers } from "next/headers";
-import { checkRateLimit } from "@/lib/server/guardrails";
-
-const UNKNOWN_CLIENT = "unknown";
-
-function clientKeyFromHeaders(scope: string, h: { get(name: string): string | null }) {
-  const forwardedFor = h.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const realIp = h.get("x-real-ip")?.trim();
-  return `${scope}:${forwardedFor || realIp || UNKNOWN_CLIENT}`;
-}
+import { checkRateLimit, clientKeyFromHeaders } from "@/lib/server/guardrails";
 
 export async function enforceMapRateLimit(scope: string, limit: number, windowMs: number) {
   const h = await headers();

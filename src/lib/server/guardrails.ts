@@ -12,17 +12,31 @@ export function requireEnv(name: string): string {
 }
 
 export function getClientKey(request: Request, scope: string): string {
-  const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  const ip = forwardedFor || realIp || "unknown";
-  return `${scope}:${ip}`;
+  return clientKeyFromHeaders(scope, request.headers);
 }
+
+export function clientKeyFromHeaders(scope: string, h: { get(name: string): string | null }) {
+  const forwardedFor = h.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const realIp = h.get("x-real-ip")?.trim();
+  return `${scope}:${forwardedFor || realIp || "unknown"}`;
+}
+
+// shortcut: in-memory per-instance buckets; a multi-instance deployment needs a
+// shared store (e.g. Redis). Cap prevents unbounded growth from spoofed IPs.
+const MAX_BUCKETS = 10_000;
 
 export function checkRateLimit(key: string, limit: number, windowMs: number): boolean {
   const now = Date.now();
   const current = buckets.get(key);
 
   if (!current || current.resetAt <= now) {
+    if (buckets.size >= MAX_BUCKETS) {
+      for (const [k, bucket] of buckets) {
+        if (bucket.resetAt <= now) buckets.delete(k);
+      }
+      // Still full after pruning (all active): refuse rather than grow forever.
+      if (buckets.size >= MAX_BUCKETS) return false;
+    }
     buckets.set(key, { count: 1, resetAt: now + windowMs });
     return true;
   }
