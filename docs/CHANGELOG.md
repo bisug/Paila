@@ -16,6 +16,8 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 - Rate limiter buckets are capped (10k entries, expired windows pruned) so spoofed client IPs cannot grow the map unboundedly. Still per-instance in-memory; a multi-instance deployment needs a shared store.
 - Moved `@types/pngjs` from dependencies to devDependencies.
 
+- Deduplicated shared logic: hardened `getSafeRedirectPath` (login page + auth callback) now lives in `src/lib/redirect.ts`; API routes reuse `createAuthenticatedSupabaseClient()` instead of hand-rolled cookie clients; Mapbox fetchers share one URL builder.
+
 ### Removed
 
 - Dead modules with no importers: `src/lib/error-capture.ts` and `src/lib/error-page.ts` (leftovers from a pre-Next h3 scaffold), `src/lib/config.server.ts` (empty placeholder).
