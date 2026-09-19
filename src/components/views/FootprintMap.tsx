@@ -461,7 +461,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
           <div className="mx-4 md:mx-0 overflow-hidden rounded-card bg-white shadow-card-md">
             <div className="flex items-center justify-between gap-3 px-4 py-3.5 border-b border-stone-100">
               <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-pine mb-0.5 truncate">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-pine mb-0.5 truncate">
                   {viewMode === "journey" ? "Mock Journey" : "My Checkpoints"}
                 </p>
                 <h2 className="text-lg font-bold text-stone-900 truncate">
@@ -621,7 +621,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
 
                   {!mapLoaded && (
                     <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
-                      <p className="text-xs font-semibold text-stone-400 animate-pulse">
+                      <p className="text-xs font-semibold text-stone-500 animate-pulse">
                         Loading Map...
                       </p>
                     </div>
@@ -642,14 +642,14 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                     <button
                       type="button"
                       onClick={() => setShowDemoMenu(!showDemoMenu)}
-                      className="flex items-center gap-1.5 rounded-full bg-stone-900 text-white text-[10px] font-bold px-3 min-h-[44px] shadow-card-md hover:bg-stone-800 transition-colors"
+                      className="flex items-center gap-1.5 rounded-full bg-stone-900 text-white text-[11px] font-bold px-3 min-h-[44px] shadow-card-md hover:bg-stone-800 transition-colors"
                     >
                       Demo Navigation
                     </button>
                     {showDemoMenu && (
                       <div className="mt-2 w-56 rounded-2xl bg-white shadow-card-md border border-stone-100 overflow-hidden flex flex-col">
                         <div className="bg-stone-100 px-3 py-2 border-b border-stone-200 flex justify-between items-center">
-                          <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+                          <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
                             Teleport & Visit
                           </span>
                           <button
@@ -657,7 +657,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                               resetVisits();
                               toast.success("Visits reset");
                             }}
-                            className="text-[10px] text-terracotta hover:underline font-bold"
+                            className="text-[11px] text-terracotta hover:underline font-bold"
                           >
                             Reset
                           </button>
@@ -787,13 +787,13 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
 
         <div className="md:w-1/3">
           <div className="mx-4 mt-6 md:mx-0 md:mt-0">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3">
               {viewMode === "journey" ? "Journey Stages" : "Your Checkpoints"}
             </h3>
             {viewMode === "journey" ? (
               <JourneyStageList activeStageId={activeStageId} onPickStage={pickStage} />
             ) : checkpointsQuery.isLoading ? (
-              <div className="flex items-center gap-2 text-stone-400 text-sm">
+              <div className="flex items-center gap-2 text-stone-500 text-sm">
                 <Loader2 size={14} className="animate-spin" /> Loading…
               </div>
             ) : checkpoints.length === 0 ? (
@@ -839,7 +839,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                           {c.name}
                         </p>
                         {c.address && (
-                          <p className="text-xs text-stone-400 mt-0.5 truncate">{c.address}</p>
+                          <p className="text-xs text-stone-500 mt-0.5 truncate">{c.address}</p>
                         )}
                       </div>
                     </button>
@@ -847,7 +847,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                       type="button"
                       onClick={() => removeMut.mutate(c.id)}
                       disabled={removeMut.isPending}
-                      className="shrink-0 p-1.5 rounded-full text-stone-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-50"
+                      className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-stone-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-50"
                       aria-label={`Remove ${c.name}`}
                     >
                       <Trash2 size={14} />

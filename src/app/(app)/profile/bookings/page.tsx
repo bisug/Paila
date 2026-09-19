@@ -154,7 +154,7 @@ export default function MyBookingsPage() {
                     {b.hotel_name}
                   </Link>
                   <span
-                    className={`text-[10px] font-bold uppercase tracking-wider rounded-full border px-2 py-0.5 ${statusTone(b.status)}`}
+                    className={`text-[11px] font-bold uppercase tracking-wider rounded-full border px-2 py-0.5 ${statusTone(b.status)}`}
                   >
                     {b.status}
                   </span>

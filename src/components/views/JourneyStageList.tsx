@@ -57,20 +57,20 @@ export function JourneyStageList({ activeStageId, onPickStage }: Props) {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-pine">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-pine">
                       Day {stage.day}
                     </p>
-                    <span className="text-[10px] font-semibold text-stone-400">·</span>
-                    <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-stone-500">
-                      <Mountain size={10} className="text-stone-400" />
+                    <span className="text-[11px] font-semibold text-stone-500">·</span>
+                    <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-stone-500">
+                      <Mountain size={10} className="text-stone-500" />
                       {stage.altitude}
                     </span>
                     {visited ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-terracotta/10 text-terracotta border border-terracotta/30 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-terracotta/10 text-terracotta border border-terracotta/30 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider">
                         Visited
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-stone-50 text-stone-500 border border-stone-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-stone-50 text-stone-500 border border-stone-200 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider">
                         <Circle size={8} /> Upcoming
                       </span>
                     )}
@@ -82,9 +82,9 @@ export function JourneyStageList({ activeStageId, onPickStage }: Props) {
                     <div className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-stone-50 border border-stone-100 px-2 py-1 text-[11px] text-stone-600">
                       <ChevronRight size={12} className="text-terracotta" />
                       <span className="font-semibold">{leg.operator}</span>
-                      <span className="text-stone-400">·</span>
+                      <span className="text-stone-500">·</span>
                       <span>{"duration" in leg ? leg.duration : `${leg.distanceKm} km trek`}</span>
-                      <span className="text-stone-400">·</span>
+                      <span className="text-stone-500">·</span>
                       <span className="font-bold text-stone-700">
                         {leg.price > 0 ? `${leg.price.toLocaleString()} ${leg.priceUnit}` : "Free"}
                       </span>
@@ -96,7 +96,7 @@ export function JourneyStageList({ activeStageId, onPickStage }: Props) {
                       {activities.map((a) => (
                         <span
                           key={a.id}
-                          className="inline-flex items-center gap-1 rounded-full bg-pine/10 text-pine border border-pine/20 px-2 py-0.5 text-[10px] font-semibold"
+                          className="inline-flex items-center gap-1 rounded-full bg-pine/10 text-pine border border-pine/20 px-2 py-0.5 text-[11px] font-semibold"
                         >
                           <MapPin size={9} />
                           {a.title.split(/[—·]/)[0].trim().slice(0, 32)}

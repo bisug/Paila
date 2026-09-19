@@ -41,10 +41,10 @@ function BookmarkButton({
           : `Not saved. Save ${label} to your saved guides`
       }
       title={active ? "Remove from saved" : "Save for later"}
-      className={`h-9 w-9 rounded-full flex items-center justify-center transition-all shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 ${
+      className={`h-9 w-9 rounded-full flex items-center justify-center transition-all shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 relative after:absolute after:-inset-2 after:content-[''] ${
         active
           ? "bg-terracotta/10 text-terracotta hover:bg-terracotta/20"
-          : "bg-stone-100 text-stone-400 hover:bg-stone-200 hover:text-stone-600"
+          : "bg-stone-100 text-stone-500 hover:bg-stone-200 hover:text-stone-600"
       } ${pulse ? "scale-125" : "scale-100"}`}
     >
       <Icon size={16} strokeWidth={active ? 2.5 : 2} />
@@ -150,7 +150,7 @@ export default function GuidesIndex() {
           <BookmarkCheck size={12} />
           Saved
           <span
-            className={`px-1.5 py-0.5 rounded-md text-[10px] ${
+            className={`px-1.5 py-0.5 rounded-md text-[11px] ${
               showSavedOnly ? "bg-white/20" : "bg-stone-100 text-stone-500"
             }`}
           >
@@ -160,7 +160,7 @@ export default function GuidesIndex() {
       </div>
 
       {guides === null && !error && (
-        <div className="flex items-center justify-center py-12 text-stone-400">
+        <div className="flex items-center justify-center py-12 text-stone-500">
           <Loader2 size={20} className="animate-spin" />
         </div>
       )}
@@ -173,7 +173,7 @@ export default function GuidesIndex() {
 
       {emptyOnSavedFilter && (
         <div className="rounded-2xl border border-dashed border-stone-200 bg-stone-50 p-6 text-center">
-          <Bookmark size={20} className="mx-auto text-stone-400 mb-2" />
+          <Bookmark size={20} className="mx-auto text-stone-500 mb-2" />
           <p className="text-sm font-semibold text-stone-700">No saved guides yet</p>
           <p className="text-xs text-stone-500 mt-1">
             Tap the bookmark on any guide to save it for later.
@@ -209,13 +209,13 @@ export default function GuidesIndex() {
                 </Link>
                 <div className="flex flex-col items-end gap-1 shrink-0">
                   {g.verified && (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-pine-tint text-pine border border-pine/20">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-pine-tint text-pine border border-pine/20">
                       <BadgeCheck size={10} />
                       Verified
                     </span>
                   )}
                   <span
-                    className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full border ${
+                    className={`inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded-full border ${
                       g.available
                         ? "bg-pine-tint text-pine border-pine/20"
                         : "bg-stone-100 text-stone-500 border-stone-200"
@@ -268,7 +268,7 @@ export default function GuidesIndex() {
                     </p>
                   </div>
                 </Link>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-pine-tint text-pine border border-pine/20">
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-pine-tint text-pine border border-pine/20">
                   <BadgeCheck size={10} />
                   Verified
                 </span>

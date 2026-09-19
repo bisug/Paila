@@ -1,5 +1,6 @@
 "use client";
 
+import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRightLeft, Copy, Mic, Sparkles, Volume2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -393,7 +394,7 @@ export function TranslatorView() {
               <button
                 type="button"
                 onClick={() => handleSourceTextChange("")}
-                className="grid h-11 w-11 place-items-center rounded-lg text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700"
+                className="grid h-11 w-11 place-items-center rounded-lg text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-700"
                 aria-label="Clear source text"
               >
                 <X size={17} />
@@ -405,7 +406,7 @@ export function TranslatorView() {
             value={sourceText}
             onChange={(event) => handleSourceTextChange(event.target.value)}
             placeholder="Type a phrase to translate..."
-            className="min-h-36 flex-1 resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-xl font-semibold leading-snug text-stone-900 outline-none transition-colors placeholder:text-stone-300 focus:border-terracotta focus:bg-white focus:ring-2 focus:ring-terracotta/15 md:text-2xl"
+            className="min-h-36 flex-1 resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-xl font-semibold leading-snug text-stone-900 outline-none transition-colors placeholder:text-stone-500 focus:border-terracotta focus:bg-white focus:ring-2 focus:ring-terracotta/15 md:text-2xl"
           />
 
           {isListening && interimText && (
@@ -417,7 +418,7 @@ export function TranslatorView() {
           <div className="mt-4 space-y-3">
             {PHRASE_CATEGORIES.map((category) => (
               <div key={category.label}>
-                <p className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-stone-400">
+                <p className="mb-1.5 text-[11px] font-bold uppercase tracking-widest text-stone-500">
                   {category.label}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -498,7 +499,7 @@ export function TranslatorView() {
             {isTranslating && (
               <div
                 aria-live="polite"
-                className="mt-4 flex items-center gap-2 text-sm font-semibold text-stone-400"
+                className="mt-4 flex items-center gap-2 text-sm font-semibold text-stone-500"
               >
                 <Sparkles size={16} className="animate-pulse" />
                 Translating...
@@ -546,7 +547,7 @@ function LanguageSelect({
 
   return (
     <label className="min-w-0">
-      <span className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-stone-400">
+      <span className="mb-1 block text-[11px] font-bold uppercase tracking-widest text-stone-500">
         {label}
       </span>
       <select
@@ -584,10 +585,10 @@ function VoiceBar({
           type="button"
           onClick={onToggleAutoSpeak}
           aria-pressed={autoSpeak}
-          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-2 min-h-[44px] text-[10px] font-bold uppercase tracking-wider transition-colors ${
+          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-2 min-h-[44px] text-[11px] font-bold uppercase tracking-wider transition-colors ${
             autoSpeak
               ? "border-pine/30 bg-pine/10 text-pine"
-              : "border-stone-200 bg-white text-stone-400"
+              : "border-stone-200 bg-white text-stone-500"
           }`}
         >
           <Volume2 size={11} />
@@ -639,44 +640,55 @@ function WordMeaningModal({
   word: string;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 p-4 backdrop-blur-sm">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Word meaning"
-        className="w-full max-w-sm rounded-modal bg-white p-6 shadow-tactile"
-      >
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-terracotta">
-              Word meaning
-            </p>
-            <h3 className="break-words text-2xl font-bold text-stone-900">{word}</h3>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-stone-100 text-stone-500 transition-colors hover:bg-stone-200"
-            aria-label="Close word meaning"
-          >
-            <X size={16} />
-          </button>
-        </div>
-
-        <div className="flex min-h-[72px] items-center rounded-2xl border border-stone-100 bg-stone-50 p-4">
-          {isLoading ? (
-            <div className="flex items-center gap-2 text-sm font-semibold text-stone-400">
-              <Sparkles size={16} className="animate-pulse" />
-              Fetching meaning...
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-sm animate-fade-in" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-modal bg-white p-6 shadow-tactile"
+        >
+          <Dialog.Title className="sr-only">Word meaning</Dialog.Title>
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-terracotta">
+                Word meaning
+              </p>
+              <h3 className="break-words text-2xl font-bold text-stone-900">{word}</h3>
             </div>
-          ) : (
-            <p className="text-base font-medium leading-relaxed text-stone-700">
-              {meaning ?? "No meaning available."}
-            </p>
-          )}
-        </div>
-      </div>
-    </div>
+            <Dialog.Close asChild>
+              <button
+                type="button"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-stone-100 text-stone-500 transition-colors hover:bg-stone-200"
+                aria-label="Close word meaning"
+              >
+                <X size={16} />
+              </button>
+            </Dialog.Close>
+          </div>
+
+          <div className="flex min-h-[72px] items-center rounded-2xl border border-stone-100 bg-stone-50 p-4">
+            {isLoading ? (
+              <div
+                className="flex items-center gap-2 text-sm font-semibold text-stone-500"
+                role="status"
+              >
+                <Sparkles size={16} className="animate-pulse" />
+                Fetching meaning...
+              </div>
+            ) : (
+              <p className="text-base font-medium leading-relaxed text-stone-700">
+                {meaning ?? "No meaning available."}
+              </p>
+            )}
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 

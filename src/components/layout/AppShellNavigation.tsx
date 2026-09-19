@@ -95,7 +95,7 @@ function NotificationsBell({ t, label }: { t: TFunction; label?: string }) {
     >
       <Bell size={20} strokeWidth={1.8} />
       {unread > 0 && (
-        <span className="absolute top-1.5 right-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white">
+        <span className="absolute top-1.5 right-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-red-600 px-1 text-[11px] font-bold leading-none text-white">
           {unread > 9 ? "9+" : unread}
         </span>
       )}
@@ -126,7 +126,7 @@ function SyncStatusBadge({
   return (
     <button
       onClick={onOpenSync}
-      className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider transition-all select-none ${
+      className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider transition-all select-none ${
         isOffline
           ? "bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100"
           : "bg-pine-tint border-pine/20 text-pine hover:bg-pine-tint/80"
@@ -163,7 +163,7 @@ function DesktopNavItems({ pathname, t, minimized }: ShellNavProps & { minimized
             <Icon
               size={20}
               strokeWidth={active ? 2.5 : 1.8}
-              className={active ? "text-terracotta" : "text-stone-400 group-hover:text-stone-600"}
+              className={active ? "text-terracotta" : "text-stone-500 group-hover:text-stone-600"}
             />
             {!minimized && (
               <>
@@ -189,7 +189,7 @@ function DesktopNavItems({ pathname, t, minimized }: ShellNavProps & { minimized
           size={20}
           strokeWidth={hotelActive(pathname) ? 2.5 : 1.8}
           className={
-            hotelActive(pathname) ? "text-terracotta" : "text-stone-400 group-hover:text-stone-600"
+            hotelActive(pathname) ? "text-terracotta" : "text-stone-500 group-hover:text-stone-600"
           }
         />
         {!minimized && <span>{t("nav.hotels", "Hotels")}</span>}
@@ -307,7 +307,7 @@ export function LandscapeRail({
               href={item.href}
               title={navLabel(t, item.href, item.label)}
               className={`flex flex-col items-center justify-center w-10 h-10 rounded-xl transition-colors ${
-                active ? "bg-terracotta/10 text-terracotta" : "text-stone-400 hover:bg-stone-100"
+                active ? "bg-terracotta/10 text-terracotta" : "text-stone-500 hover:bg-stone-100"
               }`}
             >
               <Icon size={18} strokeWidth={active ? 2.5 : 1.8} />
@@ -371,7 +371,7 @@ export function MobileSosFab({ t, onOpenSos }: { t: TFunction; onOpenSos: () => 
   return (
     <button
       onClick={onOpenSos}
-      className="md:hidden landscape-hide fixed right-4 z-40 h-14 w-14 grid place-items-center rounded-full bg-red-600 text-white shadow-float ring-2 ring-white hover:bg-red-700 active:scale-95 transition-all"
+      className="md:hidden landscape-hide fixed right-4 z-40 h-14 w-14 grid place-items-center rounded-full bg-red-600 text-white shadow-float ring-2 ring-red-100 hover:bg-red-700 active:scale-95 transition-all"
       aria-label={t("actions.sos")}
       style={{ bottom: "calc(5rem + max(0px, env(safe-area-inset-bottom)))" }}
     >
@@ -403,11 +403,11 @@ export function MobileBottomNav({ pathname, t }: ShellNavProps) {
               <Icon
                 size={22}
                 strokeWidth={active ? 2.5 : 1.8}
-                className={active ? "text-terracotta" : "text-stone-400"}
+                className={active ? "text-terracotta" : "text-stone-500"}
               />
               <span
-                className={`text-[10px] font-semibold leading-none ${
-                  active ? "text-terracotta" : "text-stone-400"
+                className={`text-[11px] font-semibold leading-none ${
+                  active ? "text-terracotta" : "text-stone-500"
                 }`}
               >
                 {navLabel(t, item.href, item.label)}
@@ -445,7 +445,7 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
             </Dialog.Title>
             <Dialog.Close asChild>
               <button
-                className="ml-auto h-11 w-11 grid place-items-center rounded-lg text-stone-400 hover:bg-stone-100"
+                className="ml-auto h-11 w-11 grid place-items-center rounded-lg text-stone-500 hover:bg-stone-100"
                 aria-label="Close navigation"
               >
                 <X size={18} />

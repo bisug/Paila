@@ -368,7 +368,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                         <span className="block truncate text-[11px] font-black">
                           {contact.label}
                         </span>
-                        <span className="block text-[10px] font-bold opacity-70">
+                        <span className="block text-[11px] font-bold opacity-70">
                           {contact.number}
                         </span>
                       </button>
@@ -412,7 +412,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                   <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div>
-                        <p className="text-xs font-black uppercase tracking-[0.14em] text-stone-400">
+                        <p className="text-xs font-black uppercase tracking-[0.14em] text-stone-500">
                           Prepared SOS
                         </p>
                         <p className="mt-1 text-sm font-bold text-stone-900">
@@ -421,7 +421,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                             : "Ready to send"}
                         </p>
                       </div>
-                      <span className="rounded-full bg-stone-100 px-2 py-1 text-[10px] font-black uppercase text-stone-500">
+                      <span className="rounded-full bg-stone-100 px-2 py-1 text-[11px] font-black uppercase text-stone-500">
                         {latestIncident.mode}
                       </span>
                     </div>
@@ -455,7 +455,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                 <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
                   <div className="mb-3 flex items-center justify-between gap-2">
                     <div>
-                      <p className="text-xs font-black uppercase tracking-[0.14em] text-stone-400">
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-stone-500">
                         Local SOS queue
                       </p>
                       <p className="mt-1 text-xs font-semibold text-stone-500">
@@ -465,7 +465,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                       </p>
                     </div>
                     <span
-                      className={`rounded-full px-2 py-1 text-[10px] font-black uppercase ${
+                      className={`rounded-full px-2 py-1 text-[11px] font-black uppercase ${
                         isOffline ? "bg-amber-100 text-amber-700" : "bg-pine-tint text-pine"
                       }`}
                     >
@@ -483,11 +483,11 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                             <p className="truncate text-xs font-bold text-stone-800">
                               {incident.contactLabel}
                             </p>
-                            <p className="text-[10px] font-semibold text-stone-400">
+                            <p className="text-[11px] font-semibold text-stone-500">
                               {formatPanelDate(incident.createdAt)}
                             </p>
                           </div>
-                          <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[10px] font-black text-stone-500">
+                          <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[11px] font-black text-stone-500">
                             {incident.status === "queued-offline" ? "Queued" : "Ready"}
                           </span>
                         </div>
@@ -533,7 +533,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
                         <PhoneCall className="shrink-0 text-red-600" size={18} />
                         <span className="min-w-0">
                           <span className="block truncate">{link.label}</span>
-                          <span className="block text-[10px] font-semibold text-stone-400">
+                          <span className="block text-[11px] font-semibold text-stone-500">
                             {link.number}
                           </span>
                         </span>
@@ -677,7 +677,7 @@ function AmsPanel({
             className="rounded-2xl border border-stone-200/60 bg-white p-4 shadow-sm"
           >
             <h3 className="mb-1 text-sm font-bold text-stone-900">{q.title}</h3>
-            <p className="mb-3 text-[11px] font-semibold text-stone-400">{q.desc[q.value]}</p>
+            <p className="mb-3 text-[11px] font-semibold text-stone-500">{q.desc[q.value]}</p>
             <div className="grid grid-cols-4 gap-2">
               {[0, 1, 2, 3].map((val) => (
                 <button

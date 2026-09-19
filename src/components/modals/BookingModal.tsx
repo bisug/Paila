@@ -141,7 +141,7 @@ export function BookingModal({
           <div className="mt-4 p-3 bg-terracotta-tint rounded-xl border border-terracotta/10 flex items-center gap-3 text-left">
             <span className="text-2xl">🏆</span>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-terracotta">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-terracotta">
                 Stamp Unlocked
               </p>
               <p className="text-xs font-bold text-stone-900 leading-snug">
@@ -208,7 +208,7 @@ export function BookingModal({
             <div className="mb-5 flex items-start justify-between gap-4 pt-3">
               <div>
                 <span
-                  className={`inline-block rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${brandColor}`}
+                  className={`inline-block rounded-full border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider ${brandColor}`}
                 >
                   {isEsewa ? "eSewa Direct" : "Khalti Checkout"}
                 </span>
@@ -292,7 +292,7 @@ export function BookingModal({
             {/* Header */}
             <div className="mb-5 flex items-start justify-between gap-4 pt-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-terracotta mb-1">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-terracotta mb-1">
                   Step 2 of 3
                 </p>
                 <p className="text-lg font-bold text-stone-900">Choose Payment Method</p>
@@ -316,7 +316,7 @@ export function BookingModal({
                   name: "eSewa Direct Wallet",
                   desc: "Instantly wire funds directly",
                   tag: "RECOMMENDED",
-                  color: "border-green-300 bg-green-50/30 text-green-700 text-[10px] font-bold",
+                  color: "border-green-300 bg-green-50/30 text-green-700 text-[11px] font-bold",
                 },
                 {
                   id: "khalti",
@@ -356,7 +356,7 @@ export function BookingModal({
                     </div>
                     <p className="text-xs text-stone-500 mt-0.5 leading-snug">{m.desc}</p>
                   </div>
-                  <ArrowRight size={16} className="text-stone-400" />
+                  <ArrowRight size={16} className="text-stone-500" />
                 </button>
               ))}
             </div>
@@ -382,7 +382,7 @@ export function BookingModal({
           {/* Header */}
           <div className="mb-5 flex items-start justify-between gap-4 pt-3">
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-terracotta mb-1">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-terracotta mb-1">
                 Step 1 of 3: Direct Booking
               </p>
               <h2 className="text-lg font-bold text-stone-900 leading-tight">{experience.title}</h2>

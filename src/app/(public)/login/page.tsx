@@ -372,7 +372,7 @@ export default function LoginPage() {
                   onChange={(event) => setFullName(event.target.value)}
                   placeholder="Your name"
                   autoComplete="name"
-                  className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
+                  className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-900 outline-none transition placeholder:text-stone-500 focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
                 />
               </label>
             )}
@@ -383,9 +383,9 @@ export default function LoginPage() {
               </span>
               <div className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/30">
                 {identifierMode === "email" ? (
-                  <Mail size={16} className="shrink-0 text-stone-400" />
+                  <Mail size={16} className="shrink-0 text-stone-500" />
                 ) : (
-                  <Phone size={16} className="shrink-0 text-stone-400" />
+                  <Phone size={16} className="shrink-0 text-stone-500" />
                 )}
                 <input
                   type={identifierMode === "email" ? "email" : "tel"}
@@ -398,7 +398,7 @@ export default function LoginPage() {
                   placeholder={identifierMode === "email" ? "you@example.com" : "+9779800000000"}
                   autoComplete={identifierMode === "email" ? "email" : "tel"}
                   inputMode={identifierMode === "email" ? "email" : "tel"}
-                  className="min-w-0 flex-1 bg-transparent text-sm font-medium text-stone-900 outline-none placeholder:text-stone-400"
+                  className="min-w-0 flex-1 bg-transparent text-sm font-medium text-stone-900 outline-none placeholder:text-stone-500"
                 />
               </div>
             </label>
@@ -408,19 +408,19 @@ export default function LoginPage() {
                 Password
               </span>
               <div className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/30">
-                <LockKeyhole size={16} className="shrink-0 text-stone-400" />
+                <LockKeyhole size={16} className="shrink-0 text-stone-500" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder="Minimum 8 characters"
                   autoComplete={isSignup ? "new-password" : "current-password"}
-                  className="min-w-0 flex-1 bg-transparent text-sm font-medium text-stone-900 outline-none placeholder:text-stone-400"
+                  className="min-w-0 flex-1 bg-transparent text-sm font-medium text-stone-900 outline-none placeholder:text-stone-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
-                  className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-stone-400 hover:bg-stone-100 hover:text-stone-700"
+                  className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-stone-500 hover:bg-stone-100 hover:text-stone-700"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -439,7 +439,7 @@ export default function LoginPage() {
                   onChange={(event) => setConfirmPassword(event.target.value)}
                   placeholder="Repeat password"
                   autoComplete="new-password"
-                  className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
+                  className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm font-medium text-stone-900 outline-none transition placeholder:text-stone-500 focus:border-terracotta focus:ring-2 focus:ring-terracotta/30"
                 />
               </label>
             )}

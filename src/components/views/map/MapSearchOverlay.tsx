@@ -84,7 +84,7 @@ export function MapSearchOverlay({ location, onPlaceSelected }: MapSearchOverlay
         }}
         className="flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-card-md pointer-events-auto"
       >
-        <Search size={16} className="text-stone-400 shrink-0" />
+        <Search size={16} className="text-stone-500 shrink-0" />
         <input
           type="text"
           aria-label="Search places"
@@ -102,14 +102,14 @@ export function MapSearchOverlay({ location, onPlaceSelected }: MapSearchOverlay
             if (searchResults.length > 0) setShowResults(true);
           }}
           placeholder="Search places, temples, hotels..."
-          className="flex-1 bg-transparent text-sm text-stone-800 placeholder:text-stone-400 outline-none"
+          className="flex-1 bg-transparent text-sm text-stone-800 placeholder:text-stone-500 outline-none"
         />
-        {searchLoading && <Loader2 size={14} className="animate-spin text-stone-400" />}
+        {searchLoading && <Loader2 size={14} className="animate-spin text-stone-500" />}
         {searchQuery && !searchLoading && (
           <button
             type="button"
             onClick={clearSearch}
-            className="text-stone-400 hover:text-stone-600"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-stone-500 hover:text-stone-600"
             aria-label="Clear search"
           >
             <X size={14} />

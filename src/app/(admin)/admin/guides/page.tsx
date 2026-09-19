@@ -243,10 +243,10 @@ function SubCard({
             <p className="text-xs text-stone-500">
               {sub.place} · {maskTail(sub.phone)}
             </p>
-            <p className="text-xs text-stone-400 mt-0.5">ID: {maskTail(sub.guide_id_number)}</p>
+            <p className="text-xs text-stone-500 mt-0.5">ID: {maskTail(sub.guide_id_number)}</p>
           </div>
           <span
-            className={`text-[10px] font-bold uppercase tracking-wider rounded-full border px-2 py-0.5 ${statusColor}`}
+            className={`text-[11px] font-bold uppercase tracking-wider rounded-full border px-2 py-0.5 ${statusColor}`}
           >
             {sub.status}
           </span>

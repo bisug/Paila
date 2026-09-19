@@ -81,7 +81,7 @@ export default function ProfileMenu() {
   if (loading) {
     return (
       <div className="min-h-screen grid place-items-center">
-        <Loader2 className="animate-spin text-stone-400" />
+        <Loader2 className="animate-spin text-stone-500" />
       </div>
     );
   }
@@ -162,7 +162,7 @@ export default function ProfileMenu() {
                 </p>
               </div>
               {unread > 0 && (
-                <span className="rounded-full bg-terracotta text-white text-[10px] font-bold px-2 py-0.5">
+                <span className="rounded-full bg-terracotta text-white text-[11px] font-bold px-2 py-0.5">
                   {unread}
                 </span>
               )}

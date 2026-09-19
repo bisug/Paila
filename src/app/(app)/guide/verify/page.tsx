@@ -274,7 +274,7 @@ export default function GuideVerifyPage() {
         </Field>
 
         <Field label={existing ? "Replace Guide ID card photo (optional)" : "Guide ID card photo"}>
-          <label className="flex items-center gap-2 cursor-pointer rounded-lg border border-dashed border-stone-300 bg-stone-50 px-3 py-3 text-sm text-stone-600 hover:bg-stone-100">
+          <label className="flex items-center gap-2 cursor-pointer rounded-lg border border-dashed border-stone-300 bg-stone-50 px-3 py-3 text-sm text-stone-600 hover:bg-stone-100 focus-within:border-terracotta focus-within:ring-2 focus-within:ring-terracotta/30">
             <Upload className="w-4 h-4" />
             <span className="truncate">
               {file
@@ -287,13 +287,13 @@ export default function GuideVerifyPage() {
               type="file"
               accept="image/*"
               capture="environment"
-              className="hidden"
+              className="sr-only"
               disabled={locked || submitting}
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
           </label>
           {existing?.id_card_path && !file && (
-            <p className="mt-1 text-[11px] text-stone-400">
+            <p className="mt-1 text-[11px] text-stone-500">
               Current file: {existing.id_card_path.split("/").pop()}
             </p>
           )}
@@ -323,7 +323,7 @@ export default function GuideVerifyPage() {
               : "Submit for verification"}
         </button>
 
-        <p className="text-[11px] text-stone-400 text-center">
+        <p className="text-[11px] text-stone-500 text-center">
           Your ID image is stored privately. Only you and our reviewers can access it.
         </p>
       </form>

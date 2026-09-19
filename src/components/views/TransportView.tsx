@@ -127,13 +127,13 @@ function RoadCard({
 
       <div className="px-4 py-3 bg-stone-50/50 grid grid-cols-2 gap-y-3 text-xs">
         <div>
-          <p className="text-stone-400 font-medium mb-0.5">Route</p>
+          <p className="text-stone-500 font-medium mb-0.5">Route</p>
           <p className="font-semibold text-stone-800">
             {o.route.from} → {o.route.to}
           </p>
         </div>
         <div>
-          <p className="text-stone-400 font-medium mb-0.5 flex items-center gap-1">
+          <p className="text-stone-500 font-medium mb-0.5 flex items-center gap-1">
             <Clock size={10} /> Departure
           </p>
           <p className="font-semibold text-stone-800">
@@ -228,7 +228,7 @@ function FlightCard({
           <div className="flex justify-between items-start gap-2 mb-1">
             <p className="font-bold text-stone-900 leading-tight">
               {o.airline}{" "}
-              <span className="text-stone-400 font-medium text-xs">· {o.flightNumber}</span>
+              <span className="text-stone-500 font-medium text-xs">· {o.flightNumber}</span>
             </p>
             <span className="text-sm font-bold text-terracotta whitespace-nowrap">
               {formatPrice(o)}
@@ -240,15 +240,15 @@ function FlightCard({
 
       <div className="px-4 py-3 bg-stone-50/50 grid grid-cols-3 gap-y-3 gap-x-3 text-xs">
         <div>
-          <p className="text-stone-400 font-medium mb-0.5">From</p>
+          <p className="text-stone-500 font-medium mb-0.5">From</p>
           <p className="font-semibold text-stone-800">{o.route.from}</p>
         </div>
         <div>
-          <p className="text-stone-400 font-medium mb-0.5">To</p>
+          <p className="text-stone-500 font-medium mb-0.5">To</p>
           <p className="font-semibold text-stone-800">{o.route.to}</p>
         </div>
         <div>
-          <p className="text-stone-400 font-medium mb-0.5 flex items-center gap-1">
+          <p className="text-stone-500 font-medium mb-0.5 flex items-center gap-1">
             <CalendarClock size={10} /> Dep
           </p>
           <p className="font-semibold text-stone-800">{o.scheduledDeparture}</p>
@@ -331,7 +331,7 @@ function TrekCard({ o }: { o: TrekOption }) {
               {o.route.from} → {o.route.to}
             </p>
             <span
-              className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${diffMeta.bg} ${diffMeta.text}`}
+              className={`text-[11px] font-bold uppercase px-2 py-0.5 rounded-full ${diffMeta.bg} ${diffMeta.text}`}
             >
               {diffMeta.label}
             </span>
@@ -341,15 +341,15 @@ function TrekCard({ o }: { o: TrekOption }) {
       </div>
       <div className="px-4 py-3 bg-stone-50/50 grid grid-cols-3 gap-x-3 text-xs">
         <div>
-          <p className="text-stone-400 mb-0.5">Distance</p>
+          <p className="text-stone-500 mb-0.5">Distance</p>
           <p className="font-semibold text-stone-800">{o.distanceKm} km</p>
         </div>
         <div>
-          <p className="text-stone-400 mb-0.5">Elevation</p>
+          <p className="text-stone-500 mb-0.5">Elevation</p>
           <p className="font-semibold text-stone-800">+{o.elevationGainM} m</p>
         </div>
         <div>
-          <p className="text-stone-400 mb-0.5">Days</p>
+          <p className="text-stone-500 mb-0.5">Days</p>
           <p className="font-semibold text-stone-800">{o.estimatedDays}</p>
         </div>
       </div>
@@ -468,7 +468,7 @@ export function TransportView() {
         className="mx-4 md:mx-8 mb-4 flex items-center justify-between gap-3 rounded-2xl border border-terracotta/30 bg-terracotta/5 px-4 py-3 hover:bg-terracotta/10 transition-colors"
       >
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-terracotta">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-terracotta">
             Mock journey
           </p>
           <p className="text-sm font-bold text-stone-900 truncate">Tribhuvan Airport → Ghandruk</p>
@@ -483,7 +483,7 @@ export function TransportView() {
       <div className="mx-4 md:mx-8 bg-white rounded-card shadow-card border border-stone-100 p-4 mb-4 relative">
         <div className="absolute left-7 top-9 bottom-16 w-0.5 bg-stone-100 rounded-full" />
         <div className="flex gap-3 mb-3 relative z-10">
-          <div className="mt-2 text-stone-400 shrink-0">
+          <div className="mt-2 text-stone-500 shrink-0">
             <div className="h-3 w-3 rounded-full border-2 border-current bg-white" />
           </div>
           <div className="flex-1">
@@ -493,7 +493,7 @@ export function TransportView() {
               placeholder="From (e.g. Kathmandu)"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
-              className="w-full min-h-[44px] text-sm font-semibold text-stone-900 placeholder-stone-400 outline-none border-b border-stone-100 focus:border-terracotta transition-colors bg-transparent"
+              className="w-full min-h-[44px] text-sm font-semibold text-stone-900 placeholder-stone-500 outline-none border-b-2 border-stone-100 focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/30 transition-colors bg-transparent rounded-t-md"
             />
           </div>
         </div>
@@ -509,7 +509,7 @@ export function TransportView() {
               value={to}
               onChange={(e) => setTo(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && searchRoute()}
-              className="w-full min-h-[44px] text-sm font-semibold text-stone-900 placeholder-stone-400 outline-none border-b border-stone-100 focus:border-terracotta transition-colors bg-transparent"
+              className="w-full min-h-[44px] text-sm font-semibold text-stone-900 placeholder-stone-500 outline-none border-b-2 border-stone-100 focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/30 transition-colors bg-transparent rounded-t-md"
             />
           </div>
         </div>
@@ -581,7 +581,7 @@ export function TransportView() {
               </Map>
               {!mapLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center bg-stone-50">
-                  <p className="text-xs font-semibold text-stone-400 animate-pulse">
+                  <p className="text-xs font-semibold text-stone-500 animate-pulse">
                     Loading Map...
                   </p>
                 </div>
@@ -596,7 +596,7 @@ export function TransportView() {
           {routePoints && routePoints.length > 0 && (
             <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-float border border-stone-100 flex items-center justify-between z-10">
               <div>
-                <p className="text-[10px] font-bold text-stone-400 uppercase">Estimated Drive</p>
+                <p className="text-[11px] font-bold text-stone-500 uppercase">Estimated Drive</p>
                 <p className="text-sm font-bold text-stone-900">
                   {formatDistance(routeDistanceMeters)} • {formatDuration(routeDurationSeconds)}
                 </p>
@@ -624,7 +624,7 @@ export function TransportView() {
             >
               {t.label}{" "}
               <span
-                className={`ml-1 font-normal ${tab === t.id ? "text-primary-foreground/70" : "text-stone-400"}`}
+                className={`ml-1 font-normal ${tab === t.id ? "text-primary-foreground/70" : "text-stone-500"}`}
               >
                 {counts[t.id]}
               </span>
@@ -641,7 +641,7 @@ export function TransportView() {
         <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
           {filtered.length === 0 ? (
             <div className="text-center py-12 px-6 border-2 border-dashed border-stone-200 rounded-2xl md:col-span-2">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 text-stone-400 mb-4">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 text-stone-500 mb-4">
                 <CarFront size={20} />
               </div>
               <p className="text-base font-semibold text-stone-800">
@@ -840,7 +840,7 @@ function BuyTicketModal({
                       placeholder="Full name as on ID"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full text-sm font-medium text-stone-900 placeholder-stone-400 outline-none px-3 py-2.5 rounded-lg border border-stone-200 focus:border-terracotta transition-colors bg-white"
+                      className="w-full text-sm font-medium text-stone-900 placeholder-stone-500 outline-none px-3 py-2.5 rounded-lg border border-stone-200 focus:border-terracotta transition-colors bg-white"
                     />
                   </div>
 
@@ -879,7 +879,7 @@ function BuyTicketModal({
 
                   <div className="flex items-center justify-between rounded-xl bg-stone-900 text-white p-3">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-stone-300">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-stone-300">
                         Total
                       </p>
                       <p className="text-lg font-bold">
@@ -920,7 +920,7 @@ function BuyTicketModal({
                   Prototype flow — no ticket was issued and nothing was charged.
                 </p>
                 <div className="mt-4 rounded-xl border border-dashed border-stone-300 p-4 text-left bg-stone-50">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
                     Prototype reference
                   </p>
                   <p className="text-lg font-bold text-stone-900 tracking-widest mt-0.5">

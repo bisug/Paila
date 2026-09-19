@@ -9,6 +9,7 @@ function Script({ src }: { src: string; strategy?: string }) {
   }, [src]);
   return null;
 }
+import * as Dialog from "@radix-ui/react-dialog";
 import { useState, useRef, useEffect, ChangeEvent } from "react";
 import {
   BadgeCheck,
@@ -344,7 +345,7 @@ export function ScannerView() {
           Identity & Heritage Scanner
         </p>
         <h2 className="text-2xl font-bold text-white leading-tight">Scan Sites or Badges</h2>
-        <p className="mt-1 text-sm text-stone-400">
+        <p className="mt-1 text-sm text-stone-500">
           Point your camera at a heritage site to learn its history, or scan a host's QR badge.
         </p>
       </div>
@@ -461,106 +462,117 @@ export function ScannerView() {
         )}
       </div>
 
-      {/* ── Result bottom sheet ─────────────────────────────────────────── */}
-      {sheetOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Scan result"
-          aria-live="polite"
-          className="fixed inset-x-0 bottom-0 z-50 rounded-t-sheet bg-white px-4 pt-5 shadow-float"
-          style={{
-            paddingBottom: "max(2rem, env(safe-area-inset-bottom))",
-            maxHeight: "80vh",
-            overflowY: "auto",
-          }}
-        >
-          <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
-          <div className="mb-4 flex items-start justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-pine mb-1">
-                {aiResult ? "Heritage Identified" : "Village Council Match"}
-              </p>
-              <h3 className="text-xl font-bold text-stone-900">
-                {aiResult ? aiResult.name : "QR code scanned"}
-              </h3>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setSheetOpen(false);
-                setAiResult(null);
-                startScanner(); // restart camera when closing
-              }}
-              className="h-11 w-11 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition-colors shrink-0"
-              aria-label="Close scan result"
-            >
-              <X size={16} />
-            </button>
-          </div>
+      {/* ── Result bottom sheet (Radix: focus trap, Escape, aria-modal) ── */}
+      <Dialog.Root
+        open={sheetOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSheetOpen(false);
+            setAiResult(null);
+            startScanner(); // restart camera when closing
+          }
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-stone-950/50 backdrop-blur-sm animate-fade-in" />
+          <Dialog.Content
+            aria-describedby={undefined}
+            className="fixed inset-x-0 bottom-0 z-50 rounded-t-sheet bg-white px-4 pt-5 shadow-float animate-slide-up"
+            style={{
+              paddingBottom: "max(2rem, env(safe-area-inset-bottom))",
+              maxHeight: "80vh",
+              overflowY: "auto",
+            }}
+          >
+            <Dialog.Title className="sr-only">Scan result</Dialog.Title>
+            <div aria-live="polite">
+              <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
+              <div className="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-pine mb-1">
+                    {aiResult ? "Heritage Identified" : "Village Council Match"}
+                  </p>
+                  <h3 className="text-xl font-bold text-stone-900">
+                    {aiResult ? aiResult.name : "QR code scanned"}
+                  </h3>
+                </div>
+                <Dialog.Close asChild>
+                  <button
+                    type="button"
+                    className="h-11 w-11 grid place-items-center rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition-colors shrink-0"
+                    aria-label="Close scan result"
+                  >
+                    <X size={16} />
+                  </button>
+                </Dialog.Close>
+              </div>
 
-          {isAnalyzing ? (
-            <div className="py-12 flex flex-col items-center justify-center text-center">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-terracotta mb-4"></div>
-              <p className="text-stone-500 font-medium">Analyzing image...</p>
-            </div>
-          ) : aiResult ? (
-            <div className="space-y-4 pb-4">
-              <p className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-[11px] font-semibold text-amber-900 leading-snug">
-                Prototype recognition — this sample result is returned for every image.
-              </p>
-              <div className="bg-stone-50 rounded-xl p-4 border border-stone-100">
-                <h4 className="font-bold text-stone-900 mb-1">History</h4>
-                <p className="text-sm text-stone-600 leading-relaxed">{aiResult.history}</p>
-              </div>
-              <div className="bg-stone-50 rounded-xl p-4 border border-stone-100">
-                <h4 className="font-bold text-stone-900 mb-1">Cultural Significance</h4>
-                <p className="text-sm text-stone-600 leading-relaxed">{aiResult.significance}</p>
-              </div>
-              <div>
-                <h4 className="font-bold text-stone-900 mb-2 px-1">Quick Facts</h4>
-                {aiResult.facts?.length > 0 ? (
-                  <div className="space-y-2">
-                    {aiResult.facts.map((fact: string, idx: number) => (
-                      <div
-                        key={idx}
-                        className="flex items-start gap-3 rounded-xl border border-stone-100 bg-white px-4 py-3"
-                      >
-                        <CheckCircle2 size={16} color={pine} className="shrink-0 mt-0.5" />
-                        <span className="text-sm font-medium text-stone-700">{fact}</span>
+              {isAnalyzing ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-terracotta mb-4"></div>
+                  <p className="text-stone-500 font-medium">Analyzing image...</p>
+                </div>
+              ) : aiResult ? (
+                <div className="space-y-4 pb-4">
+                  <p className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-[11px] font-semibold text-amber-900 leading-snug">
+                    Prototype recognition — this sample result is returned for every image.
+                  </p>
+                  <div className="bg-stone-50 rounded-xl p-4 border border-stone-100">
+                    <h4 className="font-bold text-stone-900 mb-1">History</h4>
+                    <p className="text-sm text-stone-600 leading-relaxed">{aiResult.history}</p>
+                  </div>
+                  <div className="bg-stone-50 rounded-xl p-4 border border-stone-100">
+                    <h4 className="font-bold text-stone-900 mb-1">Cultural Significance</h4>
+                    <p className="text-sm text-stone-600 leading-relaxed">
+                      {aiResult.significance}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-stone-900 mb-2 px-1">Quick Facts</h4>
+                    {aiResult.facts?.length > 0 ? (
+                      <div className="space-y-2">
+                        {aiResult.facts.map((fact: string, idx: number) => (
+                          <div
+                            key={idx}
+                            className="flex items-start gap-3 rounded-xl border border-stone-100 bg-white px-4 py-3"
+                          >
+                            <CheckCircle2 size={16} color={pine} className="shrink-0 mt-0.5" />
+                            <span className="text-sm font-medium text-stone-700">{fact}</span>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <p className="px-1 text-sm text-stone-500">No quick facts available.</p>
+                    )}
+                  </div>
+                </div>
+              ) : qrData ? (
+                <>
+                  <div className="mb-4 rounded-xl border border-stone-100 bg-stone-50 p-4">
+                    <h4 className="mb-2 font-bold text-stone-900">Scanned content</h4>
+                    <p className="break-words text-sm text-stone-700">{qrData}</p>
+                  </div>
+                  <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl bg-stone-100 p-1">
+                    {(["profile", "ledger"] as LedgerTab[]).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setTab(t)}
+                        className={`rounded-lg py-2 text-sm font-semibold transition-all ${
+                          tab === t ? "bg-white text-stone-900 shadow-sm" : "text-stone-500"
+                        }`}
+                      >
+                        {t === "profile" ? "Verified ID" : "Fair Prices"}
+                      </button>
                     ))}
                   </div>
-                ) : (
-                  <p className="px-1 text-sm text-stone-500">No quick facts available.</p>
-                )}
-              </div>
+                  {tab === "profile" ? <VerifiedProfile /> : <FairPriceLedger />}
+                </>
+              ) : null}
             </div>
-          ) : qrData ? (
-            <>
-              <div className="mb-4 rounded-xl border border-stone-100 bg-stone-50 p-4">
-                <h4 className="mb-2 font-bold text-stone-900">Scanned content</h4>
-                <p className="break-words text-sm text-stone-700">{qrData}</p>
-              </div>
-              <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl bg-stone-100 p-1">
-                {(["profile", "ledger"] as LedgerTab[]).map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setTab(t)}
-                    className={`rounded-lg py-2 text-sm font-semibold transition-all ${
-                      tab === t ? "bg-white text-stone-900 shadow-sm" : "text-stone-500"
-                    }`}
-                  >
-                    {t === "profile" ? "Verified ID" : "Fair Prices"}
-                  </button>
-                ))}
-              </div>
-              {tab === "profile" ? <VerifiedProfile /> : <FairPriceLedger />}
-            </>
-          ) : null}
-        </div>
-      )}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }

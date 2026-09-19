@@ -61,7 +61,7 @@ export function HotelsList() {
   }
 
   return (
-    <div className="min-h-screen bg-background px-4 md:px-6 pt-5 pb-28 md:pb-8">
+    <div className="min-h-screen bg-background px-4 md:px-8 pt-5 pb-28 md:pb-8">
       <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-terracotta">
@@ -93,7 +93,7 @@ export function HotelsList() {
           <div className="flex min-w-0 flex-col gap-1">
             <label
               htmlFor="district"
-              className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground"
+              className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground"
             >
               {t("hotels.district", "District")}
             </label>
@@ -115,7 +115,7 @@ export function HotelsList() {
             <div className="flex min-w-0 flex-col gap-1">
               <label
                 htmlFor="minPrice"
-                className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground"
+                className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground"
               >
                 {t("hotels.minPrice", "Min NPR")}
               </label>
@@ -137,7 +137,7 @@ export function HotelsList() {
             <div className="flex min-w-0 flex-col gap-1">
               <label
                 htmlFor="maxPrice"
-                className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground"
+                className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground"
               >
                 {t("hotels.maxPrice", "Max NPR")}
               </label>
@@ -168,7 +168,7 @@ export function HotelsList() {
           <div className="flex min-w-0 flex-col gap-1">
             <label
               htmlFor="minRating"
-              className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground"
+              className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground"
             >
               {t("hotels.minRating", "Min rating")}
             </label>
@@ -185,20 +185,28 @@ export function HotelsList() {
             </select>
           </div>
 
-          <span className="hidden lg:block whitespace-nowrap rounded-xl bg-muted px-3 py-2 text-xs font-bold text-muted-foreground">
+          <span
+            className="hidden lg:block whitespace-nowrap rounded-xl bg-muted px-3 py-2 text-xs font-bold text-muted-foreground"
+            aria-hidden="true"
+          >
             {filtered.length} {t("hotels.results", "stays")}
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filtered.map((h) => (
           <HotelCard key={h.id} hotel={h} />
         ))}
         {filtered.length === 0 && (
-          <p className="col-span-full text-center py-12 text-sm text-muted-foreground">
-            {t("hotels.empty", "No stays match these filters.")}
-          </p>
+          <div className="col-span-full rounded-card border border-dashed border-stone-200 bg-white p-6 text-center">
+            <p className="text-sm font-semibold text-foreground">
+              {t("hotels.empty", "No stays match these filters.")}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Try widening the price range or rating.
+            </p>
+          </div>
         )}
       </div>
     </div>
@@ -219,10 +227,10 @@ function HotelCard({ hotel }: { hotel: Hotel }) {
           loading="lazy"
           className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute left-2 top-2 rounded-full bg-card/95 px-2 py-0.5 text-[10px] font-bold text-foreground shadow-card">
+        <div className="absolute left-2 top-2 rounded-full bg-card/95 px-2 py-0.5 text-[11px] font-bold text-foreground shadow-card">
           {hotel.district}
         </div>
-        <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-stone-950/80 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur">
+        <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-stone-950/80 px-2 py-0.5 text-[11px] font-bold text-white backdrop-blur">
           <Star size={10} className="fill-amber-400 stroke-amber-400" />
           {hotel.rating}
         </div>
@@ -241,7 +249,7 @@ function HotelCard({ hotel }: { hotel: Hotel }) {
           {hotel.amenities.slice(0, 2).map((amenity) => (
             <span
               key={amenity}
-              className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground"
+              className="rounded-md bg-muted px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground"
             >
               {amenity}
             </span>
@@ -254,7 +262,7 @@ function HotelCard({ hotel }: { hotel: Hotel }) {
           </span>
           <p className="text-right text-sm font-bold text-foreground">
             NPR {hotel.pricePerNight.toLocaleString()}
-            <span className="block text-[10px] font-semibold text-muted-foreground">
+            <span className="block text-[11px] font-semibold text-muted-foreground">
               / {t("hotels.night", "night")}
             </span>
           </p>

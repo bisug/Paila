@@ -41,7 +41,7 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   return (
-    <div className={cn("mb-6 flex items-start justify-between gap-4", className)}>
+    <div className={cn("mb-6 flex flex-wrap items-start justify-between gap-4", className)}>
       <div className="min-w-0 flex items-start gap-3">
         {icon && (
           <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-terracotta/10 text-terracotta">
@@ -50,7 +50,7 @@ export function PageHeader({
         )}
         <div className="min-w-0">
           {eyebrow && (
-            <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-terracotta">
+            <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-terracotta">
               {eyebrow}
             </p>
           )}

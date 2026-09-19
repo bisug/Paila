@@ -95,7 +95,7 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
         </div>
         <Link
           href="/hotels"
-          className="absolute top-4 left-4 grid h-9 w-9 place-items-center rounded-full bg-card/90 backdrop-blur shadow-card-md text-foreground hover:bg-card"
+          className="absolute top-4 left-4 grid h-11 w-11 place-items-center rounded-full bg-card/90 backdrop-blur shadow-card-md text-foreground hover:bg-card"
           aria-label="Back"
         >
           <ChevronLeft size={18} />
@@ -106,11 +106,16 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
               <button
                 key={i}
                 onClick={() => setActiveImg(i)}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === activeImg ? "w-6 bg-card" : "w-1.5 bg-card/60"
-                }`}
+                className="grid h-11 min-w-11 place-items-center px-1"
                 aria-label={`Image ${i + 1}`}
-              />
+                aria-current={i === activeImg}
+              >
+                <span
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === activeImg ? "w-6 bg-card" : "w-1.5 bg-card/60"
+                  }`}
+                />
+              </button>
             ))}
           </div>
         )}
@@ -302,7 +307,7 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
   return (
     <div className="rounded-xl bg-card border border-border p-3">
       <div className="grid place-items-center text-terracotta mb-1">{icon}</div>
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
         {label}
       </p>
       <p className="text-xs font-bold text-foreground truncate" title={value}>

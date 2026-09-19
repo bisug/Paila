@@ -98,7 +98,7 @@ function PlacePill({
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
           <p className="text-sm font-semibold text-stone-900 line-clamp-1">{p.name}</p>
-          <span className="text-[10px] font-bold text-terracotta bg-terracotta/10 px-2 py-0.5 rounded-full shrink-0">
+          <span className="text-[11px] font-bold text-terracotta bg-terracotta/10 px-2 py-0.5 rounded-full shrink-0">
             {d < 1 ? `${Math.round(d * 1000)} m` : `${d.toFixed(1)} km`}
           </span>
         </div>
@@ -108,7 +108,7 @@ function PlacePill({
             <Star size={10} className="fill-amber-400 stroke-amber-400" />
             <span className="font-semibold">{p.rating.toFixed(1)}</span>
             {p.userRatingCount != null && (
-              <span className="text-stone-400">({p.userRatingCount})</span>
+              <span className="text-stone-500">({p.userRatingCount})</span>
             )}
           </p>
         )}
@@ -230,7 +230,7 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
       <div className="rounded-2xl bg-linear-to-br from-pine to-pine/80 text-white p-5 shadow-card">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-1">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-white/70 mb-1">
               Exploring
             </p>
             <h2 className="text-2xl font-bold leading-tight">{place.name}</h2>
@@ -282,7 +282,7 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
       <Card>
         <SectionHeader icon={Mountain} label="Topography & Climate" />
         {ctxQuery.isLoading ? (
-          <div className="flex items-center gap-2 text-stone-400 text-sm">
+          <div className="flex items-center gap-2 text-stone-500 text-sm">
             <Loader2 size={14} className="animate-spin" /> Loading place context…
           </div>
         ) : ctxQuery.data?.error ? (
@@ -345,13 +345,13 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
       <Card>
         <SectionHeader icon={Compass} label="Places to Explore" />
         {nearbyQuery.isLoading ? (
-          <div className="flex items-center gap-2 text-stone-400 text-sm">
+          <div className="flex items-center gap-2 text-stone-500 text-sm">
             <Loader2 size={14} className="animate-spin" /> Finding nearby attractions…
           </div>
         ) : nearbyQuery.data?.error ? (
           <p className="text-xs text-red-600">{nearbyQuery.data.error}</p>
         ) : (nearbyQuery.data?.explore?.length ?? 0) === 0 ? (
-          <p className="text-xs text-stone-400">No notable attractions found within 8 km.</p>
+          <p className="text-xs text-stone-500">No notable attractions found within 8 km.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {nearbyQuery.data!.explore.slice(0, 6).map((p) => (
@@ -365,13 +365,13 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
       <Card>
         <SectionHeader icon={MapPin} label="Hotspots & Activities" />
         {nearbyQuery.isLoading ? (
-          <div className="flex items-center gap-2 text-stone-400 text-sm">
+          <div className="flex items-center gap-2 text-stone-500 text-sm">
             <Loader2 size={14} className="animate-spin" /> Loading hotspots…
           </div>
         ) : nearbyQuery.data?.error ? (
           <p className="text-xs text-red-600">{nearbyQuery.data.error}</p>
         ) : (nearbyQuery.data?.hotspots?.length ?? 0) === 0 ? (
-          <p className="text-xs text-stone-400">No hotspots found nearby.</p>
+          <p className="text-xs text-stone-500">No hotspots found nearby.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {nearbyQuery.data!.hotspots.slice(0, 6).map((p) => (
@@ -385,7 +385,7 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
       <Card>
         <SectionHeader icon={CalendarDays} label="Upcoming Events" />
         {upcomingEvents.length === 0 ? (
-          <p className="text-xs text-stone-400">No upcoming events within 60 km.</p>
+          <p className="text-xs text-stone-500">No upcoming events within 60 km.</p>
         ) : (
           <div className="space-y-2">
             {upcomingEvents.map((e) => (
@@ -419,7 +419,12 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
       {/* Cultural Etiquette */}
       <Card>
         <SectionHeader icon={Shield} label="Cultural Etiquette" />
-        <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-1 px-1 pb-1 snap-x">
+        <div
+          className="flex gap-3 overflow-x-auto no-scrollbar -mx-1 px-1 pb-1 snap-x"
+          role="region"
+          aria-label="Cultural etiquette tips"
+          tabIndex={0}
+        >
           {CULTURE_TIPS.map((tip) => (
             <div
               key={tip.id}
@@ -429,7 +434,7 @@ export function PlaceDetailPanel({ place }: { place: FocusedPlace }) {
               <div className="absolute inset-0 bg-linear-to-t from-stone-900/90 via-stone-900/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-2.5">
                 <h4 className="text-xs font-bold text-white">{tip.title}</h4>
-                <p className="text-[10px] text-white/80 leading-tight mt-0.5">{tip.desc}</p>
+                <p className="text-[11px] text-white/80 leading-tight mt-0.5">{tip.desc}</p>
               </div>
             </div>
           ))}

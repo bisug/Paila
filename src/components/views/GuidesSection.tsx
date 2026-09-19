@@ -23,7 +23,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-stone-400">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-stone-500">
           Local Guides Near You
         </h2>
         <Link
@@ -33,7 +33,12 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
           Are you a guide? Get verified →
         </Link>
       </div>
-      <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0 snap-x">
+      <div
+        className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0 snap-x"
+        role="region"
+        aria-label="Local guides near you"
+        tabIndex={0}
+      >
         {sorted.map((g) => {
           const phoneDigits = g.phone.replace(/\D/g, "");
           const waText = encodeURIComponent(
@@ -71,13 +76,13 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
                   </div>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="text-[11px] text-stone-500 truncate">{g.place}</span>
-                    <span className="text-[10px] font-bold text-terracotta bg-terracotta/10 px-1.5 py-0.5 rounded-full shrink-0">
+                    <span className="text-[11px] font-bold text-terracotta bg-terracotta/10 px-1.5 py-0.5 rounded-full shrink-0">
                       {distanceLabel}
                     </span>
                   </div>
                   <div className="mt-1">
                     <span
-                      className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${
+                      className={`inline-flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 rounded-full border ${
                         g.available
                           ? "bg-pine-tint text-pine border-pine/20"
                           : "bg-stone-100 text-stone-500 border-stone-200"
@@ -100,7 +105,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
                 {g.languages.map((lang) => (
                   <span
                     key={lang}
-                    className="text-[10px] font-semibold text-pine bg-pine/10 px-1.5 py-0.5 rounded-md"
+                    className="text-[11px] font-semibold text-pine bg-pine/10 px-1.5 py-0.5 rounded-md"
                   >
                     {lang}
                   </span>
@@ -139,7 +144,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
                   Call
                 </a>
               </div>
-              <p className="mt-1.5 text-[10px] text-stone-400 text-center tracking-wide">
+              <p className="mt-1.5 text-[11px] text-stone-500 text-center tracking-wide">
                 {g.phone}
               </p>
             </article>

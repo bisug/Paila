@@ -449,7 +449,7 @@ function Rating({ rating, reviews }: { rating: number; reviews: number }) {
     <span className="inline-flex items-center gap-1">
       <Star size={11} className="fill-amber-400 stroke-amber-400" />
       <span className="text-xs font-semibold text-stone-700">{rating.toFixed(1)}</span>
-      <span className="text-xs text-stone-400">({reviews})</span>
+      <span className="text-xs text-stone-500">({reviews})</span>
     </span>
   );
 }
@@ -542,7 +542,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
         <div>
           <div className="flex items-center gap-1.5 text-sky-700 mb-1">
             <MapPin size={12} aria-hidden="true" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">{location.name}</span>
+            <span className="text-[11px] font-bold uppercase tracking-widest">{location.name}</span>
           </div>
           <div className="flex items-end gap-2">
             <h2 className="text-4xl font-bold text-sky-900 tracking-tighter">
@@ -553,7 +553,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
             </span>
           </div>
           {weather && (
-            <div className="text-[10px] text-sky-700/80 mt-0.5">
+            <div className="text-[11px] text-sky-700/80 mt-0.5">
               Feels like {weather.feelsLike}° · Humidity {weather.humidity}%
             </div>
           )}
@@ -572,19 +572,19 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
       <div className="relative grid grid-cols-4 divide-x divide-white/50 border-t border-white/50 bg-white/40 p-2 backdrop-blur-md">
         <div className="flex flex-col items-center justify-center p-1">
           <Mountain size={14} className="text-sky-700 mb-1" />
-          <span className="text-[10px] text-sky-600/80 font-bold uppercase">Elev</span>
+          <span className="text-[11px] text-sky-600/80 font-bold uppercase">Elev</span>
           <span className="text-xs font-bold text-sky-900">{elevation}</span>
         </div>
         <div className="flex flex-col items-center justify-center p-1">
           <Wind size={14} className="text-sky-700 mb-1" />
-          <span className="text-[10px] text-sky-600/80 font-bold uppercase">Wind</span>
+          <span className="text-[11px] text-sky-600/80 font-bold uppercase">Wind</span>
           <span className="text-xs font-bold text-sky-900">
             {weather ? `${weather.wind} km/h` : "..."}
           </span>
         </div>
         <div className="flex flex-col items-center justify-center p-1">
           <Sun size={14} className="text-sky-700 mb-1" />
-          <span className="text-[10px] text-sky-600/80 font-bold uppercase">UV</span>
+          <span className="text-[11px] text-sky-600/80 font-bold uppercase">UV</span>
           <span
             className={`text-xs font-bold ${weather && weather.uv > 7 ? "text-red-600" : "text-sky-900"}`}
           >
@@ -593,7 +593,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
         </div>
         <div className="flex flex-col items-center justify-center p-1">
           <Sunset size={14} className="text-sky-700 mb-1" />
-          <span className="text-[10px] text-sky-600/80 font-bold uppercase">Sunset</span>
+          <span className="text-[11px] text-sky-600/80 font-bold uppercase">Sunset</span>
           <span className="text-xs font-bold text-sky-900">{weather ? weather.sunset : "..."}</span>
         </div>
       </div>
@@ -620,12 +620,12 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold text-stone-800">Currency</p>
-            <p className="text-[10px] font-semibold text-stone-500">
+            <p className="text-[11px] font-semibold text-stone-500">
               {liveRate ? `1 USD = ${liveRate.toFixed(2)} NPR` : "Loading rate..."}
             </p>
           </div>
           <span
-            className={`text-stone-400 text-xs transition-transform ${openId === "currency" ? "rotate-180" : ""}`}
+            className={`text-stone-500 text-xs transition-transform ${openId === "currency" ? "rotate-180" : ""}`}
           >
             ▼
           </span>
@@ -644,10 +644,10 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold text-stone-800">Emergency SOS</p>
-            <p className="text-[10px] font-semibold text-stone-500">Tap to see emergency numbers</p>
+            <p className="text-[11px] font-semibold text-stone-500">Tap to see emergency numbers</p>
           </div>
           <span
-            className={`text-stone-400 text-xs transition-transform ${openId === "sos" ? "rotate-180" : ""}`}
+            className={`text-stone-500 text-xs transition-transform ${openId === "sos" ? "rotate-180" : ""}`}
           >
             ▼
           </span>
@@ -662,7 +662,7 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
               >
                 <div>
                   <p className="text-sm font-bold text-stone-900">{item.label}</p>
-                  <p className="text-[10px] text-stone-500">{item.description}</p>
+                  <p className="text-[11px] text-stone-500">{item.description}</p>
                 </div>
                 <span className="bg-red-100 text-red-700 px-2.5 py-1 rounded-full font-bold text-xs tracking-wide">
                   {item.number}
@@ -684,10 +684,10 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold text-stone-800">Digital Permits</p>
-            <p className="text-[10px] font-semibold text-stone-500">TIMS & ACAP — Valid</p>
+            <p className="text-[11px] font-semibold text-stone-500">TIMS & ACAP — Valid</p>
           </div>
           <span
-            className={`text-stone-400 text-xs transition-transform ${openId === "permit" ? "rotate-180" : ""}`}
+            className={`text-stone-500 text-xs transition-transform ${openId === "permit" ? "rotate-180" : ""}`}
           >
             ▼
           </span>
@@ -703,11 +703,11 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <h4 className="font-bold text-base leading-tight">TIMS Card</h4>
-                    <p className="text-[10px] uppercase tracking-widest text-blue-200">
+                    <p className="text-[11px] uppercase tracking-widest text-blue-200">
                       Trekkers' Info Management
                     </p>
                   </div>
-                  <span className="bg-green-400 text-green-900 text-[10px] font-bold px-2 py-1 rounded-full">
+                  <span className="bg-green-400 text-green-900 text-[11px] font-bold px-2 py-1 rounded-full">
                     VALID
                   </span>
                 </div>
@@ -737,11 +737,11 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <h4 className="font-bold text-base leading-tight">ACAP Permit</h4>
-                    <p className="text-[10px] uppercase tracking-widest text-emerald-200">
+                    <p className="text-[11px] uppercase tracking-widest text-emerald-200">
                       Annapurna Conservation Area
                     </p>
                   </div>
-                  <span className="bg-green-400 text-green-900 text-[10px] font-bold px-2 py-1 rounded-full">
+                  <span className="bg-green-400 text-green-900 text-[11px] font-bold px-2 py-1 rounded-full">
                     VALID
                   </span>
                 </div>
@@ -770,7 +770,7 @@ function CurrencyConverter({ rates }: { rates: Record<string, number> | null }) 
   return (
     <div className="px-3 pb-3 space-y-3">
       <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 mb-1">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-600 mb-1">
           Live Exchange Rate
         </p>
         <p className="text-xl font-bold text-emerald-900">
@@ -780,7 +780,7 @@ function CurrencyConverter({ rates }: { rates: Record<string, number> | null }) 
       <div className="space-y-3">
         <div>
           <div className="flex justify-between items-end mb-1">
-            <label className="text-[10px] font-bold uppercase text-stone-500">You Pay</label>
+            <label className="text-[11px] font-bold uppercase text-stone-500">You Pay</label>
             {rates && (
               <select
                 value={sourceCode}
@@ -803,7 +803,7 @@ function CurrencyConverter({ rates }: { rates: Record<string, number> | null }) 
           />
         </div>
         <div>
-          <label className="text-[10px] font-bold uppercase text-stone-500 mb-1 block">
+          <label className="text-[11px] font-bold uppercase text-stone-500 mb-1 block">
             You Get (NPR)
           </label>
           <div className="w-full text-xl font-bold bg-stone-100 text-stone-900 border border-stone-200 rounded-xl px-3 py-2.5">
@@ -944,7 +944,7 @@ function LocalEventsSection({
             Local Festivals & Events Near You
           </h2>
         </div>
-        <span className="text-[10px] font-semibold text-stone-400">{enriched.length} upcoming</span>
+        <span className="text-[11px] font-semibold text-stone-500">{enriched.length} upcoming</span>
       </div>
       <p className="text-[11px] text-stone-500 mb-3">
         Jatras, pujas, markets, workshops and community nights happening around you.
@@ -953,10 +953,10 @@ function LocalEventsSection({
       {showRecommended && (
         <div className="mb-3 rounded-2xl border border-terracotta/20 bg-terracotta/5 p-3">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-terracotta">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-terracotta">
               ✨ Recommended for you
             </p>
-            <p className="text-[10px] text-stone-500">
+            <p className="text-[11px] text-stone-500">
               {hasBehaviorSignal ? "Based on what you've tapped" : "Based on your interests"}
             </p>
           </div>
@@ -1002,7 +1002,7 @@ function LocalEventsSection({
                     <div className="relative h-16">
                       <img src={imageSrc(ev.image)} alt="" className="w-full h-full object-cover" />
                       <span
-                        className={`absolute top-1 left-1 inline-block rounded-full border px-1.5 py-0 text-[10px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
+                        className={`absolute top-1 left-1 inline-block rounded-full border px-1.5 py-0 text-[11px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
                       >
                         {ev.category}
                       </span>
@@ -1011,7 +1011,7 @@ function LocalEventsSection({
                       <p className="text-[11px] font-bold text-stone-900 leading-tight line-clamp-2">
                         {ev.title}
                       </p>
-                      <p className="mt-1 text-[10px] text-stone-500">
+                      <p className="mt-1 text-[11px] text-stone-500">
                         {f.date} ·{" "}
                         {ev.distanceKm < 1
                           ? `${Math.round(ev.distanceKm * 1000)} m`
@@ -1063,7 +1063,7 @@ function LocalEventsSection({
                   clearEventPrefs();
                   setPrefs({ counts: {}, lastUpdated: Date.now() });
                 }}
-                className="text-[10px] font-semibold text-stone-400 hover:text-stone-600 hover:underline"
+                className="text-[11px] font-semibold text-stone-500 hover:text-stone-600 hover:underline"
               >
                 Reset preferences
               </button>
@@ -1072,7 +1072,7 @@ function LocalEventsSection({
             )}
             <Link
               href="/preferences"
-              className="text-[10px] font-bold text-terracotta hover:underline"
+              className="text-[11px] font-bold text-terracotta hover:underline"
             >
               Manage hidden events →
             </Link>
@@ -1107,7 +1107,7 @@ function LocalEventsSection({
       </div>
 
       {enriched.length === 0 && (
-        <p className="text-xs text-stone-400 italic py-4 text-center">
+        <p className="text-xs text-stone-500 italic py-4 text-center">
           No upcoming {activeCategory.toLowerCase()} events nearby right now.
         </p>
       )}
@@ -1138,7 +1138,7 @@ function LocalEventsSection({
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-stone-900/70 via-transparent to-transparent" />
                 <span
-                  className={`absolute top-2 left-2 inline-block rounded-full border px-2 py-0.5 text-[10px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
+                  className={`absolute top-2 left-2 inline-block rounded-full border px-2 py-0.5 text-[11px] font-bold ${EVENT_CATEGORY_COLOR[ev.category]}`}
                 >
                   {ev.category}
                 </span>
@@ -1150,7 +1150,7 @@ function LocalEventsSection({
                     {f.full.getDate()}
                   </p>
                 </div>
-                <div className="absolute bottom-2 right-2 bg-stone-900/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur">
+                <div className="absolute bottom-2 right-2 bg-stone-900/70 text-white text-[11px] font-bold px-2 py-0.5 rounded-full backdrop-blur">
                   {ev.distanceKm < 1
                     ? `${Math.round(ev.distanceKm * 1000)} m`
                     : `${ev.distanceKm.toFixed(1)} km`}
@@ -1171,7 +1171,7 @@ function LocalEventsSection({
                     {ev.place}
                   </span>
                 </div>
-                {why && <p className="mt-1 text-[10px] font-semibold text-terracotta">{why}</p>}
+                {why && <p className="mt-1 text-[11px] font-semibold text-terracotta">{why}</p>}
 
                 {open && (
                   <div className="mt-3 space-y-2 border-t border-stone-100 pt-3">
@@ -1267,7 +1267,7 @@ function FeaturedCard({
         <div className="mt-4 md:mt-6 flex items-center justify-between">
           <div className="leading-none">
             <span className="text-xl md:text-2xl font-bold text-stone-900">{experience.price}</span>
-            <span className="ml-1 text-xs md:text-sm text-stone-400">NPR / person</span>
+            <span className="ml-1 text-xs md:text-sm text-stone-500">NPR / person</span>
           </div>
           <button
             type="button"
@@ -1306,7 +1306,7 @@ function ExperienceCard({
         />
         {visitCount !== undefined && (
           <span
-            className={`absolute top-2 left-2 rounded-full border px-2 py-0.5 text-[10px] font-bold ${
+            className={`absolute top-2 left-2 rounded-full border px-2 py-0.5 text-[11px] font-bold ${
               visited
                 ? "bg-pine/95 text-white border-pine"
                 : "bg-white/95 text-stone-700 border-stone-200"
@@ -1323,14 +1323,14 @@ function ExperienceCard({
           </p>
           {experience.verified && <BadgeCheck size={13} className="shrink-0 mt-0.5 text-pine" />}
         </div>
-        <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-400">
+        <p className="mt-1 flex items-center gap-1 text-[11px] text-stone-500">
           <MapPin size={10} aria-hidden="true" />
           {experience.place.split(",")[0]}
         </p>
         <div className="mt-2 flex items-center justify-between">
           <Rating rating={experience.rating} reviews={experience.reviews} />
           <span className="text-[12px] font-bold text-terracotta">
-            {experience.price} <span className="font-normal text-stone-400">NPR</span>
+            {experience.price} <span className="font-normal text-stone-500">NPR</span>
           </span>
         </div>
       </div>
@@ -1346,11 +1346,11 @@ function EmptyState({ query }: { query: string }) {
       </span>
       <p className="text-base font-semibold text-stone-700">No experiences found</p>
       {query ? (
-        <p className="mt-1 text-sm text-stone-400">
+        <p className="mt-1 text-sm text-stone-500">
           No results for "<span className="font-medium">{query}</span>". Try a different search.
         </p>
       ) : (
-        <p className="mt-1 text-sm text-stone-400">Try a different category.</p>
+        <p className="mt-1 text-sm text-stone-500">Try a different category.</p>
       )}
     </div>
   );
@@ -1477,14 +1477,14 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
           <div className="relative flex-1">
             <Search
               size={15}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-500"
             />
             <input
               type="search"
               placeholder="Search hotels, places near you…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-11 w-full rounded-xl border border-stone-200 bg-white pl-9 pr-4 text-sm text-stone-800 placeholder-stone-400 focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/15 transition-colors"
+              className="h-11 w-full rounded-xl border border-stone-200 bg-white pl-9 pr-4 text-sm text-stone-800 placeholder-stone-500 focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/15 transition-colors"
             />
           </div>
           <button
@@ -1507,7 +1507,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
       <div className="bg-white border-b border-stone-100 py-2.5 px-4 md:px-8 overflow-hidden relative">
         <div className="flex items-center gap-2">
           <MapPin size={12} className="text-terracotta shrink-0" aria-hidden="true" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500 shrink-0 border-r border-stone-200 pr-2">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-stone-500 shrink-0 border-r border-stone-200 pr-2">
             Local Alerts
           </span>
 
@@ -1612,7 +1612,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
                   Suggestions adapt as you mark places visited.
                 </p>
               </div>
-              <span className="hidden sm:inline text-[11px] font-semibold uppercase tracking-wider text-stone-400">
+              <span className="hidden sm:inline text-[11px] font-semibold uppercase tracking-wider text-stone-500">
                 Based on where you've been
               </span>
             </div>
@@ -1635,14 +1635,14 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
                       />
                     </div>
                     <div className="p-2.5 flex-1 min-w-0">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-pine">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-pine">
                         {rec.reason}
                       </p>
                       <p className="mt-0.5 text-[13px] font-semibold text-stone-900 leading-snug line-clamp-2">
                         {rec.experience.title}
                       </p>
                       <div className="mt-1 flex items-center justify-between">
-                        <span className="text-[10px] text-stone-400">
+                        <span className="text-[11px] text-stone-500">
                           {rec.depth === "signature"
                             ? "Signature"
                             : rec.depth === "deeper"
@@ -1651,7 +1651,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
                         </span>
                         <span className="text-[11px] font-bold text-terracotta">
                           {rec.experience.price}
-                          <span className="font-normal text-stone-400"> NPR</span>
+                          <span className="font-normal text-stone-500"> NPR</span>
                         </span>
                       </div>
                     </div>
@@ -1659,7 +1659,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
                   <button
                     type="button"
                     onClick={() => markVisited(rec.spotId)}
-                    className="shrink-0 border-l border-stone-100 px-3 min-w-[44px] text-[10px] font-bold uppercase tracking-wider text-stone-500 hover:bg-stone-50"
+                    className="shrink-0 border-l border-stone-100 px-3 min-w-[44px] text-[11px] font-bold uppercase tracking-wider text-stone-500 hover:bg-stone-50"
                     aria-label={`Mark ${rec.spotLabel} as visited`}
                     title={`Mark ${rec.spotLabel} as visited`}
                   >
@@ -1688,7 +1688,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="hidden md:inline text-xs font-semibold text-stone-400">
+                  <span className="hidden md:inline text-xs font-semibold text-stone-500">
                     {filtered.length} matches
                   </span>
                   {interests.length > 0 && (
@@ -1706,7 +1706,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
                   {interests.slice(0, 5).map((id) => (
                     <span
                       key={id}
-                      className="rounded-full bg-terracotta/10 text-terracotta px-2 py-0.5 text-[10px] font-bold"
+                      className="rounded-full bg-terracotta/10 text-terracotta px-2 py-0.5 text-[11px] font-bold"
                     >
                       {INTEREST_LABELS[id] ?? id}
                     </span>

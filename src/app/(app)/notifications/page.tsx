@@ -64,7 +64,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="min-h-screen bg-stone-50 pb-12">
-      <header className="sticky top-14 md:top-16 z-10 border-b border-stone-200 bg-white px-4 py-3 flex items-center gap-3">
+      <header className="sticky top-14 md:top-16 z-10 border-b border-stone-200 bg-white px-4 py-3 flex items-center gap-3 min-h-14">
         <Link
           href="/"
           aria-label="Back to home"
@@ -84,7 +84,7 @@ export default function NotificationsPage() {
         )}
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="animate-spin text-stone-400" />
+            <Loader2 className="animate-spin text-stone-500" />
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-12 text-stone-500 text-sm">

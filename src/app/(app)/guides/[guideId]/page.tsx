@@ -59,7 +59,12 @@ export default function GuideProfile() {
   }, [guideId, mock]);
 
   if (!mock && loading) {
-    return <div className="p-6 text-center text-stone-400 text-sm">Loading…</div>;
+    return (
+      <div className="p-6 text-center" role="status">
+        <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-stone-200 border-t-terracotta" />
+        <p className="text-sm text-stone-500">Loading…</p>
+      </div>
+    );
   }
 
   if (!mock && !verified) {
@@ -113,17 +118,17 @@ export default function GuideProfile() {
                 onClick={() => toggleBookmark(guideId)}
                 aria-pressed={saved}
                 aria-label={saved ? `Remove ${name} from saved` : `Save ${name}`}
-                className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                className={`relative h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-colors after:absolute after:-inset-2 after:content-[''] ${
                   saved
                     ? "bg-terracotta/10 text-terracotta"
-                    : "bg-stone-100 text-stone-400 hover:bg-stone-200"
+                    : "bg-stone-100 text-stone-500 hover:bg-stone-200"
                 }`}
               >
                 {saved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
               </button>
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-2">
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-pine-tint text-pine border border-pine/20">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-pine-tint text-pine border border-pine/20">
                 <BadgeCheck size={10} />
                 Verified
               </span>
@@ -131,7 +136,7 @@ export default function GuideProfile() {
                 <span className="inline-flex items-center gap-1 text-xs font-semibold text-stone-700">
                   <Star size={12} className="fill-amber-400 text-amber-400" />
                   {mock.rating}
-                  <span className="text-stone-400 font-normal">({mock.reviews})</span>
+                  <span className="text-stone-500 font-normal">({mock.reviews})</span>
                 </span>
               )}
             </div>
@@ -188,7 +193,7 @@ export default function GuideProfile() {
         {mock && (
           <div className="grid grid-cols-2 gap-3 mt-5">
             <div className="rounded-2xl border border-stone-200 p-3">
-              <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold">
+              <p className="text-[11px] uppercase tracking-wider text-stone-500 font-semibold">
                 Experience
               </p>
               <p className="text-sm font-bold text-stone-900 mt-0.5">
@@ -196,16 +201,16 @@ export default function GuideProfile() {
               </p>
             </div>
             <div className="rounded-2xl border border-stone-200 p-3">
-              <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold">
+              <p className="text-[11px] uppercase tracking-wider text-stone-500 font-semibold">
                 Day rate
               </p>
               <p className="text-sm font-bold text-stone-900 mt-0.5 flex items-center gap-1">
-                <Wallet size={12} className="text-stone-400" />
+                <Wallet size={12} className="text-stone-500" />
                 {mock.priceUnit} {mock.pricePerDay}
               </p>
             </div>
             <div className="rounded-2xl border border-stone-200 p-3 col-span-2">
-              <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold flex items-center gap-1">
+              <p className="text-[11px] uppercase tracking-wider text-stone-500 font-semibold flex items-center gap-1">
                 <Languages size={11} />
                 Languages
               </p>
@@ -284,12 +289,12 @@ function BookingSlotPicker({
   return (
     <div className="mt-4 rounded-2xl border border-stone-200 p-4">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold flex items-center gap-1">
+        <p className="text-[11px] uppercase tracking-wider text-stone-500 font-semibold flex items-center gap-1">
           <CalendarClock size={11} />
           Book a slot
         </p>
         {!available && (
-          <span className="text-[10px] font-semibold text-stone-500">From {nextAvailable}</span>
+          <span className="text-[11px] font-semibold text-stone-500">From {nextAvailable}</span>
         )}
       </div>
 
@@ -303,7 +308,7 @@ function BookingSlotPicker({
               setDayIdx(i);
               setSlot(null);
             }}
-            className={`flex-1 text-xs font-semibold rounded-xl px-2 py-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-pine focus-visible:ring-offset-2 ${
+            className={`flex-1 min-h-[44px] items-center justify-center text-xs font-semibold rounded-xl px-2 py-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-pine focus-visible:ring-offset-2 ${
               dayIdx === i
                 ? "bg-stone-900 text-white border-stone-900"
                 : "bg-white text-stone-700 border-stone-200 hover:border-stone-300"
@@ -316,7 +321,7 @@ function BookingSlotPicker({
 
       <div
         ref={slotsRef}
-        className="grid grid-cols-4 gap-2 mb-3"
+        className="grid grid-cols-3 gap-2 mb-3 min-[400px]:grid-cols-4"
         role="group"
         aria-label="Choose a time slot"
         aria-invalid={!!error}
@@ -336,7 +341,7 @@ function BookingSlotPicker({
                 setSlot(s);
                 setError(null);
               }}
-              className={`text-xs font-semibold rounded-lg px-1 py-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 ${
+              className={`min-h-[44px] text-xs font-semibold rounded-lg px-1 py-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 ${
                 disabled
                   ? "bg-stone-50 text-stone-300 border-stone-100 line-through cursor-not-allowed"
                   : active
@@ -371,7 +376,7 @@ function BookingSlotPicker({
           setBooked(true);
           toast.success(`Prototype: ${dayLabels[dayIdx]} · ${slot} request not sent`);
         }}
-        className="w-full h-10 rounded-xl bg-terracotta text-white text-sm font-semibold hover:bg-terracotta/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2"
+        className="w-full min-h-[44px] rounded-xl bg-terracotta text-white text-sm font-semibold hover:bg-terracotta/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2"
       >
         {slot ? `Request ${dayLabels[dayIdx]} · ${slot}` : "Request slot"}
       </button>

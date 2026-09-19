@@ -149,7 +149,7 @@ export default function InterestsOnboarding() {
             {t("actions.skip")}
           </button>
           {!canContinue && count > 0 && (
-            <p className="text-center text-[11px] text-stone-400">
+            <p className="text-center text-[11px] text-stone-500">
               {t("onboarding.needMore", { count: MIN_SELECT - count })}
             </p>
           )}

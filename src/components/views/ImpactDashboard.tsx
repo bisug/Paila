@@ -34,7 +34,7 @@ export function ImpactDashboard() {
     <div className="min-h-screen bg-stone-50 px-4 md:px-8 pt-5 pb-28 md:py-8">
       {/* ── Page heading ──────────────────────────────────────────────── */}
       <div className="mb-5 md:mb-8">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-terracotta mb-1">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-terracotta mb-1">
           Personal Impact
         </p>
         <h2 className="text-2xl md:text-3xl font-bold text-stone-900 leading-tight">
@@ -78,13 +78,13 @@ export function ImpactDashboard() {
             style={{ width: `${(UNLOCKED / TOTAL_BADGES) * 100}%` }}
           />
         </div>
-        <p className="mt-2 md:mt-3 text-xs md:text-sm text-stone-400">
+        <p className="mt-2 md:mt-3 text-xs md:text-sm text-stone-500">
           {TOTAL_BADGES - UNLOCKED} more stamps to complete your Paila passport.
         </p>
       </div>
 
       {/* ── Achievement badges grid ───────────────────────────────────── */}
-      <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3 md:mb-4">
+      <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3 md:mb-4">
         Achievements
       </h3>
       {impactBadges.length === 0 ? (
@@ -113,7 +113,7 @@ export function ImpactDashboard() {
                   {badge.unlocked ? (
                     <Icon size={20} className="text-white" />
                   ) : (
-                    <Lock size={16} className="text-stone-400" />
+                    <Lock size={16} className="text-stone-500" />
                   )}
                 </div>
 
@@ -128,8 +128,8 @@ export function ImpactDashboard() {
 
                 {/* Status label */}
                 <p
-                  className={`mt-2 text-[10px] font-bold uppercase tracking-wider ${
-                    badge.unlocked ? "text-white/60" : "text-stone-400"
+                  className={`mt-2 text-[11px] font-bold uppercase tracking-wider ${
+                    badge.unlocked ? "text-white/60" : "text-stone-500"
                   }`}
                 >
                   {badge.unlocked ? "Earned" : "Locked"}

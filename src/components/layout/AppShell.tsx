@@ -98,7 +98,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           onToggleDrawer={() => setSidebarOpen(!sidebarOpen)}
         />
 
-        <main className="flex-1 pb-20 md:pb-6 min-h-0">
+        <main className="flex-1 pb-0 md:pb-6 min-h-0">
           <div className="w-full h-full md:max-w-5xl xl:max-w-6xl md:mx-auto">{children}</div>
         </main>
       </div>

@@ -119,14 +119,14 @@ export function SidebarGuidesGroup({
             <Icon
               size={20}
               strokeWidth={active ? 2.5 : 1.8}
-              className={active ? "text-terracotta" : "text-stone-400 group-hover:text-stone-600"}
+              className={active ? "text-terracotta" : "text-stone-500 group-hover:text-stone-600"}
             />
             {!minimized && (
               <>
                 <span className="truncate">{item.label}</span>
                 {item.badge && (
                   <span
-                    className={`ml-auto text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${toneClasses(
+                    className={`ml-auto text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${toneClasses(
                       item.badge.tone,
                     )}`}
                   >

@@ -55,7 +55,7 @@ export function LocationPermissionBanner({ onRetry, onDismiss }: Props) {
   };
 
   return (
-    <div className="absolute left-3 right-3 top-16 z-40 rounded-xl border border-destructive/30 bg-destructive/10 backdrop-blur-sm shadow-float">
+    <div className="absolute left-3 right-3 top-16 z-40 max-h-[60vh] overflow-y-auto rounded-xl border border-destructive/30 bg-destructive/10 backdrop-blur-sm shadow-float custom-scrollbar">
       <div className="flex items-start gap-3 p-3">
         <div className="mt-0.5 rounded-full bg-destructive/15 p-1.5">
           <MapPinOff className="h-4 w-4 text-destructive" />
@@ -69,7 +69,7 @@ export function LocationPermissionBanner({ onRetry, onDismiss }: Props) {
             <Button
               size="sm"
               onClick={onRetry}
-              className="h-8 gap-1.5 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="min-h-[44px] gap-1.5 bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               Try again
@@ -78,7 +78,7 @@ export function LocationPermissionBanner({ onRetry, onDismiss }: Props) {
               size="sm"
               variant="ghost"
               onClick={() => setExpanded((v) => !v)}
-              className="h-8 gap-1 text-xs text-stone-700 hover:bg-destructive/10"
+              className="min-h-[44px] gap-1 text-xs text-stone-700 hover:bg-destructive/10"
             >
               How to enable
               <ChevronDown
@@ -122,7 +122,7 @@ export function LocationPermissionBanner({ onRetry, onDismiss }: Props) {
           type="button"
           onClick={onDismiss}
           aria-label="Dismiss"
-          className="rounded-md p-1 text-stone-500 hover:bg-destructive/10 hover:text-stone-900"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-md text-stone-500 hover:bg-destructive/10 hover:text-stone-900"
         >
           <X className="h-4 w-4" />
         </button>

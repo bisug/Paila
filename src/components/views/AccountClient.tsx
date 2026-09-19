@@ -117,7 +117,8 @@ export function AccountClient({ user }: { user: User }) {
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="absolute top-0 right-4 h-9 w-9 bg-card rounded-full shadow-sm border border-border grid place-items-center text-muted-foreground hover:text-terracotta transition-colors"
+            className="absolute top-0 right-4 h-11 w-11 bg-card rounded-full shadow-sm border border-border grid place-items-center text-muted-foreground hover:text-terracotta transition-colors"
+            aria-label="Edit profile"
           >
             <Edit2 size={16} />
           </button>

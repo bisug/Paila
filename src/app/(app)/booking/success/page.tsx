@@ -14,7 +14,7 @@ export default function SuccessPage() {
     <Suspense
       fallback={
         <div className="min-h-screen grid place-items-center">
-          <Loader2 className="animate-spin text-stone-400" />
+          <Loader2 className="animate-spin text-stone-500" />
         </div>
       }
     >
@@ -98,7 +98,7 @@ function SuccessContent() {
     }
     return (
       <div className="min-h-screen grid place-items-center">
-        <Loader2 className="animate-spin text-stone-400" />
+        <Loader2 className="animate-spin text-stone-500" />
       </div>
     );
   }

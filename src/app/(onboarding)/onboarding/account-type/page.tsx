@@ -121,9 +121,9 @@ export default function AccountTypePage() {
             <div className="text-xs text-stone-500">Explore places, book stays and guides</div>
           </div>
           {isSaving("tourist") ? (
-            <Loader2 size={16} className="animate-spin text-stone-400" />
+            <Loader2 size={16} className="animate-spin text-stone-500" />
           ) : (
-            <ArrowRight size={16} className="text-stone-400" />
+            <ArrowRight size={16} className="text-stone-500" />
           )}
         </button>
 
@@ -141,9 +141,9 @@ export default function AccountTypePage() {
             <div className="text-xs text-stone-500">Offer tours and connect with travellers</div>
           </div>
           {isSaving("guide") ? (
-            <Loader2 size={16} className="animate-spin text-stone-400" />
+            <Loader2 size={16} className="animate-spin text-stone-500" />
           ) : (
-            <ArrowRight size={16} className="text-stone-400" />
+            <ArrowRight size={16} className="text-stone-500" />
           )}
         </button>
 
@@ -167,7 +167,7 @@ export default function AccountTypePage() {
           </div>
           <ChevronDown
             size={16}
-            className={`shrink-0 text-stone-400 transition-transform ${choice === "business" ? "rotate-180" : ""}`}
+            className={`shrink-0 text-stone-500 transition-transform ${choice === "business" ? "rotate-180" : ""}`}
           />
         </button>
 

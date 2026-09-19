@@ -235,7 +235,7 @@ export default function PreferencesPage() {
                 <div className="text-center py-10">
                   <Search size={20} className="mx-auto text-muted-foreground mb-2" />
                   <p className="text-xs font-bold text-muted-foreground">No matches found</p>
-                  <p className="text-[10px] text-muted-foreground mt-1">
+                  <p className="text-[11px] text-muted-foreground mt-1">
                     Try a different search term.
                   </p>
                 </div>
@@ -274,7 +274,7 @@ export default function PreferencesPage() {
                       >
                         <div className="min-w-0">
                           <p className="text-xs font-bold text-foreground">{cat}</p>
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-[11px] text-muted-foreground">
                             Showing fewer of these.
                           </p>
                         </div>
@@ -345,7 +345,7 @@ function PrefGroup({
           className="flex-1 min-w-0 text-left"
         >
           <p className="text-xs font-bold text-foreground truncate">{label}</p>
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-[11px] text-muted-foreground">
             {events.length} hidden {events.length === 1 ? "event" : "events"} · tap to{" "}
             {open ? "hide" : "view"}
           </p>
@@ -369,14 +369,14 @@ function PrefGroup({
               />
               <div className="flex-1 min-w-0">
                 <p className="text-[12px] font-semibold text-foreground truncate">{ev.title}</p>
-                <p className="text-[10px] text-muted-foreground truncate">
+                <p className="text-[11px] text-muted-foreground truncate">
                   {ev.category} · {ev.place}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => onRestoreOne(ev.id)}
-                className="shrink-0 text-[10px] font-bold text-muted-foreground hover:text-terracotta hover:underline"
+                className="shrink-0 text-[11px] font-bold text-muted-foreground hover:text-terracotta hover:underline"
               >
                 Restore
               </button>
