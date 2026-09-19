@@ -16,6 +16,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { getSafeRedirectPath } from "@/lib/redirect";
 import { supabase } from "@/integrations/supabase/client";
 
 type AuthMode = "login" | "signup";
@@ -26,13 +27,6 @@ const PHONE_PATTERN = /^\+[1-9]\d{7,14}$/;
 
 function normalizePhone(value: string) {
   return value.replace(/[^\d+]/g, "");
-}
-
-function getSafeRedirectPath(value: string | null, fallback = "/profile") {
-  if (!value) return fallback;
-  if (!value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return fallback;
-  if (value.startsWith("/auth/") || value.startsWith("/login")) return fallback;
-  return value;
 }
 
 function getPasswordIssues(password: string) {

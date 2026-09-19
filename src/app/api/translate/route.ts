@@ -1,10 +1,9 @@
 import { z } from "zod";
-import { checkRateLimit, getClientKey, isSupabaseConfigured } from "@/lib/server/guardrails";
+import { checkRateLimit, getClientKey } from "@/lib/server/guardrails";
 import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
 import { translateText } from "@/lib/server/translate";
 import { TRANSLATOR_LANGUAGES, type TranslatorLangKey } from "@/lib/translator";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
+import { createAuthenticatedSupabaseClient } from "@/integrations/supabase/auth-middleware";
 
 const Body = z.object({
   sourceText: z.string().min(1).max(2000),
@@ -31,27 +30,11 @@ function labelFor(key: string): string {
 }
 
 export async function POST(request: Request) {
-  // Only enforce Supabase session auth when a real project is wired (see /api/scan).
-  if (isSupabaseConfigured()) {
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value;
-          },
-        },
-      },
-    );
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  // Verified session when a real project is wired (see /api/scan for demo-mode note).
+  try {
+    await createAuthenticatedSupabaseClient();
+  } catch {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   if (!checkRateLimit(getClientKey(request, "translate"), 20, 60_000)) {

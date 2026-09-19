@@ -9,21 +9,25 @@ export function missingMapboxTokenMessage(): string {
   return "Missing Mapbox access token (set NEXT_PUBLIC_MAPBOX_TOKEN)";
 }
 
+function buildMapboxUrl(
+  endpoint: string,
+  params: Record<string, string | number | boolean | undefined> = {},
+): URL {
+  const url = new URL(endpoint);
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined) url.searchParams.set(key, String(value));
+  });
+  url.searchParams.set("access_token", getMapboxToken());
+  return url;
+}
+
 export async function fetchMapboxUrl(
   endpoint: string,
   params: Record<string, string | number | boolean | undefined> = {},
   timeoutMs = 8_000,
 ): Promise<Response> {
-  const token = getMapboxToken();
-  if (!token) throw new Error(missingMapboxTokenMessage());
-
-  const url = new URL(endpoint);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined) url.searchParams.set(key, String(value));
-  });
-  url.searchParams.set("access_token", token);
-
-  return fetchWithTimeout(url.toString(), {}, timeoutMs);
+  if (!getMapboxToken()) throw new Error(missingMapboxTokenMessage());
+  return fetchWithTimeout(buildMapboxUrl(endpoint, params).toString(), {}, timeoutMs);
 }
 
 export async function fetchMapboxArrayBuffer(
@@ -31,16 +35,8 @@ export async function fetchMapboxArrayBuffer(
   params: Record<string, string | number | boolean | undefined> = {},
   timeoutMs = 8_000,
 ): Promise<ArrayBuffer> {
-  const token = getMapboxToken();
-  if (!token) throw new Error(missingMapboxTokenMessage());
-
-  const url = new URL(endpoint);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined) url.searchParams.set(key, String(value));
-  });
-  url.searchParams.set("access_token", token);
-
-  const res = await fetchWithTimeout(url.toString(), {}, timeoutMs);
+  if (!getMapboxToken()) throw new Error(missingMapboxTokenMessage());
+  const res = await fetchWithTimeout(buildMapboxUrl(endpoint, params).toString(), {}, timeoutMs);
   if (!res.ok) throw new Error(`Mapbox tile ${res.status}`);
   return res.arrayBuffer();
 }
