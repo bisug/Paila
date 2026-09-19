@@ -653,13 +653,13 @@ function AmsPanel({
           <p className="text-xs font-black uppercase tracking-wider opacity-85">
             Lake Louise Score: {amsScore}
           </p>
-          <h4 className="mt-0.5 text-base font-bold">
+          <h3 className="mt-0.5 text-base font-bold">
             {isSevere
               ? "Severe AMS Detected"
               : hasAms
                 ? "Mild AMS Detected"
                 : "Clear: No AMS Detected"}
-          </h4>
+          </h3>
           <p className="mt-1 text-xs font-medium leading-snug opacity-90">
             {isSevere
               ? "Do not ascend. Descend to a lower altitude immediately and contact rescue support."
@@ -676,7 +676,7 @@ function AmsPanel({
             key={q.title}
             className="rounded-2xl border border-stone-200/60 bg-white p-4 shadow-sm"
           >
-            <h4 className="mb-1 text-sm font-bold text-stone-900">{q.title}</h4>
+            <h3 className="mb-1 text-sm font-bold text-stone-900">{q.title}</h3>
             <p className="mb-3 text-[11px] font-semibold text-stone-400">{q.desc[q.value]}</p>
             <div className="grid grid-cols-4 gap-2">
               {[0, 1, 2, 3].map((val) => (

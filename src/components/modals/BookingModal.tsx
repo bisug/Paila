@@ -109,7 +109,7 @@ export function BookingModal({
           <p className="text-[11px] font-bold uppercase tracking-widest text-pine mb-1">
             Booking Confirmed
           </p>
-          <h2 className="text-xl font-bold text-stone-900 mb-1">{experience.title}</h2>
+          <p className="text-xl font-bold text-stone-900 mb-1">{experience.title}</p>
           <p className="text-sm text-stone-500">{experience.place}</p>
 
           <div className="mt-4 rounded-xl bg-stone-50 border border-stone-100 px-4 py-3 text-left">
@@ -141,9 +141,9 @@ export function BookingModal({
               <p className="text-[10px] font-bold uppercase tracking-wider text-terracotta">
                 Stamp Unlocked
               </p>
-              <h4 className="text-xs font-bold text-stone-900 leading-snug">
+              <p className="text-xs font-bold text-stone-900 leading-snug">
                 "Direct Booking" stamp added to your passport!
-              </h4>
+              </p>
             </div>
           </div>
 
@@ -172,7 +172,7 @@ export function BookingModal({
           style={{ paddingBottom: "max(3rem, env(safe-area-inset-bottom))" }}
         >
           <Loader2 size={42} className="animate-spin text-terracotta mb-4" />
-          <h3 className="text-lg font-bold text-stone-950">Directing eSewa Wire</h3>
+          <p className="text-lg font-bold text-stone-950">Directing eSewa Wire</p>
           <p className="text-xs text-stone-500 mt-1 max-w-[200px] leading-relaxed">
             Securing bypass channel to transfer 100% to {experience.host}...
           </p>
@@ -209,7 +209,7 @@ export function BookingModal({
                 >
                   {isEsewa ? "eSewa Direct" : "Khalti Checkout"}
                 </span>
-                <h2 className="text-lg font-bold text-stone-900 mt-1.5">Direct Transfer Login</h2>
+                <p className="text-lg font-bold text-stone-900 mt-1.5">Direct Transfer Login</p>
                 <p className="text-xs text-stone-500 mt-0.5">Amount: Rs. {experience.price}</p>
               </div>
               <button
@@ -293,7 +293,7 @@ export function BookingModal({
                 <p className="text-[10px] font-bold uppercase tracking-widest text-terracotta mb-1">
                   Step 2 of 3
                 </p>
-                <h2 className="text-lg font-bold text-stone-900">Choose Payment Method</h2>
+                <p className="text-lg font-bold text-stone-900">Choose Payment Method</p>
                 <p className="text-xs text-stone-500 mt-0.5">Pay 100% direct to the host</p>
               </div>
               <button

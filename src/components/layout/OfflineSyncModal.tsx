@@ -93,7 +93,7 @@ export function OfflineSyncModal({
                   <Wifi className="text-pine shrink-0" size={20} />
                 )}
                 <div className="min-w-0">
-                  <h4 className="text-sm font-bold text-stone-900">Simulate Offline Mode</h4>
+                  <h3 className="text-sm font-bold text-stone-900">Simulate Offline Mode</h3>
                   <p className="text-[11px] text-stone-500 mt-0.5 truncate">
                     Force local caching in mountains
                   </p>
@@ -112,9 +112,9 @@ export function OfflineSyncModal({
             </div>
 
             <div className="space-y-3 mb-6">
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
                 Offline Caching status
-              </h4>
+              </p>
               {cachedItems.map((item) => (
                 <div
                   key={item.label}

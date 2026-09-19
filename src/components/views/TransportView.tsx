@@ -113,9 +113,9 @@ function RoadCard({
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
           <div className="flex justify-between items-start gap-2 mb-1">
-            <h3 className="font-bold text-stone-900 leading-tight">
+            <p className="font-bold text-stone-900 leading-tight">
               {isShared ? (o.iconType === "bus" ? "Local Bus" : "Shared Jeep") : "Private Taxi"}
-            </h3>
+            </p>
             <span className="text-sm font-bold text-terracotta whitespace-nowrap">
               {formatPrice(o)}
             </span>
@@ -225,10 +225,10 @@ function FlightCard({
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
           <div className="flex justify-between items-start gap-2 mb-1">
-            <h3 className="font-bold text-stone-900 leading-tight">
+            <p className="font-bold text-stone-900 leading-tight">
               {o.airline}{" "}
               <span className="text-stone-400 font-medium text-xs">· {o.flightNumber}</span>
-            </h3>
+            </p>
             <span className="text-sm font-bold text-terracotta whitespace-nowrap">
               {formatPrice(o)}
             </span>
@@ -326,9 +326,9 @@ function TrekCard({ o }: { o: TrekOption }) {
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
           <div className="flex justify-between items-start gap-2 mb-1">
-            <h3 className="font-bold text-stone-900 leading-tight">
+            <p className="font-bold text-stone-900 leading-tight">
               {o.route.from} → {o.route.to}
-            </h3>
+            </p>
             <span
               className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${diffMeta.bg} ${diffMeta.text}`}
             >
@@ -777,7 +777,7 @@ function BuyTicketModal({
             <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
               {isFlight ? "Flight ticket" : "Ride ticket"}
             </p>
-            <h3 className="text-base font-bold text-stone-900 mt-0.5">{title}</h3>
+            <p className="text-base font-bold text-stone-900 mt-0.5">{title}</p>
           </div>
           <button
             onClick={onClose}
@@ -880,7 +880,7 @@ function BuyTicketModal({
             <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-600 mb-3">
               <CheckCircle2 size={28} />
             </div>
-            <h4 className="text-base font-bold text-stone-900">Ticket confirmed</h4>
+            <p className="text-base font-bold text-stone-900">Ticket confirmed</p>
             <p className="text-xs text-stone-500 mt-1">A copy was sent to your wallet.</p>
             <div className="mt-4 rounded-xl border border-dashed border-stone-300 p-4 text-left bg-stone-50">
               <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
