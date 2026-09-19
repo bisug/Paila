@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import * as Dialog from "@radix-ui/react-dialog";
 import type { TFunction } from "i18next";
 import {
   Bell,
@@ -413,81 +414,94 @@ export function MobileBottomNav({ pathname, t }: ShellNavProps) {
 
 export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerProps) {
   return (
-    <div className="fixed inset-0 z-50 md:hidden" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-      <div
-        className="absolute right-0 top-0 h-full w-64 bg-white shadow-tactile flex flex-col"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex items-center gap-3 px-5 h-14 border-b border-stone-100">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta">
-            <Footprints size={14} className="text-white" />
-          </div>
-          <span className="font-bold text-stone-900">Paila</span>
-          <button
-            onClick={onClose}
-            className="ml-auto h-11 w-11 grid place-items-center rounded-lg text-stone-400 hover:bg-stone-100"
-            aria-label="Close navigation"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = routeActive(pathname, item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
-                  active ? "bg-terracotta/10 text-terracotta" : "text-stone-500 hover:bg-stone-100"
-                }`}
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          onInteractOutside={(e) => e.preventDefault()}
+          className="fixed right-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-tactile flex flex-col"
+        >
+          <div className="flex items-center gap-3 px-5 h-14 border-b border-stone-100">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta">
+              <Footprints size={14} className="text-white" />
+            </div>
+            <Dialog.Title asChild>
+              <span className="font-bold text-stone-900">Paila</span>
+            </Dialog.Title>
+            <Dialog.Close asChild>
+              <button
+                className="ml-auto h-11 w-11 grid place-items-center rounded-lg text-stone-400 hover:bg-stone-100"
+                aria-label="Close navigation"
               >
-                <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
-                {navLabel(t, item.href, item.label)}
-              </Link>
-            );
-          })}
-          <Link
-            href="/hotels"
-            onClick={onClose}
-            className={`flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
-              hotelActive(pathname)
-                ? "bg-terracotta/10 text-terracotta"
-                : "text-stone-500 hover:bg-stone-100"
-            }`}
-          >
-            <HotelIcon size={20} strokeWidth={hotelActive(pathname) ? 2.5 : 1.8} />
-            {t("nav.hotels", "Hotels")}
-          </Link>
-          <SidebarGuidesGroup variant="drawer" onNavigate={onClose} />
-        </nav>
-        <div className="px-3 py-4 border-t border-stone-100 space-y-2">
-          <button
-            onClick={() => {
-              onOpenSos();
-              onClose();
-            }}
-            className="flex items-center gap-3 w-full px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
-          >
-            <Shield size={20} strokeWidth={2} />
-            Emergency SOS
-          </button>
-          <Link
-            href="/profile"
-            onClick={onClose}
-            className="flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
-          >
-            <User size={20} strokeWidth={1.8} />
-            Profile
-          </Link>
-          <div className="px-3 py-2">
-            <LanguageSwitcher />
+                <X size={18} />
+              </button>
+            </Dialog.Close>
           </div>
-        </div>
-      </div>
-    </div>
+          <nav className="flex-1 px-3 py-4 space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = routeActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onClose}
+                  className={`flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
+                    active
+                      ? "bg-terracotta/10 text-terracotta"
+                      : "text-stone-500 hover:bg-stone-100"
+                  }`}
+                >
+                  <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
+                  {navLabel(t, item.href, item.label)}
+                </Link>
+              );
+            })}
+            <Link
+              href="/hotels"
+              onClick={onClose}
+              className={`flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
+                hotelActive(pathname)
+                  ? "bg-terracotta/10 text-terracotta"
+                  : "text-stone-500 hover:bg-stone-100"
+              }`}
+            >
+              <HotelIcon size={20} strokeWidth={hotelActive(pathname) ? 2.5 : 1.8} />
+              {t("nav.hotels", "Hotels")}
+            </Link>
+            <SidebarGuidesGroup variant="drawer" onNavigate={onClose} />
+          </nav>
+          <div className="px-3 py-4 border-t border-stone-100 space-y-2">
+            <button
+              onClick={() => {
+                onOpenSos();
+                onClose();
+              }}
+              className="flex items-center gap-3 w-full px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <Shield size={20} strokeWidth={2} />
+              Emergency SOS
+            </button>
+            <Link
+              href="/profile"
+              onClick={onClose}
+              className="flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+            >
+              <User size={20} strokeWidth={1.8} />
+              Profile
+            </Link>
+            <div className="px-3 py-2">
+              <LanguageSwitcher />
+            </div>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

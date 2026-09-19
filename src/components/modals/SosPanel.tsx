@@ -30,6 +30,7 @@ import {
   type SosIncident,
   type SosLocation,
 } from "@/lib/sos";
+import * as Dialog from "@radix-ui/react-dialog";
 
 type SosPanelProps = {
   isOffline: boolean;
@@ -224,305 +225,329 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-stone-950/50 p-4 backdrop-blur-sm md:items-center md:justify-center">
-      <div
-        className="no-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-[34px] border border-white/50 bg-white/[0.94] p-5 shadow-tactile backdrop-blur-2xl md:max-w-md"
-        style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
-      >
-        <div className="mb-5 flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-red-600">
-              {amsOpen ? "AMS Medical Check" : isOffline ? "Offline SOS Armed" : "Emergency SOS"}
-            </p>
-            <h2 className="mt-1 text-2xl font-black text-stone-950">
-              {amsOpen ? "Lake Louise Score" : "Safety checkpoint panel"}
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={amsOpen ? () => setAmsOpen(false) : onClose}
-            className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300"
-            aria-label={amsOpen ? "Back to SOS panel" : "Close SOS panel"}
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-stone-950/50 backdrop-blur-sm" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          onInteractOutside={(e) => e.preventDefault()}
+          className="fixed inset-0 z-50 flex flex-col justify-end p-4 md:items-center md:justify-center"
+        >
+          <div
+            className="no-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-[34px] border border-white/50 bg-white/[0.94] p-5 shadow-tactile backdrop-blur-2xl md:max-w-md"
+            style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
           >
-            {amsOpen ? <ArrowLeft size={20} /> : <X size={20} />}
-          </button>
-        </div>
-
-        {amsOpen ? (
-          <AmsPanel
-            amsScore={amsScore}
-            dizziness={dizziness}
-            fatigue={fatigue}
-            gi={gi}
-            headache={headache}
-            hasAms={hasAms}
-            isSevere={isSevere}
-            setDizziness={setDizziness}
-            setFatigue={setFatigue}
-            setGi={setGi}
-            setHeadache={setHeadache}
-            setSleep={setSleep}
-            sleep={sleep}
-          />
-        ) : (
-          <div className="animate-in fade-in space-y-4 duration-200">
-            <div
-              className={`rounded-[28px] p-4 text-white shadow-xl ${
-                checkInStatus.overdue
-                  ? "animate-soft-pulse bg-stone-900"
-                  : isOffline
-                    ? "bg-amber-600"
-                    : "bg-red-600"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-black uppercase tracking-[0.12em] text-white/80">
-                    Offline Check-In Status
-                  </p>
-                  <p className="mt-2 text-2xl font-black tabular-nums">{checkInStatus.label}</p>
-                </div>
-                <Clock3 className="mt-1 shrink-0 text-white/80" size={22} />
-              </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/20">
-                <div
-                  className="h-full rounded-full bg-white transition-all"
-                  style={{ width: `${Math.max(6, checkInStatus.progress * 100)}%` }}
-                />
-              </div>
-              <p className="mt-3 text-sm font-bold text-white/85">
-                {checkInStatus.overdue
-                  ? "Alert your emergency contact immediately."
-                  : `Last check-in: ${formatPanelDate(checkIn.lastCheckedInAt)}`}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={handleCheckIn}
-                className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-pine px-3 text-sm font-black text-white shadow-sm transition-transform active:scale-[0.98]"
-              >
-                <CheckCircle2 size={17} />
-                Check in now
-              </button>
-              <button
-                type="button"
-                onClick={handleResetPlan}
-                className="flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 text-sm font-black text-stone-700 shadow-sm transition-transform active:scale-[0.98]"
-              >
-                <RotateCcw size={16} />
-                Reset
-              </button>
-            </div>
-
-            <div className="rounded-2xl border border-red-100 bg-red-50/70 p-4 shadow-sm">
-              <div className="mb-3 flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.14em] text-red-700">
-                    Emergency dispatch
-                  </p>
-                  <h3 className="mt-1 text-base font-black text-stone-950">
-                    {selectedContact.label}
-                  </h3>
-                  <p className="mt-0.5 text-xs font-semibold text-stone-600">
-                    {selectedContact.description}
-                  </p>
-                </div>
-                <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-black text-red-700">
-                  {selectedContact.number}
-                </span>
-              </div>
-
-              <div className="mb-3 grid grid-cols-2 gap-2">
-                {emergencyContacts.map((contact) => (
-                  <button
-                    type="button"
-                    key={contact.id}
-                    onClick={() => setSelectedContactId(contact.id)}
-                    className={`min-h-11 rounded-xl border px-2 py-2 text-left transition-colors ${
-                      selectedContactId === contact.id
-                        ? "border-red-300 bg-white text-red-700"
-                        : "border-red-100 bg-white/60 text-stone-600"
-                    }`}
-                  >
-                    <span className="block truncate text-[11px] font-black">{contact.label}</span>
-                    <span className="block text-[10px] font-bold opacity-70">{contact.number}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={handlePrepareSos}
-                  disabled={isLocating}
-                  className="col-span-2 flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-red-600 px-3 text-sm font-black text-white shadow-sm transition-transform active:scale-[0.98] disabled:cursor-wait disabled:bg-red-300"
-                >
-                  <RadioTower size={17} className={isLocating ? "animate-pulse" : ""} />
-                  {isLocating
-                    ? "Capturing location..."
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-red-600">
+                  {amsOpen
+                    ? "AMS Medical Check"
                     : isOffline
-                      ? "Queue offline SOS"
-                      : "Prepare SOS alert"}
-                </button>
-                <a
-                  href={callHref}
-                  className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-3 text-sm font-black text-red-700 shadow-sm transition-transform active:scale-[0.98]"
-                >
-                  <PhoneCall size={16} />
-                  Call
-                </a>
-                <button
-                  type="button"
-                  onClick={handleCaptureLocation}
-                  disabled={isLocating}
-                  className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-3 text-sm font-black text-red-700 shadow-sm transition-transform active:scale-[0.98] disabled:cursor-wait disabled:text-red-300"
-                >
-                  <MapPin size={16} />
-                  Locate
-                </button>
+                      ? "Offline SOS Armed"
+                      : "Emergency SOS"}
+                </p>
+                <Dialog.Title asChild>
+                  <h2 className="mt-1 text-2xl font-black text-stone-950">
+                    {amsOpen ? "Lake Louise Score" : "Safety checkpoint panel"}
+                  </h2>
+                </Dialog.Title>
               </div>
+              <button
+                type="button"
+                onClick={amsOpen ? () => setAmsOpen(false) : onClose}
+                className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300"
+                aria-label={amsOpen ? "Back to SOS panel" : "Close SOS panel"}
+              >
+                {amsOpen ? <ArrowLeft size={20} /> : <X size={20} />}
+              </button>
             </div>
 
-            {latestIncident && (
-              <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-[0.14em] text-stone-400">
-                      Prepared SOS
-                    </p>
-                    <p className="mt-1 text-sm font-bold text-stone-900">
-                      {latestIncident.status === "queued-offline"
-                        ? "Queued locally for offline use"
-                        : "Ready to send"}
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-stone-100 px-2 py-1 text-[10px] font-black uppercase text-stone-500">
-                    {latestIncident.mode}
-                  </span>
-                </div>
-                <textarea
-                  readOnly
-                  value={latestIncident.message}
-                  className="min-h-28 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-3 text-xs font-semibold leading-relaxed text-stone-700 outline-none"
-                />
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={handleCopyMessage}
-                    className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white text-xs font-black text-stone-700 transition-transform active:scale-[0.98]"
-                  >
-                    <Copy size={14} />
-                    Copy
-                  </button>
-                  {smsHref && (
-                    <a
-                      href={smsHref}
-                      className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-stone-900 text-xs font-black text-white transition-transform active:scale-[0.98]"
-                    >
-                      <MessageSquare size={14} />
-                      Open SMS
-                    </a>
-                  )}
-                </div>
-              </div>
-            )}
-
-            <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.14em] text-stone-400">
-                    Local SOS queue
-                  </p>
-                  <p className="mt-1 text-xs font-semibold text-stone-500">
-                    {pendingOfflineCount
-                      ? `${pendingOfflineCount} SOS item queued offline`
-                      : "No offline SOS items waiting"}
-                  </p>
-                </div>
-                <span
-                  className={`rounded-full px-2 py-1 text-[10px] font-black uppercase ${
-                    isOffline ? "bg-amber-100 text-amber-700" : "bg-pine-tint text-pine"
+            {amsOpen ? (
+              <AmsPanel
+                amsScore={amsScore}
+                dizziness={dizziness}
+                fatigue={fatigue}
+                gi={gi}
+                headache={headache}
+                hasAms={hasAms}
+                isSevere={isSevere}
+                setDizziness={setDizziness}
+                setFatigue={setFatigue}
+                setGi={setGi}
+                setHeadache={setHeadache}
+                setSleep={setSleep}
+                sleep={sleep}
+              />
+            ) : (
+              <div className="animate-in fade-in space-y-4 duration-200">
+                <div
+                  className={`rounded-[28px] p-4 text-white shadow-xl ${
+                    checkInStatus.overdue
+                      ? "animate-soft-pulse bg-stone-900"
+                      : isOffline
+                        ? "bg-amber-600"
+                        : "bg-red-600"
                   }`}
                 >
-                  {isOffline ? "Offline" : "Online"}
-                </span>
-              </div>
-              {incidents.length > 0 && (
-                <div className="space-y-2">
-                  {incidents.slice(0, 3).map((incident) => (
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-black uppercase tracking-[0.12em] text-white/80">
+                        Offline Check-In Status
+                      </p>
+                      <p className="mt-2 text-2xl font-black tabular-nums">{checkInStatus.label}</p>
+                    </div>
+                    <Clock3 className="mt-1 shrink-0 text-white/80" size={22} />
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/20">
                     <div
-                      key={incident.id}
-                      className="flex items-center justify-between gap-3 rounded-xl bg-stone-50 px-3 py-2"
+                      className="h-full rounded-full bg-white transition-all"
+                      style={{ width: `${Math.max(6, checkInStatus.progress * 100)}%` }}
+                    />
+                  </div>
+                  <p className="mt-3 text-sm font-bold text-white/85">
+                    {checkInStatus.overdue
+                      ? "Alert your emergency contact immediately."
+                      : `Last check-in: ${formatPanelDate(checkIn.lastCheckedInAt)}`}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCheckIn}
+                    className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-pine px-3 text-sm font-black text-white shadow-sm transition-transform active:scale-[0.98]"
+                  >
+                    <CheckCircle2 size={17} />
+                    Check in now
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResetPlan}
+                    className="flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 text-sm font-black text-stone-700 shadow-sm transition-transform active:scale-[0.98]"
+                  >
+                    <RotateCcw size={16} />
+                    Reset
+                  </button>
+                </div>
+
+                <div className="rounded-2xl border border-red-100 bg-red-50/70 p-4 shadow-sm">
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-red-700">
+                        Emergency dispatch
+                      </p>
+                      <h3 className="mt-1 text-base font-black text-stone-950">
+                        {selectedContact.label}
+                      </h3>
+                      <p className="mt-0.5 text-xs font-semibold text-stone-600">
+                        {selectedContact.description}
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-black text-red-700">
+                      {selectedContact.number}
+                    </span>
+                  </div>
+
+                  <div className="mb-3 grid grid-cols-2 gap-2">
+                    {emergencyContacts.map((contact) => (
+                      <button
+                        type="button"
+                        key={contact.id}
+                        onClick={() => setSelectedContactId(contact.id)}
+                        className={`min-h-11 rounded-xl border px-2 py-2 text-left transition-colors ${
+                          selectedContactId === contact.id
+                            ? "border-red-300 bg-white text-red-700"
+                            : "border-red-100 bg-white/60 text-stone-600"
+                        }`}
+                      >
+                        <span className="block truncate text-[11px] font-black">
+                          {contact.label}
+                        </span>
+                        <span className="block text-[10px] font-bold opacity-70">
+                          {contact.number}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={handlePrepareSos}
+                      disabled={isLocating}
+                      className="col-span-2 flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-red-600 px-3 text-sm font-black text-white shadow-sm transition-transform active:scale-[0.98] disabled:cursor-wait disabled:bg-red-300"
                     >
-                      <div className="min-w-0">
-                        <p className="truncate text-xs font-bold text-stone-800">
-                          {incident.contactLabel}
+                      <RadioTower size={17} className={isLocating ? "animate-pulse" : ""} />
+                      {isLocating
+                        ? "Capturing location..."
+                        : isOffline
+                          ? "Queue offline SOS"
+                          : "Prepare SOS alert"}
+                    </button>
+                    <a
+                      href={callHref}
+                      className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-3 text-sm font-black text-red-700 shadow-sm transition-transform active:scale-[0.98]"
+                    >
+                      <PhoneCall size={16} />
+                      Call
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCaptureLocation}
+                      disabled={isLocating}
+                      className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-3 text-sm font-black text-red-700 shadow-sm transition-transform active:scale-[0.98] disabled:cursor-wait disabled:text-red-300"
+                    >
+                      <MapPin size={16} />
+                      Locate
+                    </button>
+                  </div>
+                </div>
+
+                {latestIncident && (
+                  <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-black uppercase tracking-[0.14em] text-stone-400">
+                          Prepared SOS
                         </p>
-                        <p className="text-[10px] font-semibold text-stone-400">
-                          {formatPanelDate(incident.createdAt)}
+                        <p className="mt-1 text-sm font-bold text-stone-900">
+                          {latestIncident.status === "queued-offline"
+                            ? "Queued locally for offline use"
+                            : "Ready to send"}
                         </p>
                       </div>
-                      <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[10px] font-black text-stone-500">
-                        {incident.status === "queued-offline" ? "Queued" : "Ready"}
+                      <span className="rounded-full bg-stone-100 px-2 py-1 text-[10px] font-black uppercase text-stone-500">
+                        {latestIncident.mode}
                       </span>
                     </div>
-                  ))}
+                    <textarea
+                      readOnly
+                      value={latestIncident.message}
+                      className="min-h-28 w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-3 text-xs font-semibold leading-relaxed text-stone-700 outline-none"
+                    />
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCopyMessage}
+                        className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white text-xs font-black text-stone-700 transition-transform active:scale-[0.98]"
+                      >
+                        <Copy size={14} />
+                        Copy
+                      </button>
+                      {smsHref && (
+                        <a
+                          href={smsHref}
+                          className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-stone-900 text-xs font-black text-white transition-transform active:scale-[0.98]"
+                        >
+                          <MessageSquare size={14} />
+                          Open SMS
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+                  <div className="mb-3 flex items-center justify-between gap-2">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.14em] text-stone-400">
+                        Local SOS queue
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-stone-500">
+                        {pendingOfflineCount
+                          ? `${pendingOfflineCount} SOS item queued offline`
+                          : "No offline SOS items waiting"}
+                      </p>
+                    </div>
+                    <span
+                      className={`rounded-full px-2 py-1 text-[10px] font-black uppercase ${
+                        isOffline ? "bg-amber-100 text-amber-700" : "bg-pine-tint text-pine"
+                      }`}
+                    >
+                      {isOffline ? "Offline" : "Online"}
+                    </span>
+                  </div>
+                  {incidents.length > 0 && (
+                    <div className="space-y-2">
+                      {incidents.slice(0, 3).map((incident) => (
+                        <div
+                          key={incident.id}
+                          className="flex items-center justify-between gap-3 rounded-xl bg-stone-50 px-3 py-2"
+                        >
+                          <div className="min-w-0">
+                            <p className="truncate text-xs font-bold text-stone-800">
+                              {incident.contactLabel}
+                            </p>
+                            <p className="text-[10px] font-semibold text-stone-400">
+                              {formatPanelDate(incident.createdAt)}
+                            </p>
+                          </div>
+                          <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[10px] font-black text-stone-500">
+                            {incident.status === "queued-offline" ? "Queued" : "Ready"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {actionNote && (
+                    <p className="mt-3 rounded-xl bg-stone-50 px-3 py-2 text-xs font-semibold leading-relaxed text-stone-600">
+                      {actionNote}
+                    </p>
+                  )}
                 </div>
-              )}
-              {actionNote && (
-                <p className="mt-3 rounded-xl bg-stone-50 px-3 py-2 text-xs font-semibold leading-relaxed text-stone-600">
-                  {actionNote}
-                </p>
-              )}
-            </div>
 
-            <button
-              type="button"
-              onClick={() => setAmsOpen(true)}
-              className="flex w-full items-center justify-between rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left shadow-sm transition-colors active:bg-amber-100"
-            >
-              <span className="flex min-w-0 items-center gap-3">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-800">
-                  <Activity size={20} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-sm font-bold text-stone-900">
-                    AMS Symptom Checker
-                  </span>
-                  <span className="block truncate text-xs text-stone-500">
-                    Calculate your Lake Louise Score
-                  </span>
-                </span>
-              </span>
-              <ChevronRight size={18} className="shrink-0 text-amber-700" />
-            </button>
-
-            <div className="grid gap-2">
-              {emergencyContacts.map((link) => (
-                <a
-                  key={link.id}
-                  href={`tel:${sanitizePhoneNumber(link.number)}`}
-                  className="flex min-h-14 items-center justify-between rounded-2xl border border-stone-100 bg-white px-4 text-sm font-black text-stone-900 shadow-md transition-transform active:scale-[0.98]"
+                <button
+                  type="button"
+                  onClick={() => setAmsOpen(true)}
+                  className="flex w-full items-center justify-between rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left shadow-sm transition-colors active:bg-amber-100"
                 >
                   <span className="flex min-w-0 items-center gap-3">
-                    <PhoneCall className="shrink-0 text-red-600" size={18} />
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-800">
+                      <Activity size={20} />
+                    </span>
                     <span className="min-w-0">
-                      <span className="block truncate">{link.label}</span>
-                      <span className="block text-[10px] font-semibold text-stone-400">
-                        {link.number}
+                      <span className="block text-sm font-bold text-stone-900">
+                        AMS Symptom Checker
+                      </span>
+                      <span className="block truncate text-xs text-stone-500">
+                        Calculate your Lake Louise Score
                       </span>
                     </span>
                   </span>
-                  <ChevronRight size={18} className="shrink-0 text-stone-300" />
-                </a>
-              ))}
-            </div>
+                  <ChevronRight size={18} className="shrink-0 text-amber-700" />
+                </button>
+
+                <div className="grid gap-2">
+                  {emergencyContacts.map((link) => (
+                    <a
+                      key={link.id}
+                      href={`tel:${sanitizePhoneNumber(link.number)}`}
+                      className="flex min-h-14 items-center justify-between rounded-2xl border border-stone-100 bg-white px-4 text-sm font-black text-stone-900 shadow-md transition-transform active:scale-[0.98]"
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        <PhoneCall className="shrink-0 text-red-600" size={18} />
+                        <span className="min-w-0">
+                          <span className="block truncate">{link.label}</span>
+                          <span className="block text-[10px] font-semibold text-stone-400">
+                            {link.number}
+                          </span>
+                        </span>
+                      </span>
+                      <ChevronRight size={18} className="shrink-0 text-stone-300" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 

@@ -11,6 +11,41 @@ import {
   Sparkles,
 } from "lucide-react";
 import { type Experience } from "@/lib/data";
+import * as Dialog from "@radix-ui/react-dialog";
+
+// Shared step shell: Radix dialog provides focus trap, Escape-to-close and
+// scroll lock. Backdrop clicks are ignored to match the previous behavior of
+// not dismissing a checkout mid-flow.
+function ModalShell({
+  onClose,
+  title,
+  children,
+}: {
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-stone-950/50 backdrop-blur-sm animate-fade-in" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          onInteractOutside={(e) => e.preventDefault()}
+          className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center"
+        >
+          <Dialog.Title className="sr-only">{title}</Dialog.Title>
+          {children}
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
 
 type CheckoutStep = "form" | "select_method" | "auth_wallet" | "processing" | "success";
 type PaymentMethod = "esewa" | "khalti" | "bank";
@@ -59,7 +94,7 @@ export function BookingModal({
   // ── 1. Success confirmation screen ───────────────────────────────────────
   if (step === "success") {
     return (
-      <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm animate-fade-in">
+      <ModalShell onClose={onClose} title="Booking confirmed">
         <div
           className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white p-6 shadow-float text-center animate-slide-up"
           style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
@@ -124,14 +159,14 @@ export function BookingModal({
             Done
           </button>
         </div>
-      </div>
+      </ModalShell>
     );
   }
 
   // ── 2. Processing Screen ─────────────────────────────────────────────────
   if (step === "processing") {
     return (
-      <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm animate-fade-in">
+      <ModalShell onClose={onClose} title="Processing payment">
         <div
           className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white px-5 py-12 shadow-float text-center flex flex-col items-center justify-center animate-slide-up"
           style={{ paddingBottom: "max(3rem, env(safe-area-inset-bottom))" }}
@@ -142,7 +177,7 @@ export function BookingModal({
             Securing bypass channel to transfer 100% to {experience.host}...
           </p>
         </div>
-      </div>
+      </ModalShell>
     );
   }
 
@@ -157,7 +192,7 @@ export function BookingModal({
       : "bg-purple-600 hover:bg-purple-700";
 
     return (
-      <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm animate-fade-in">
+      <ModalShell onClose={onClose} title="Wallet login">
         <div
           className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float animate-slide-up"
           style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
@@ -236,14 +271,14 @@ export function BookingModal({
             </form>
           </div>
         </div>
-      </div>
+      </ModalShell>
     );
   }
 
   // ── 4. Method Selection Screen ───────────────────────────────────────────
   if (step === "select_method") {
     return (
-      <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm animate-fade-in">
+      <ModalShell onClose={onClose} title="Choose payment method">
         <div
           className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float animate-slide-up"
           style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
@@ -325,13 +360,13 @@ export function BookingModal({
             </div>
           </div>
         </div>
-      </div>
+      </ModalShell>
     );
   }
 
   // ── 5. Standard Booking Form (Step 1) ──────────────────────────────────
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-stone-950/50 backdrop-blur-sm">
+    <ModalShell onClose={onClose} title={experience.title}>
       <div
         className="w-full md:max-w-md max-h-[90vh] overflow-y-auto rounded-modal bg-white shadow-float"
         style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
@@ -401,6 +436,6 @@ export function BookingModal({
           </button>
         </div>
       </div>
-    </div>
+    </ModalShell>
   );
 }
