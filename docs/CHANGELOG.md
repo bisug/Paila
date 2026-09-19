@@ -5,13 +5,16 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 ## [Unreleased]
 
 ### Changed
+
 - Updated all dependencies to latest: `@supabase/ssr` 0.12.5, `@supabase/supabase-js` 2.112.4, `lucide-react` 1.34.0, plus transitive bumps (browserslist data, eslint tooling, babel 7.x). `bun outdated` and `bun audit` clean.
 - `.agent/AGENTS.md`: added mandatory Security section (secrets, auth/RLS, CSP, input validation, `bun audit` on dep changes, demo-mode guards).
 
 ### Fixed
+
 - `bun audit` clean: bumped transitive `brace-expansion` 5.0.7 → 5.0.9 (2 high DoS advisories, via eslint/minimatch).
 
 ### Changed
+
 - Moved AI agent guide to `.agent/AGENTS.md` (tracked in git); root `AGENTS.md`/`CLAUDE.md` stubs stay gitignored.
 - Moved `CHANGELOG.md` and `CONTRIBUTING.md` into `docs/`; AI agents must read and update docs with every change (rule in `.agent/AGENTS.md`).
 - CI hardened: bun pinned via `packageManager`, concurrency group, `format:check` step, chromium-only Playwright install, failure artifact upload.
