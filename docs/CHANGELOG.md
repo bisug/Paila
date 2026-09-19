@@ -4,6 +4,26 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ## [Unreleased]
 
+### Added
+
+- Unit tests for the in-memory rate limiter and client-key extraction (`src/lib/server/guardrails.test.ts`).
+
+### Changed
+
+- Bumped `next` 16.3.2 → 16.3.5 and `sharp` → 0.35.4 (`bun audit` was failing with 2 critical Next.js RCE advisories and 1 high sharp/libheif advisory; now clean).
+- API routes (`/api/scan`, `/api/translate`) now verify sessions with `supabase.auth.getUser()` instead of `getSession()`, per Supabase guidance (cookie session data is not re-validated server-side).
+- `createSupabaseServerClient()` (auth callback route) and `supabaseAdmin` (admin guide verifications) now build real Supabase clients when env vars are configured instead of always returning the demo mock — production auth-code exchange and signed ID-card URLs would previously have hit the mock.
+- Rate limiter buckets are capped (10k entries, expired windows pruned) so spoofed client IPs cannot grow the map unboundedly. Still per-instance in-memory; a multi-instance deployment needs a shared store.
+- Moved `@types/pngjs` from dependencies to devDependencies.
+
+### Removed
+
+- Dead modules with no importers: `src/lib/error-capture.ts` and `src/lib/error-page.ts` (leftovers from a pre-Next h3 scaffold), `src/lib/config.server.ts` (empty placeholder).
+
+### Fixed
+
+- `format:check` no longer fails on `.agent/AGENTS.md` and `docs/CHANGELOG.md` (now prettier-formatted).
+
 ### Changed
 
 - Updated all dependencies to latest: `@supabase/ssr` 0.12.5, `@supabase/supabase-js` 2.112.4, `lucide-react` 1.34.0, plus transitive bumps (browserslist data, eslint tooling, babel 7.x). `bun outdated` and `bun audit` clean.
