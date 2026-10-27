@@ -71,6 +71,7 @@ export function TranslatorView() {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [wordMeaning, setWordMeaning] = useState<string | null>(null);
   const [isFetchingMeaning, setIsFetchingMeaning] = useState(false);
+  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -308,7 +309,9 @@ export function TranslatorView() {
       if (response.ok) {
         const data = await response.json();
         setWordMeaning(
-          data?.translatedText ? `Translates to: "${data.translatedText}"` : "Could not translate word.",
+          data?.translatedText
+            ? `Translates to: "${data.translatedText}"`
+            : "Could not translate word.",
         );
       } else {
         setWordMeaning("Could not translate word.");
@@ -417,7 +420,7 @@ export function TranslatorView() {
       </section>
 
       <section className="sticky top-14 z-20 border-b border-stone-200 bg-white/95 px-4 py-3 backdrop-blur md:top-16 md:px-8">
-        <div className="grid grid-cols-[minmax(0,1fr)_44px_minmax(0,1fr)] items-end gap-2 md:max-w-3xl">
+        <div className="grid grid-cols-[minmax(0,1fr)_44px_minmax(0,1fr)] items-end gap-2.5 md:max-w-3xl">
           <LanguageSelect
             label="From"
             value={sourceLang}
@@ -427,7 +430,7 @@ export function TranslatorView() {
           <button
             type="button"
             onClick={handleSwap}
-            className="grid h-11 w-11 place-items-center rounded-xl border border-stone-200 bg-stone-50 text-stone-500 shadow-sm transition-colors hover:bg-stone-100"
+            className="grid h-11 w-11 place-items-center rounded-xl border border-stone-200 bg-stone-50 text-stone-600 shadow-xs transition-all hover:bg-stone-100 hover:text-stone-900 active:scale-95"
             aria-label="Swap languages"
           >
             <ArrowRightLeft size={16} />
@@ -441,23 +444,23 @@ export function TranslatorView() {
         </div>
       </section>
 
-      <main className="grid flex-1 gap-4 px-4 py-5 md:grid-cols-2 md:px-8 md:py-6">
-        <section className="flex min-h-[320px] flex-col rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+      <main className="grid flex-1 gap-5 px-4 py-5 md:grid-cols-2 md:px-8 md:py-6 pb-28 md:pb-24">
+        <section className="flex min-h-[300px] flex-col rounded-card border border-stone-200 bg-white p-4 md:p-5 shadow-card transition-shadow hover:shadow-card-md">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-terracotta">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-terracotta">
                 Translate from {TRANSLATOR_LANGUAGES[sourceLang].label}
               </p>
-              <p className="mt-0.5 text-xs text-stone-500">Type or use a quick phrase.</p>
+              <p className="mt-0.5 text-xs text-stone-600">Type or select a quick travel phrase.</p>
             </div>
             {sourceText && (
               <button
                 type="button"
                 onClick={() => handleSourceTextChange("")}
-                className="grid h-11 w-11 place-items-center rounded-lg text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-700"
+                className="grid h-9 w-9 place-items-center rounded-lg text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-700"
                 aria-label="Clear source text"
               >
-                <X size={17} />
+                <X size={16} />
               </button>
             )}
           </div>
@@ -466,47 +469,58 @@ export function TranslatorView() {
             value={sourceText}
             onChange={(event) => handleSourceTextChange(event.target.value)}
             placeholder="Type a phrase to translate..."
-            className="min-h-36 flex-1 resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 text-xl font-semibold leading-snug text-stone-900 outline-none transition-colors placeholder:text-stone-500 focus:border-terracotta focus:bg-white focus:ring-2 focus:ring-terracotta/15 md:text-2xl"
+            className="min-h-32 flex-1 resize-none rounded-xl border border-stone-200 bg-stone-50/70 p-3.5 text-lg font-semibold leading-snug text-stone-900 outline-none transition-colors placeholder:text-stone-600 focus:border-terracotta focus:bg-white focus:ring-2 focus:ring-terracotta/15 md:text-xl"
           />
 
           {isListening && interimText && (
-            <p aria-live="polite" className="mt-2 text-sm italic text-terracotta">
+            <p aria-live="polite" className="mt-2 text-sm italic text-terracotta animate-pulse">
               {interimText}
             </p>
           )}
 
-          <div className="mt-4 space-y-3">
-            {PHRASE_CATEGORIES.map((category) => (
-              <div key={category.label}>
-                <p className="mb-1.5 text-[11px] font-bold uppercase tracking-widest text-stone-500">
+          <div className="mt-4 pt-3.5 border-t border-stone-100">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 mb-2.5">
+              {PHRASE_CATEGORIES.map((category, idx) => (
+                <button
+                  key={category.label}
+                  type="button"
+                  onClick={() => setActiveCategoryIndex(idx)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                    activeCategoryIndex === idx
+                      ? "bg-terracotta text-white shadow-xs"
+                      : "bg-stone-100 text-stone-600 hover:bg-stone-200/80"
+                  }`}
+                >
                   {category.label}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {category.phrases.map((phrase) => (
-                    <button
-                      key={phrase}
-                      type="button"
-                      onClick={() => handleSourceTextChange(phrase)}
-                      className="rounded-full border border-stone-200 bg-white px-3 py-2.5 min-h-[44px] text-xs font-semibold text-stone-600 shadow-sm transition-colors hover:border-terracotta/40 hover:text-terracotta"
-                    >
-                      {phrase}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto no-scrollbar pr-1">
+              {PHRASE_CATEGORIES[activeCategoryIndex]?.phrases.map((phrase) => (
+                <button
+                  key={phrase}
+                  type="button"
+                  onClick={() => handleSourceTextChange(phrase)}
+                  className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 shadow-xs transition-all hover:border-terracotta/40 hover:bg-terracotta/5 hover:text-terracotta active:scale-95"
+                >
+                  {phrase}
+                </button>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section className="flex min-h-[320px] flex-col rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+        <section className="flex min-h-[300px] flex-col rounded-card border border-stone-200 bg-white p-4 md:p-5 shadow-card transition-shadow hover:shadow-card-md">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-pine">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-pine">
                 Translation in {TRANSLATOR_LANGUAGES[targetLang].label}
               </p>
-              <p className="mt-0.5 text-xs text-stone-500">Tap a translated word for meaning.</p>
+              <p className="mt-0.5 text-xs text-stone-600">
+                Tap any translated word to see its meaning.
+              </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => {
@@ -516,42 +530,45 @@ export function TranslatorView() {
                     .catch(() => toast.error("Could not copy"));
                 }}
                 disabled={!targetText}
-                className="grid h-11 w-11 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
+                className="grid h-9 w-9 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
                 aria-label="Copy translation"
+                title="Copy"
               >
-                <Copy size={18} />
+                <Copy size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => speakText(targetText, targetLang)}
                 disabled={!targetText}
-                className="grid h-11 w-11 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
+                className="grid h-9 w-9 place-items-center rounded-xl bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 disabled:cursor-not-allowed disabled:text-stone-300"
                 aria-label="Play translation"
+                title="Pronounce"
               >
-                <Volume2 size={18} />
+                <Volume2 size={16} />
               </button>
             </div>
           </div>
 
-          <div className="min-h-36 flex-1 rounded-xl border border-stone-200 bg-stone-50 p-4">
+          <div className="min-h-32 flex-1 rounded-xl border border-stone-200 bg-stone-50/70 p-3.5">
             {targetText ? (
               <p
                 aria-live="polite"
-                className="flex flex-wrap gap-x-2 gap-y-1 text-xl font-semibold leading-snug text-stone-900 md:text-2xl"
+                className="flex flex-wrap gap-x-2 gap-y-1.5 text-lg font-semibold leading-snug text-stone-900 md:text-xl"
               >
                 {targetText.split(" ").map((word, index) => (
                   <button
                     key={`${word}-${index}`}
                     type="button"
                     onClick={() => handleWordClick(word, targetLang)}
-                    className="rounded-lg px-1 text-left transition-colors hover:bg-pine/10 hover:text-pine"
+                    className="rounded-lg px-1.5 py-0.5 text-left border border-transparent hover:border-pine/30 hover:bg-pine/10 hover:text-pine transition-all cursor-pointer"
+                    title="Tap for definition"
                   >
                     {word}
                   </button>
                 ))}
               </p>
             ) : (
-              <p className="text-xl font-semibold leading-snug text-stone-300 md:text-2xl">
+              <p className="text-lg font-semibold leading-snug text-stone-600 md:text-xl">
                 Translation will appear here...
               </p>
             )}
@@ -559,9 +576,9 @@ export function TranslatorView() {
             {isTranslating && (
               <div
                 aria-live="polite"
-                className="mt-4 flex items-center gap-2 text-sm font-semibold text-stone-500"
+                className="mt-4 flex items-center gap-2 text-xs font-semibold text-terracotta"
               >
-                <Sparkles size={16} className="animate-pulse" />
+                <Sparkles size={15} className="animate-pulse" />
                 Translating...
               </div>
             )}
@@ -607,13 +624,13 @@ function LanguageSelect({
 
   return (
     <label className="min-w-0">
-      <span className="mb-1 block text-[11px] font-bold uppercase tracking-widest text-stone-500">
+      <span className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-stone-500">
         {label}
       </span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value as TranslatorLangKey)}
-        className={`h-11 w-full appearance-none rounded-xl border border-stone-200 bg-stone-50 px-3 text-sm font-semibold text-stone-700 outline-none transition-colors focus:bg-white focus:ring-2 ${focusClass}`}
+        className={`h-11 w-full appearance-none rounded-xl border border-stone-200 bg-stone-50 px-3 text-sm font-semibold text-stone-800 outline-none transition-colors focus:bg-white focus:ring-2 ${focusClass}`}
       >
         {Object.entries(TRANSLATOR_LANGUAGES).map(([key, lang]) => (
           <option key={key} value={key}>
@@ -639,51 +656,51 @@ function VoiceBar({
   onToggleListen: () => void;
 }) {
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-30 border-t border-stone-200 bg-white/95 px-4 py-2 backdrop-blur md:bottom-8 md:left-1/2 md:right-auto md:flex md:-translate-x-1/2 md:items-center md:gap-3 md:rounded-full md:border md:px-4 md:shadow-float">
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={onToggleAutoSpeak}
-          aria-pressed={autoSpeak}
-          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-2 min-h-[44px] text-[11px] font-bold uppercase tracking-wider transition-colors ${
-            autoSpeak
-              ? "border-pine/30 bg-pine/10 text-pine"
-              : "border-stone-200 bg-white text-stone-500"
-          }`}
-        >
-          <Volume2 size={11} />
-          Auto {autoSpeak ? "on" : "off"}
-        </button>
+    <div className="fixed bottom-20 md:bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-full border border-stone-200/90 bg-white/95 px-4 py-2 shadow-float backdrop-blur-md max-w-[calc(100vw-2rem)] w-auto">
+      <button
+        type="button"
+        onClick={onToggleAutoSpeak}
+        aria-pressed={autoSpeak}
+        className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
+          autoSpeak
+            ? "border-pine/30 bg-pine/10 text-pine"
+            : "border-stone-200 bg-stone-50 text-stone-500 hover:bg-stone-100"
+        }`}
+      >
+        <Volume2 size={12} />
+        Auto {autoSpeak ? "on" : "off"}
+      </button>
 
-        <button
-          type="button"
-          onClick={onToggleListen}
-          disabled={!speechSupported}
-          aria-label={
-            isListening
-              ? "Stop listening"
-              : speechSupported
-                ? "Tap and speak to translate"
-                : "Speech input not supported in this browser"
-          }
-          className={`grid h-14 w-14 shrink-0 place-items-center rounded-full shadow-float transition-transform active:scale-95 disabled:cursor-not-allowed disabled:bg-stone-300 disabled:shadow-none ${
-            isListening ? "animate-pulse bg-red-500 ring-4 ring-red-500/25" : "bg-terracotta"
-          }`}
-        >
-          <Mic size={22} className="text-white" />
-        </button>
-
-        <p
-          aria-live="polite"
-          className="min-w-0 flex-1 truncate text-xs font-semibold text-stone-600 md:w-48"
-        >
-          {isListening
-            ? "Listening... tap mic to stop"
+      <button
+        type="button"
+        onClick={onToggleListen}
+        disabled={!speechSupported}
+        aria-label={
+          isListening
+            ? "Stop listening"
             : speechSupported
-              ? "Tap mic and speak to translate"
-              : "Voice input needs Chrome, Edge, or Safari"}
-        </p>
-      </div>
+              ? "Tap and speak to translate"
+              : "Speech input not supported in this browser"
+        }
+        className={`relative grid h-12 w-12 shrink-0 place-items-center rounded-full shadow-md transition-all active:scale-95 disabled:cursor-not-allowed disabled:bg-stone-300 disabled:shadow-none ${
+          isListening
+            ? "bg-red-500 ring-4 ring-red-500/30 animate-pulse animate-mic-ring text-white"
+            : "bg-terracotta text-white hover:bg-terracotta/90"
+        }`}
+      >
+        <Mic size={20} className="text-white" />
+      </button>
+
+      <p
+        aria-live="polite"
+        className="min-w-0 flex-1 truncate text-xs font-semibold text-stone-700 max-w-[190px]"
+      >
+        {isListening
+          ? "Listening... tap mic to stop"
+          : speechSupported
+            ? "Tap mic to speak"
+            : "Voice needs Chrome or Safari"}
+      </p>
     </div>
   );
 }

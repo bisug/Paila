@@ -71,6 +71,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (pathname.startsWith("/guides") || pathname.startsWith("/guide")) {
       return t("nav.guides", "Guides");
     }
+    if (pathname.startsWith("/impact")) return t("nav.impact", "Impact");
+    if (pathname.startsWith("/notifications")) return t("nav.notifications", "Notifications");
     if (pathname.startsWith("/profile")) return t("nav.profile", "Profile");
     return "";
   }, [pathname, t]);

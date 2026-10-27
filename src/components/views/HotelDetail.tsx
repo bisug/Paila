@@ -95,11 +95,14 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
         </div>
         <Link
           href="/hotels"
-          className="absolute top-4 left-4 grid h-11 w-11 place-items-center rounded-full bg-card/90 backdrop-blur shadow-card-md text-foreground hover:bg-card"
+          className="absolute top-4 left-4 grid h-11 w-11 place-items-center rounded-full bg-card/90 backdrop-blur shadow-card-md text-foreground hover:bg-card transition-all active:scale-95"
           aria-label="Back"
         >
           <ChevronLeft size={18} />
         </Link>
+        <div className="absolute top-4 right-4 rounded-full bg-stone-950/75 backdrop-blur px-3 py-1 text-xs font-bold text-white shadow-xs">
+          {activeImg + 1} / {hotel.images.length}
+        </div>
         {hotel.images.length > 1 && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
             {hotel.images.map((_, i) => (
@@ -298,6 +301,29 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
             </p>
           </div>
         </aside>
+      </div>
+
+      {/* Mobile Sticky Booking Dock */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border p-3.5 px-4 flex items-center justify-between md:hidden shadow-float"
+        style={{ paddingBottom: "max(0.875rem, env(safe-area-inset-bottom))" }}
+      >
+        <div>
+          <p className="text-[11px] text-muted-foreground font-semibold">
+            {nights > 0 ? `${nights} ${nights === 1 ? "night" : "nights"}` : "Per night"}
+          </p>
+          <p className="text-base font-extrabold text-foreground leading-tight">
+            NPR {(nights > 0 ? totalNpr : hotel.pricePerNight).toLocaleString()}
+          </p>
+        </div>
+        <button
+          onClick={handleBook}
+          disabled={submitting || nights < 1}
+          className="rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xs flex items-center gap-2 active:scale-95"
+        >
+          {submitting && <Loader2 size={15} className="animate-spin" />}
+          {submitting ? "Booking…" : "Request Booking"}
+        </button>
       </div>
     </div>
   );

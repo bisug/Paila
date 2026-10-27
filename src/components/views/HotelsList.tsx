@@ -258,11 +258,11 @@ function HotelCard({ hotel }: { hotel: Hotel }) {
 
         <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-2.5">
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground">
-            <Users size={11} /> {hotel.maxGuests}
+            <Users size={11} /> {hotel.maxGuests} max
           </span>
-          <p className="text-right text-sm font-bold text-foreground">
+          <p className="text-right text-sm font-extrabold text-terracotta">
             NPR {hotel.pricePerNight.toLocaleString()}
-            <span className="block text-[11px] font-semibold text-muted-foreground">
+            <span className="block text-[10px] font-semibold text-muted-foreground">
               / {t("hotels.night", "night")}
             </span>
           </p>

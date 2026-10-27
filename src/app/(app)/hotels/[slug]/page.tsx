@@ -1,6 +1,5 @@
 "use client";
 
-import { notFound } from "next/navigation";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { HotelDetail } from "@/components/views/HotelDetail";

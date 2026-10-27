@@ -79,7 +79,7 @@ export function dismissEvent(eventId: string | number, category: EventCategory):
   const prefs = loadEventPrefs();
   const id = String(eventId);
   const dismissed = Array.from(new Set([...(prefs.dismissed ?? []), id]));
-  const penalties = { ...(prefs.penalties ?? {}) };
+  const penalties = { ...prefs.penalties };
   penalties[category] = (penalties[category] ?? 0) + DISMISS_PENALTY;
   const next: EventPrefs = {
     ...prefs,
@@ -95,7 +95,7 @@ export function undoDismissEvent(eventId: string | number, category: EventCatego
   const prefs = loadEventPrefs();
   const id = String(eventId);
   const dismissed = (prefs.dismissed ?? []).filter((x) => x !== id);
-  const penalties = { ...(prefs.penalties ?? {}) };
+  const penalties = { ...prefs.penalties };
   if (penalties[category] != null) {
     penalties[category] = Math.max(0, penalties[category] - DISMISS_PENALTY);
     if (penalties[category] === 0) delete penalties[category];
@@ -120,7 +120,7 @@ export function clearDismissedByIds(ids: Array<string | number>): EventPrefs {
 
 export function clearPenaltyForCategory(category: EventCategory): EventPrefs {
   const prefs = loadEventPrefs();
-  const penalties = { ...(prefs.penalties ?? {}) };
+  const penalties = { ...prefs.penalties };
   delete penalties[category];
   const next: EventPrefs = { ...prefs, penalties, lastUpdated: Date.now() };
   saveEventPrefs(next);

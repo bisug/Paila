@@ -8,8 +8,11 @@ import {
   Bell,
   ChevronRight,
   Footprints,
+  HeartHandshake,
   Hotel as HotelIcon,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   Shield,
   User,
   X,
@@ -55,6 +58,10 @@ function routeActive(pathname: string, href: string) {
 
 function hotelActive(pathname: string) {
   return pathname.startsWith("/hotels") || pathname.startsWith("/booking");
+}
+
+function impactActive(pathname: string) {
+  return pathname.startsWith("/impact");
 }
 
 function navLabel(t: TFunction, href: string, fallback: string) {
@@ -152,22 +159,25 @@ function DesktopNavItems({ pathname, t, minimized }: ShellNavProps & { minimized
             key={item.href}
             href={item.href}
             title={minimized ? label : undefined}
-            className={`flex items-center ${
-              minimized ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3"
+            className={`relative flex items-center ${
+              minimized ? "justify-center w-11 h-11 mx-auto" : "gap-3 px-3.5"
             } py-2.5 rounded-xl text-sm font-semibold transition-all group ${
               active
-                ? "bg-terracotta/10 text-terracotta"
-                : "text-stone-500 hover:bg-stone-100 hover:text-stone-900"
+                ? "bg-terracotta/10 text-terracotta font-bold"
+                : "text-stone-600 hover:bg-stone-100/80 hover:text-stone-900"
             }`}
           >
+            {active && !minimized && (
+              <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-terracotta" />
+            )}
             <Icon
               size={20}
               strokeWidth={active ? 2.5 : 1.8}
-              className={active ? "text-terracotta" : "text-stone-500 group-hover:text-stone-600"}
+              className={active ? "text-terracotta" : "text-stone-500 group-hover:text-stone-700"}
             />
             {!minimized && (
               <>
-                <span>{label}</span>
+                <span className="truncate">{label}</span>
                 {active && <ChevronRight size={14} className="ml-auto text-terracotta/60" />}
               </>
             )}
@@ -177,22 +187,62 @@ function DesktopNavItems({ pathname, t, minimized }: ShellNavProps & { minimized
       <Link
         href="/hotels"
         title={minimized ? t("nav.hotels", "Hotels") : undefined}
-        className={`flex items-center ${
-          minimized ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3"
+        className={`relative flex items-center ${
+          minimized ? "justify-center w-11 h-11 mx-auto" : "gap-3 px-3.5"
         } py-2.5 rounded-xl text-sm font-semibold transition-all group ${
           hotelActive(pathname)
-            ? "bg-terracotta/10 text-terracotta"
-            : "text-stone-500 hover:bg-stone-100 hover:text-stone-900"
+            ? "bg-terracotta/10 text-terracotta font-bold"
+            : "text-stone-600 hover:bg-stone-100/80 hover:text-stone-900"
         }`}
       >
+        {hotelActive(pathname) && !minimized && (
+          <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-terracotta" />
+        )}
         <HotelIcon
           size={20}
           strokeWidth={hotelActive(pathname) ? 2.5 : 1.8}
           className={
-            hotelActive(pathname) ? "text-terracotta" : "text-stone-500 group-hover:text-stone-600"
+            hotelActive(pathname) ? "text-terracotta" : "text-stone-500 group-hover:text-stone-700"
           }
         />
-        {!minimized && <span>{t("nav.hotels", "Hotels")}</span>}
+        {!minimized && (
+          <>
+            <span className="truncate">{t("nav.hotels", "Hotels")}</span>
+            {hotelActive(pathname) && (
+              <ChevronRight size={14} className="ml-auto text-terracotta/60" />
+            )}
+          </>
+        )}
+      </Link>
+      <Link
+        href="/impact"
+        title={minimized ? t("nav.impact", "Impact") : undefined}
+        className={`relative flex items-center ${
+          minimized ? "justify-center w-11 h-11 mx-auto" : "gap-3 px-3.5"
+        } py-2.5 rounded-xl text-sm font-semibold transition-all group ${
+          impactActive(pathname)
+            ? "bg-terracotta/10 text-terracotta font-bold"
+            : "text-stone-600 hover:bg-stone-100/80 hover:text-stone-900"
+        }`}
+      >
+        {impactActive(pathname) && !minimized && (
+          <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-terracotta" />
+        )}
+        <HeartHandshake
+          size={20}
+          strokeWidth={impactActive(pathname) ? 2.5 : 1.8}
+          className={
+            impactActive(pathname) ? "text-terracotta" : "text-stone-500 group-hover:text-stone-700"
+          }
+        />
+        {!minimized && (
+          <>
+            <span className="truncate">{t("nav.impact", "Impact")}</span>
+            {impactActive(pathname) && (
+              <ChevronRight size={14} className="ml-auto text-terracotta/60" />
+            )}
+          </>
+        )}
       </Link>
     </>
   );
@@ -221,18 +271,26 @@ export function DesktopSidebar({
       `}
     >
       <div
-        className={`flex items-center ${minimized ? "justify-center px-0" : "gap-3 px-5"} h-16 border-b border-stone-100 shrink-0`}
+        className={`flex items-center ${minimized ? "justify-center px-0 flex-col gap-2 pt-3" : "gap-3 px-5"} h-16 border-b border-stone-100 shrink-0`}
       >
         <button
           onClick={onToggleMinimized}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-terracotta hover:bg-terracotta/90 transition-colors shadow-sm"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-terracotta hover:bg-terracotta/90 transition-all shadow-xs active:scale-95"
           aria-label={minimized ? "Expand navigation" : "Collapse navigation"}
+          title={minimized ? "Expand sidebar" : "Paila"}
         >
-          <Footprints size={16} className="text-white" />
+          <Footprints size={18} className="text-white" />
         </button>
-        {!minimized && (
+        {!minimized ? (
           <>
-            <span className="text-lg font-bold text-stone-900 tracking-tight">Paila</span>
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-stone-900 tracking-tight leading-none">
+                Paila
+              </span>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-stone-600 mt-0.5">
+                Nepal
+              </span>
+            </div>
             <div className="ml-auto flex items-center gap-1">
               <NotificationsBell t={t} />
               <SyncStatusBadge
@@ -240,8 +298,25 @@ export function DesktopSidebar({
                 label={isOffline ? t("status.offline") : t("status.online")}
                 onOpenSync={onOpenSync}
               />
+              <button
+                onClick={onToggleMinimized}
+                className="grid h-8 w-8 place-items-center rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors ml-0.5"
+                aria-label="Collapse sidebar"
+                title="Collapse sidebar"
+              >
+                <PanelLeftClose size={16} />
+              </button>
             </div>
           </>
+        ) : (
+          <button
+            onClick={onToggleMinimized}
+            className="grid h-7 w-7 place-items-center rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors"
+            aria-label="Expand sidebar"
+            title="Expand sidebar"
+          >
+            <PanelLeftOpen size={15} />
+          </button>
         )}
       </div>
 
@@ -252,31 +327,33 @@ export function DesktopSidebar({
 
       <div
         className={`px-3 py-4 border-t border-stone-100 shrink-0 ${
-          minimized ? "space-y-4 flex flex-col items-center" : "space-y-2"
+          minimized ? "space-y-3 flex flex-col items-center" : "space-y-2"
         }`}
       >
         <button
           onClick={onOpenSos}
           title={minimized ? "Emergency SOS" : undefined}
-          className={`flex items-center justify-center rounded-xl font-semibold text-red-600 hover:bg-red-50 transition-colors ${
-            minimized ? "h-10 w-10 p-0" : "w-full px-3 py-2.5 gap-3"
+          className={`flex items-center justify-center rounded-xl font-bold transition-all ${
+            minimized
+              ? "h-10 w-10 p-0 bg-red-50 text-red-600 hover:bg-red-100 ring-1 ring-red-200"
+              : "w-full px-3.5 py-2.5 gap-3 bg-red-50/80 text-red-600 hover:bg-red-100/80 border border-red-200/60 shadow-xs active:scale-[0.98]"
           }`}
         >
-          <Shield size={20} strokeWidth={2} />
-          {!minimized && "Emergency SOS"}
+          <Shield size={18} strokeWidth={2.2} />
+          {!minimized && <span>Emergency SOS</span>}
         </button>
         <Link
           href="/profile"
           title={minimized ? "Profile" : undefined}
-          className={`flex items-center justify-center rounded-xl font-semibold text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors ${
+          className={`flex items-center justify-center rounded-xl font-semibold text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors ${
             minimized ? "h-10 w-10 p-0" : "w-full px-3 py-2.5 gap-3"
           }`}
         >
-          <User size={20} strokeWidth={1.8} />
-          {!minimized && "Profile"}
+          <User size={19} strokeWidth={1.8} />
+          {!minimized && <span>Profile</span>}
         </Link>
         {!minimized && (
-          <div className="px-3 py-2">
+          <div className="px-3 py-1.5 pt-2">
             <LanguageSwitcher />
           </div>
         )}
@@ -337,12 +414,22 @@ export function MobileHeader({
   onToggleDrawer,
 }: MobileHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-stone-100 flex items-center px-4 h-14 landscape-header md:h-16 md:px-6">
-      <div className="flex items-center gap-1.5 md:hidden">
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-terracotta">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 flex items-center px-4 h-14 landscape-header md:h-16 md:px-6">
+      <div className="flex items-center gap-2 md:hidden min-w-0">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-terracotta shadow-xs">
           <Footprints size={14} className="text-white" />
         </div>
-        <span className="text-[15px] font-bold text-stone-900 tracking-tight">Paila</span>
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="text-[15px] font-bold text-stone-900 tracking-tight shrink-0">
+            Paila
+          </span>
+          {title && title !== "Home" && (
+            <>
+              <span className="text-stone-300">/</span>
+              <span className="text-xs font-semibold text-stone-600 truncate">{title}</span>
+            </>
+          )}
+        </div>
         <SyncStatusBadge
           isOffline={isOffline}
           label={isOffline ? t("status.offline") : t("status.online")}
@@ -353,11 +440,11 @@ export function MobileHeader({
 
       {title && <span className="hidden md:block text-base font-bold text-stone-900">{title}</span>}
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ml-auto flex items-center gap-1">
         <NotificationsBell t={t} />
         <button
           onClick={onToggleDrawer}
-          className="md:hidden h-11 w-11 flex items-center justify-center rounded-lg text-stone-500 hover:bg-stone-100 transition-colors"
+          className="md:hidden h-10 w-10 flex items-center justify-center rounded-xl text-stone-600 hover:bg-stone-100 transition-colors"
           aria-label={t("actions.menu")}
         >
           <Menu size={20} />
@@ -371,11 +458,11 @@ export function MobileSosFab({ t, onOpenSos }: { t: TFunction; onOpenSos: () => 
   return (
     <button
       onClick={onOpenSos}
-      className="md:hidden landscape-hide fixed right-4 z-40 h-14 w-14 grid place-items-center rounded-full bg-red-600 text-white shadow-float ring-2 ring-red-100 hover:bg-red-700 active:scale-95 transition-all"
+      className="md:hidden landscape-hide fixed right-4 z-40 h-13 w-13 grid place-items-center rounded-full bg-red-600 text-white shadow-float ring-2 ring-red-100 hover:bg-red-700 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-red-400"
       aria-label={t("actions.sos")}
-      style={{ bottom: "calc(5rem + max(0px, env(safe-area-inset-bottom)))" }}
+      style={{ bottom: "calc(4.75rem + max(0px, env(safe-area-inset-bottom)))" }}
     >
-      <Shield size={22} strokeWidth={2.5} />
+      <Shield size={20} strokeWidth={2.4} />
     </button>
   );
 }
@@ -383,11 +470,11 @@ export function MobileSosFab({ t, onOpenSos }: { t: TFunction; onOpenSos: () => 
 export function MobileBottomNav({ pathname, t }: ShellNavProps) {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-stone-100 md:hidden landscape-hide"
+      className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-stone-200/80 md:hidden landscape-hide"
       style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom))" }}
     >
       <div
-        className="grid"
+        className="grid items-center h-16"
         style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
       >
         {navItems.map((item) => {
@@ -397,22 +484,25 @@ export function MobileBottomNav({ pathname, t }: ShellNavProps) {
             <Link
               key={item.href}
               href={item.href}
-              className="flex flex-col items-center justify-center gap-1 py-2.5 transition-colors"
+              className={`flex flex-col items-center justify-center gap-0.5 py-1 px-1 transition-all ${
+                active ? "text-terracotta" : "text-stone-500 hover:text-stone-800"
+              }`}
               aria-current={active ? "page" : undefined}
             >
-              <Icon
-                size={22}
-                strokeWidth={active ? 2.5 : 1.8}
-                className={active ? "text-terracotta" : "text-stone-500"}
-              />
+              <div
+                className={`flex items-center justify-center w-10 h-7 rounded-full transition-all ${
+                  active ? "bg-terracotta/12 text-terracotta" : "text-stone-500"
+                }`}
+              >
+                <Icon size={19} strokeWidth={active ? 2.4 : 1.8} />
+              </div>
               <span
-                className={`text-[11px] font-semibold leading-none ${
-                  active ? "text-terracotta" : "text-stone-500"
+                className={`text-[11px] font-semibold leading-tight tracking-tight ${
+                  active ? "text-terracotta font-bold" : "text-stone-500"
                 }`}
               >
                 {navLabel(t, item.href, item.label)}
               </span>
-              {active && <span className="h-1 w-1 rounded-full bg-terracotta" />}
             </Link>
           );
         })}
@@ -434,25 +524,30 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
         <Dialog.Content
           aria-describedby={undefined}
           onInteractOutside={(e) => e.preventDefault()}
-          className="fixed right-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-tactile flex flex-col"
+          className="fixed right-0 top-0 z-50 h-full w-68 max-w-[85vw] bg-white shadow-tactile flex flex-col"
         >
-          <div className="flex items-center gap-3 px-5 h-14 border-b border-stone-100">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta">
-              <Footprints size={14} className="text-white" />
+          <div className="flex items-center gap-3 px-5 h-16 border-b border-stone-100">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-terracotta shadow-xs">
+              <Footprints size={16} className="text-white" />
             </div>
             <Dialog.Title asChild>
-              <span className="font-bold text-stone-900">Paila</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-stone-900 tracking-tight leading-none">Paila</span>
+                <span className="text-[10px] uppercase font-bold tracking-widest text-stone-600 mt-0.5">
+                  Nepal
+                </span>
+              </div>
             </Dialog.Title>
             <Dialog.Close asChild>
               <button
-                className="ml-auto h-11 w-11 grid place-items-center rounded-lg text-stone-500 hover:bg-stone-100"
+                className="ml-auto h-10 w-10 grid place-items-center rounded-xl text-stone-500 hover:bg-stone-100 transition-colors"
                 aria-label="Close navigation"
               >
                 <X size={18} />
               </button>
             </Dialog.Close>
           </div>
-          <nav className="flex-1 px-3 py-4 space-y-1">
+          <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = routeActive(pathname, item.href);
@@ -461,13 +556,17 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
                   key={item.href}
                   href={item.href}
                   onClick={onClose}
-                  className={`flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
+                  className={`flex items-center gap-3 px-3.5 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
                     active
-                      ? "bg-terracotta/10 text-terracotta"
-                      : "text-stone-500 hover:bg-stone-100"
+                      ? "bg-terracotta/10 text-terracotta font-bold"
+                      : "text-stone-600 hover:bg-stone-100"
                   }`}
                 >
-                  <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
+                  <Icon
+                    size={19}
+                    strokeWidth={active ? 2.5 : 1.8}
+                    className={active ? "text-terracotta" : "text-stone-500"}
+                  />
                   {navLabel(t, item.href, item.label)}
                 </Link>
               );
@@ -475,14 +574,34 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
             <Link
               href="/hotels"
               onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
+              className={`flex items-center gap-3 px-3.5 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
                 hotelActive(pathname)
-                  ? "bg-terracotta/10 text-terracotta"
-                  : "text-stone-500 hover:bg-stone-100"
+                  ? "bg-terracotta/10 text-terracotta font-bold"
+                  : "text-stone-600 hover:bg-stone-100"
               }`}
             >
-              <HotelIcon size={20} strokeWidth={hotelActive(pathname) ? 2.5 : 1.8} />
+              <HotelIcon
+                size={19}
+                strokeWidth={hotelActive(pathname) ? 2.5 : 1.8}
+                className={hotelActive(pathname) ? "text-terracotta" : "text-stone-500"}
+              />
               {t("nav.hotels", "Hotels")}
+            </Link>
+            <Link
+              href="/impact"
+              onClick={onClose}
+              className={`flex items-center gap-3 px-3.5 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition-all ${
+                impactActive(pathname)
+                  ? "bg-terracotta/10 text-terracotta font-bold"
+                  : "text-stone-600 hover:bg-stone-100"
+              }`}
+            >
+              <HeartHandshake
+                size={19}
+                strokeWidth={impactActive(pathname) ? 2.5 : 1.8}
+                className={impactActive(pathname) ? "text-terracotta" : "text-stone-500"}
+              />
+              {t("nav.impact", "Impact")}
             </Link>
             <SidebarGuidesGroup variant="drawer" onNavigate={onClose} />
           </nav>
@@ -492,17 +611,17 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
                 onOpenSos();
                 onClose();
               }}
-              className="flex items-center gap-3 w-full px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+              className="flex items-center gap-3 w-full px-3.5 py-2.5 min-h-[44px] rounded-xl text-sm font-bold bg-red-50 text-red-600 border border-red-200/60 hover:bg-red-100 transition-colors"
             >
-              <Shield size={20} strokeWidth={2} />
+              <Shield size={19} strokeWidth={2.2} />
               Emergency SOS
             </button>
             <Link
               href="/profile"
               onClick={onClose}
-              className="flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-semibold text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+              className="flex items-center gap-3 px-3.5 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors"
             >
-              <User size={20} strokeWidth={1.8} />
+              <User size={19} strokeWidth={1.8} />
               Profile
             </Link>
             <div className="px-3 py-2">

@@ -1,24 +1,11 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  BadgeCheck,
-  Mail,
-  Mountain,
-  Trophy,
-  ArrowLeft,
-  Edit2,
-  Check,
-  X,
-  User as UserIcon,
-} from "lucide-react";
+import { BadgeCheck, Mail, Mountain, Trophy, ArrowLeft, Edit2, Check, X } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export function AccountClient({ user }: { user: User }) {
-  const router = useRouter();
-
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");

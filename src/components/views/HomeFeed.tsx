@@ -14,8 +14,6 @@ import {
   ShieldAlert,
   Banknote,
   FileText,
-  ArrowRightLeft,
-  Crosshair,
   Loader2,
   CalendarDays,
   Ticket,
@@ -26,7 +24,8 @@ import {
   Construction,
   HeartPulse,
   Info,
-  CloudRain,
+  ChevronDown,
+  QrCode,
 } from "lucide-react";
 import {
   Sheet,
@@ -34,9 +33,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import type { LucideIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import { type Experience, type ImageSource, experiences, milestones } from "@/lib/data";
 import { useVisitTracker } from "@/hooks/use-visit-tracker";
@@ -528,73 +527,77 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
   const isWet = weather?.condition.includes("Rain") || weather?.condition.includes("Thunder");
 
   return (
-    <div className="relative overflow-hidden rounded-2xl shadow-card border border-stone-200 bg-white min-h-[140px]">
+    <div className="relative overflow-hidden rounded-2xl shadow-card border border-stone-200/90 bg-white min-h-[140px]">
       <div className="absolute inset-0">
         <img
           src="https://images.unsplash.com/photo-1544634076-a90160ddf44e?auto=format&fit=crop&w=800&q=80"
-          alt="Annapurna range"
-          className="h-full w-full object-cover opacity-20"
+          alt=""
+          className="h-full w-full object-cover opacity-15"
         />
-        <div className="absolute inset-0 bg-linear-to-r from-sky-50/90 to-blue-50/90 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-linear-to-r from-stone-50/95 via-stone-50/90 to-amber-50/70" />
       </div>
 
       <div className="relative p-4 flex justify-between items-center">
         <div>
-          <div className="flex items-center gap-1.5 text-sky-700 mb-1">
+          <div className="flex items-center gap-1.5 text-terracotta mb-1">
             <MapPin size={12} aria-hidden="true" />
-            <span className="text-[11px] font-bold uppercase tracking-widest">{location.name}</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider">{location.name}</span>
           </div>
-          <div className="flex items-end gap-2">
-            <h2 className="text-4xl font-bold text-sky-900 tracking-tighter">
+          <div className="flex items-baseline gap-2.5">
+            <h3 className="text-4xl font-extrabold text-stone-900 tracking-tight">
               {weather ? `${weather.temp}°` : error ? "—" : "..."}
-            </h2>
-            <span className="text-sm font-semibold text-sky-700 mb-1">
+            </h3>
+            <span className="text-sm font-bold text-stone-700">
               {weather ? weather.condition : error ? "Unavailable" : "Loading..."}
             </span>
           </div>
           {weather && (
-            <div className="text-[11px] text-sky-700/80 mt-0.5">
+            <div className="text-[11px] font-medium text-stone-500 mt-0.5">
               Feels like {weather.feelsLike}° · Humidity {weather.humidity}%
             </div>
           )}
         </div>
-        {isWet ? (
-          <Wind size={42} className="text-sky-600 drop-shadow-md" strokeWidth={1.5} />
-        ) : (
-          <Sun
-            size={42}
-            className="text-amber-500 fill-amber-400 drop-shadow-md"
-            strokeWidth={1.5}
-          />
-        )}
+        <div className="p-2">
+          {isWet ? (
+            <Wind size={40} className="text-stone-600 drop-shadow-xs" strokeWidth={1.8} />
+          ) : (
+            <Sun
+              size={40}
+              className="text-amber-500 fill-amber-400 drop-shadow-xs"
+              strokeWidth={1.8}
+            />
+          )}
+        </div>
       </div>
 
-      <div className="relative grid grid-cols-4 divide-x divide-white/50 border-t border-white/50 bg-white/40 p-2 backdrop-blur-md">
-        <div className="flex flex-col items-center justify-center p-1">
-          <Mountain size={14} className="text-sky-700 mb-1" />
-          <span className="text-[11px] text-sky-600/80 font-bold uppercase">Elev</span>
-          <span className="text-xs font-bold text-sky-900">{elevation}</span>
+      <div className="relative grid grid-cols-4 divide-x divide-stone-200/70 border-t border-stone-200/70 bg-white/60 p-2 backdrop-blur-xs">
+        <div className="flex flex-col items-center justify-center p-1 text-center">
+          <Mountain size={13} className="text-stone-500 mb-0.5" />
+          <span className="text-[10px] text-stone-500 font-bold uppercase">Elev</span>
+          <span className="text-xs font-bold text-stone-900">{elevation}</span>
         </div>
-        <div className="flex flex-col items-center justify-center p-1">
-          <Wind size={14} className="text-sky-700 mb-1" />
-          <span className="text-[11px] text-sky-600/80 font-bold uppercase">Wind</span>
-          <span className="text-xs font-bold text-sky-900">
+        <div className="flex flex-col items-center justify-center p-1 text-center">
+          <Wind size={13} className="text-stone-500 mb-0.5" />
+          <span className="text-[10px] text-stone-500 font-bold uppercase">Wind</span>
+          <span className="text-xs font-bold text-stone-900">
             {weather ? `${weather.wind} km/h` : "..."}
           </span>
         </div>
-        <div className="flex flex-col items-center justify-center p-1">
-          <Sun size={14} className="text-sky-700 mb-1" />
-          <span className="text-[11px] text-sky-600/80 font-bold uppercase">UV</span>
+        <div className="flex flex-col items-center justify-center p-1 text-center">
+          <Sun size={13} className="text-stone-500 mb-0.5" />
+          <span className="text-[10px] text-stone-500 font-bold uppercase">UV</span>
           <span
-            className={`text-xs font-bold ${weather && weather.uv > 7 ? "text-red-600" : "text-sky-900"}`}
+            className={`text-xs font-bold ${weather && weather.uv > 7 ? "text-red-600" : "text-stone-900"}`}
           >
             {weather ? `${weather.uv}${weather.uv > 7 ? " High" : ""}` : "..."}
           </span>
         </div>
-        <div className="flex flex-col items-center justify-center p-1">
-          <Sunset size={14} className="text-sky-700 mb-1" />
-          <span className="text-[11px] text-sky-600/80 font-bold uppercase">Sunset</span>
-          <span className="text-xs font-bold text-sky-900">{weather ? weather.sunset : "..."}</span>
+        <div className="flex flex-col items-center justify-center p-1 text-center">
+          <Sunset size={13} className="text-stone-500 mb-0.5" />
+          <span className="text-[10px] text-stone-500 font-bold uppercase">Sunset</span>
+          <span className="text-xs font-bold text-stone-900">
+            {weather ? weather.sunset : "..."}
+          </span>
         </div>
       </div>
     </div>
@@ -608,49 +611,47 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
   const liveRate = rates?.["NPR"] || null;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       {/* Currency */}
-      <div className="rounded-2xl bg-white border border-stone-200 shadow-card overflow-hidden">
+      <div className="rounded-2xl bg-white border border-stone-200/90 shadow-card overflow-hidden transition-all">
         <button
           onClick={() => toggle("currency")}
-          className="w-full flex items-center gap-3 p-3 text-left active:bg-stone-50 transition-colors"
+          className="w-full flex items-center gap-3 p-3.5 text-left hover:bg-stone-50/80 active:bg-stone-100 transition-colors"
         >
-          <div className="h-9 w-9 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-            <Banknote size={17} />
+          <div className="h-9 w-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100">
+            <Banknote size={18} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-stone-800">Currency</p>
+            <p className="text-xs font-bold text-stone-900">Currency Exchange</p>
             <p className="text-[11px] font-semibold text-stone-500">
-              {liveRate ? `1 USD = ${liveRate.toFixed(2)} NPR` : "Loading rate..."}
+              {liveRate ? `1 USD = ${liveRate.toFixed(2)} NPR` : "Loading live rates..."}
             </p>
           </div>
-          <span
-            className={`text-stone-500 text-xs transition-transform ${openId === "currency" ? "rotate-180" : ""}`}
-          >
-            ▼
-          </span>
+          <ChevronDown
+            size={16}
+            className={`text-stone-400 transition-transform duration-200 ${openId === "currency" ? "rotate-180 text-stone-700" : ""}`}
+          />
         </button>
         {openId === "currency" && <CurrencyConverter rates={rates} />}
       </div>
 
       {/* SOS */}
-      <div className="rounded-2xl bg-white border border-red-200 shadow-card overflow-hidden">
+      <div className="rounded-2xl bg-white border border-red-200/80 shadow-card overflow-hidden transition-all">
         <button
           onClick={() => toggle("sos")}
-          className="w-full flex items-center gap-3 p-3 text-left active:bg-red-50/30 transition-colors"
+          className="w-full flex items-center gap-3 p-3.5 text-left hover:bg-red-50/40 active:bg-red-50 transition-colors"
         >
-          <div className="h-9 w-9 rounded-full bg-red-50 text-red-700 flex items-center justify-center shrink-0">
-            <ShieldAlert size={17} />
+          <div className="h-9 w-9 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 border border-red-100">
+            <ShieldAlert size={18} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-stone-800">Emergency SOS</p>
-            <p className="text-[11px] font-semibold text-stone-500">Tap to see emergency numbers</p>
+            <p className="text-xs font-bold text-stone-900">Emergency Contacts</p>
+            <p className="text-[11px] font-semibold text-red-600">Police, Tourist Aid & Medical</p>
           </div>
-          <span
-            className={`text-stone-500 text-xs transition-transform ${openId === "sos" ? "rotate-180" : ""}`}
-          >
-            ▼
-          </span>
+          <ChevronDown
+            size={16}
+            className={`text-stone-400 transition-transform duration-200 ${openId === "sos" ? "rotate-180 text-stone-700" : ""}`}
+          />
         </button>
         {openId === "sos" && (
           <div className="px-3 pb-3 space-y-2">
@@ -658,13 +659,13 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
               <a
                 key={item.id}
                 href={`tel:${sanitizePhoneNumber(item.number)}`}
-                className="flex items-center justify-between p-3 rounded-xl bg-red-50/50 border border-red-100 active:bg-red-100 transition-colors"
+                className="flex items-center justify-between p-3 rounded-xl bg-red-50/60 border border-red-100 hover:bg-red-100/70 active:scale-[0.99] transition-all"
               >
                 <div>
-                  <p className="text-sm font-bold text-stone-900">{item.label}</p>
-                  <p className="text-[11px] text-stone-500">{item.description}</p>
+                  <p className="text-xs font-bold text-stone-900">{item.label}</p>
+                  <p className="text-[11px] text-stone-600">{item.description}</p>
                 </div>
-                <span className="bg-red-100 text-red-700 px-2.5 py-1 rounded-full font-bold text-xs tracking-wide">
+                <span className="bg-red-600 text-white px-3 py-1 rounded-full font-bold text-xs tracking-wide shadow-xs">
                   {item.number}
                 </span>
               </a>
@@ -674,81 +675,88 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
       </div>
 
       {/* Permits */}
-      <div className="rounded-2xl bg-white border border-stone-200 shadow-card overflow-hidden">
+      <div className="rounded-2xl bg-white border border-stone-200/90 shadow-card overflow-hidden transition-all">
         <button
           onClick={() => toggle("permit")}
-          className="w-full flex items-center gap-3 p-3 text-left active:bg-stone-50 transition-colors"
+          className="w-full flex items-center gap-3 p-3.5 text-left hover:bg-stone-50/80 active:bg-stone-100 transition-colors"
         >
-          <div className="h-9 w-9 rounded-full bg-pine-tint/40 text-pine flex items-center justify-center shrink-0">
-            <FileText size={17} />
+          <div className="h-9 w-9 rounded-xl bg-pine-tint text-pine flex items-center justify-center shrink-0 border border-pine/20">
+            <FileText size={18} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-stone-800">Digital Permits</p>
-            <p className="text-[11px] font-semibold text-stone-500">TIMS & ACAP — Valid</p>
+            <p className="text-xs font-bold text-stone-900">Digital Permits</p>
+            <p className="text-[11px] font-semibold text-pine">TIMS & ACAP — Verified Active</p>
           </div>
-          <span
-            className={`text-stone-500 text-xs transition-transform ${openId === "permit" ? "rotate-180" : ""}`}
-          >
-            ▼
-          </span>
+          <ChevronDown
+            size={16}
+            className={`text-stone-400 transition-transform duration-200 ${openId === "permit" ? "rotate-180 text-stone-700" : ""}`}
+          />
         </button>
         {openId === "permit" && (
-          <div className="px-3 pb-3 space-y-2">
+          <div className="px-3 pb-3 space-y-2.5">
             {/* TIMS Card */}
-            <div className="rounded-xl bg-linear-to-br from-blue-600 to-blue-800 text-white p-4 shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-20">
-                <MapPin size={60} aria-hidden="true" />
+            <div className="rounded-xl bg-linear-to-br from-stone-900 to-stone-800 text-white p-4 shadow-sm relative overflow-hidden border border-stone-700">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <MapPin size={70} aria-hidden="true" />
               </div>
               <div className="relative z-10">
-                <div className="flex justify-between items-start mb-3">
+                <div className="flex justify-between items-start mb-2.5">
                   <div>
-                    <h4 className="font-bold text-base leading-tight">TIMS Card</h4>
-                    <p className="text-[11px] uppercase tracking-widest text-blue-200">
-                      Trekkers' Info Management
+                    <h4 className="font-bold text-sm tracking-tight">TIMS Card</h4>
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-stone-300">
+                      Trekkers' Information Management
                     </p>
                   </div>
-                  <span className="bg-green-400 text-green-900 text-[11px] font-bold px-2 py-1 rounded-full">
+                  <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[10px] font-bold px-2 py-0.5 rounded-full">
                     VALID
                   </span>
                 </div>
-                <div className="space-y-1 mb-3">
-                  <p className="text-xs text-blue-200">Trekker Name</p>
-                  <p className="font-semibold text-base">Alex Traveler</p>
+                <div className="space-y-0.5 mb-2.5">
+                  <p className="text-[10px] text-stone-400 uppercase font-semibold">Trekker</p>
+                  <p className="font-semibold text-sm">Alex Traveler</p>
                 </div>
-                <div className="flex justify-between items-end">
+                <div className="flex justify-between items-end pt-1 border-t border-stone-700/60">
                   <div>
-                    <p className="text-xs text-blue-200">Permit No.</p>
-                    <p className="font-mono font-semibold tracking-wider text-sm">NPT-2026-8890</p>
+                    <p className="text-[10px] text-stone-400 uppercase font-semibold">Permit ID</p>
+                    <p className="font-mono font-bold tracking-wider text-xs text-stone-200">
+                      NPT-2026-8890
+                    </p>
                   </div>
-                  <div className="h-10 w-10 bg-white rounded-lg p-1">
-                    <div className="w-full h-full border-2 border-dashed border-stone-800 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-stone-800 rounded-sm" />
-                    </div>
+                  <div className="flex items-center gap-1.5 bg-white/10 px-2 py-1 rounded-lg border border-white/15">
+                    <QrCode size={16} className="text-white" />
+                    <span className="text-[10px] font-mono font-bold">QR VERIFIED</span>
                   </div>
                 </div>
               </div>
             </div>
+
             {/* ACAP Card */}
-            <div className="rounded-xl bg-linear-to-br from-pine to-emerald-900 text-white p-4 shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-20">
-                <Mountain size={60} />
+            <div className="rounded-xl bg-linear-to-br from-pine to-emerald-950 text-white p-4 shadow-sm relative overflow-hidden border border-emerald-800/60">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Mountain size={70} />
               </div>
               <div className="relative z-10">
-                <div className="flex justify-between items-start mb-3">
+                <div className="flex justify-between items-start mb-2.5">
                   <div>
-                    <h4 className="font-bold text-base leading-tight">ACAP Permit</h4>
-                    <p className="text-[11px] uppercase tracking-widest text-emerald-200">
+                    <h4 className="font-bold text-sm tracking-tight">ACAP Entry Permit</h4>
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-emerald-200">
                       Annapurna Conservation Area
                     </p>
                   </div>
-                  <span className="bg-green-400 text-green-900 text-[11px] font-bold px-2 py-1 rounded-full">
+                  <span className="bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 text-[10px] font-bold px-2 py-0.5 rounded-full">
                     VALID
                   </span>
                 </div>
-                <div className="flex justify-between items-end mt-6">
+                <div className="flex justify-between items-end pt-3">
                   <div>
-                    <p className="text-xs text-emerald-200">Expiry Date</p>
-                    <p className="font-mono font-semibold tracking-wider text-sm">30 JUN 2026</p>
+                    <p className="text-[10px] text-emerald-200/80 uppercase font-semibold">
+                      Expiry Date
+                    </p>
+                    <p className="font-mono font-bold tracking-wider text-xs">30 JUN 2026</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-emerald-900/60 px-2 py-1 rounded-lg border border-emerald-600/40">
+                    <BadgeCheck size={16} className="text-emerald-300" />
+                    <span className="text-[10px] font-bold text-emerald-100">SEALED</span>
                   </div>
                 </div>
               </div>
@@ -768,24 +776,28 @@ function CurrencyConverter({ rates }: { rates: Record<string, number> | null }) 
   const npr = currentRate ? (parseFloat(amount || "0") * currentRate).toFixed(2) : "...";
 
   return (
-    <div className="px-3 pb-3 space-y-3">
-      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-600 mb-1">
-          Live Exchange Rate
-        </p>
-        <p className="text-xl font-bold text-emerald-900">
-          1 {sourceCode} = {currentRate ? currentRate.toFixed(2) : "..."} NPR
-        </p>
-      </div>
-      <div className="space-y-3">
+    <div className="px-3.5 pb-3.5 space-y-3">
+      <div className="p-3 rounded-xl bg-emerald-50/80 border border-emerald-100 flex items-center justify-between">
         <div>
-          <div className="flex justify-between items-end mb-1">
-            <label className="text-[11px] font-bold uppercase text-stone-500">You Pay</label>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+            Live Rate (Nepal Rastra Bank)
+          </p>
+          <p className="text-lg font-bold text-emerald-950 mt-0.5">
+            1 {sourceCode} = {currentRate ? currentRate.toFixed(2) : "..."} NPR
+          </p>
+        </div>
+      </div>
+      <div className="space-y-2.5">
+        <div>
+          <div className="flex justify-between items-center mb-1">
+            <label className="text-[11px] font-bold uppercase tracking-wide text-stone-500">
+              You Pay
+            </label>
             {rates && (
               <select
                 value={sourceCode}
                 onChange={(e) => setSourceCode(e.target.value)}
-                className="bg-transparent text-xs font-bold text-emerald-700 outline-none"
+                className="bg-stone-100 border border-stone-200 text-xs font-bold text-stone-800 rounded-lg px-2 py-0.5 outline-none focus:border-terracotta"
               >
                 {Object.keys(rates).map((code) => (
                   <option key={code} value={code}>
@@ -797,16 +809,17 @@ function CurrencyConverter({ rates }: { rates: Record<string, number> | null }) 
           </div>
           <input
             type="number"
+            min="0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="w-full text-xl font-bold bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-500"
+            className="w-full text-lg font-bold bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 outline-none focus:border-terracotta focus:bg-white focus:ring-2 focus:ring-terracotta/20 transition-all"
           />
         </div>
         <div>
-          <label className="text-[11px] font-bold uppercase text-stone-500 mb-1 block">
-            You Get (NPR)
+          <label className="text-[11px] font-bold uppercase tracking-wide text-stone-500 mb-1 block">
+            You Receive in Nepal
           </label>
-          <div className="w-full text-xl font-bold bg-stone-100 text-stone-900 border border-stone-200 rounded-xl px-3 py-2.5">
+          <div className="w-full text-lg font-bold bg-stone-100/80 text-stone-900 border border-stone-200 rounded-xl px-3 py-2">
             Rs. {npr}
           </div>
         </div>
@@ -1400,8 +1413,9 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
     try {
       const coords = await getUserLocation();
       applyCoords(coords);
-    } catch (error) {
-      alert("Could not get your location. Check browser permissions.");
+      toast.success("Location updated");
+    } catch {
+      toast.error("Could not get your location. Please check browser permissions.");
     } finally {
       setIsLoadingLocation(false);
     }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Map, BadgeCheck, ClipboardCheck, ShieldCheck } from "lucide-react";
+import { Map, BadgeCheck, ShieldCheck } from "lucide-react";
 import { useGuideNav } from "@/hooks/use-guide-nav";
 
 type Variant = "full" | "rail" | "drawer";

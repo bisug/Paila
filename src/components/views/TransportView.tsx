@@ -94,30 +94,42 @@ function RoadCard({
   const Icon = iconMap[o.iconType] || Car;
   const isShared = o.mode === "road_shared";
   const statusMeta = {
-    available: { dot: "bg-green-500", text: "text-green-700", label: "Available" },
+    available: {
+      dot: "bg-emerald-500",
+      text: "text-emerald-700 bg-emerald-50 border-emerald-200",
+      label: "Available",
+    },
     limited: {
       dot: "bg-amber-500",
-      text: "text-amber-700",
+      text: "text-amber-800 bg-amber-50 border-amber-200",
       label: `${o.seatsLeft ?? ""} seats left`.trim(),
     },
-    full: { dot: "bg-stone-400", text: "text-stone-500", label: "Full" },
-    on_demand: { dot: "bg-blue-500", text: "text-blue-700", label: "On demand" },
+    full: {
+      dot: "bg-stone-400",
+      text: "text-stone-600 bg-stone-100 border-stone-200",
+      label: "Full",
+    },
+    on_demand: {
+      dot: "bg-blue-500",
+      text: "text-blue-700 bg-blue-50 border-blue-200",
+      label: "On demand",
+    },
   }[o.status];
   const isFull = o.status === "full";
   const canBuyTicket = isShared && !isFull;
 
   return (
-    <div className="rounded-card bg-white shadow-card border border-stone-100 overflow-hidden hover:shadow-card-md transition-shadow">
-      <div className="p-4 border-b border-stone-50 flex gap-4 items-start">
-        <div className="h-12 w-12 rounded-xl bg-stone-50 flex items-center justify-center shrink-0 text-pine">
-          <Icon size={24} strokeWidth={1.5} />
+    <div className="rounded-card bg-white shadow-card border border-stone-200/80 overflow-hidden hover:shadow-card-md transition-all">
+      <div className="p-4 border-b border-stone-100 flex gap-3.5 items-start">
+        <div className="h-11 w-11 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center shrink-0 text-pine">
+          <Icon size={22} strokeWidth={1.75} />
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
-          <div className="flex justify-between items-start gap-2 mb-1">
-            <p className="font-bold text-stone-900 leading-tight">
+          <div className="flex justify-between items-start gap-2 mb-0.5">
+            <h3 className="font-bold text-stone-900 leading-tight">
               {isShared ? (o.iconType === "bus" ? "Local Bus" : "Shared Jeep") : "Private Taxi"}
-            </p>
-            <span className="text-sm font-bold text-terracotta whitespace-nowrap">
+            </h3>
+            <span className="text-sm font-extrabold text-terracotta whitespace-nowrap">
               {formatPrice(o)}
             </span>
           </div>
@@ -125,57 +137,57 @@ function RoadCard({
         </div>
       </div>
 
-      <div className="px-4 py-3 bg-stone-50/50 grid grid-cols-2 gap-y-3 text-xs">
+      <div className="px-4 py-3 bg-stone-50/70 grid grid-cols-2 gap-y-2.5 text-xs border-b border-stone-100">
         <div>
-          <p className="text-stone-500 font-medium mb-0.5">Route</p>
-          <p className="font-semibold text-stone-800">
+          <p className="text-stone-500 font-medium mb-0.5">Corridor</p>
+          <p className="font-bold text-stone-800">
             {o.route.from} → {o.route.to}
           </p>
         </div>
         <div>
           <p className="text-stone-500 font-medium mb-0.5 flex items-center gap-1">
-            <Clock size={10} /> Departure
+            <Clock size={11} /> Departure
           </p>
-          <p className="font-semibold text-stone-800">
+          <p className="font-bold text-stone-800">
             {o.departure} <span className="text-stone-500 font-normal">({o.duration})</span>
           </p>
         </div>
       </div>
 
       {purchased && (
-        <div className="mx-4 mt-3 flex items-center gap-2 rounded-lg bg-green-50 border border-green-100 px-2.5 py-2">
-          <CheckCircle2 size={14} className="text-green-600 shrink-0" />
-          <p className="text-[11px] font-semibold text-green-800">
+        <div className="mx-4 mt-3 flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200/80 px-3 py-2">
+          <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+          <p className="text-[11px] font-bold text-emerald-800">
             Ticket confirmed — show QR at boarding
           </p>
         </div>
       )}
 
-      <div className="p-4 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <div className={`h-2 w-2 rounded-full ${statusMeta.dot}`} />
-          <span className={`text-[11px] font-bold uppercase tracking-wider ${statusMeta.text}`}>
-            {statusMeta.label}
-          </span>
+      <div className="p-3.5 flex items-center justify-between gap-2">
+        <div
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider ${statusMeta.text}`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${statusMeta.dot}`} />
+          {statusMeta.label}
         </div>
         {isFull ? (
           <button
             onClick={onFindLocal}
-            className="flex items-center gap-2 bg-stone-100 text-stone-700 px-3 py-2 min-h-[44px] rounded-lg text-xs font-bold hover:bg-stone-200 transition-colors"
+            className="flex items-center gap-1.5 bg-stone-100 text-stone-800 px-3.5 py-2 min-h-[40px] rounded-xl text-xs font-bold hover:bg-stone-200 transition-colors active:scale-95"
           >
             <Car size={14} /> Find Local Ride
           </button>
         ) : canBuyTicket ? (
           <button
             onClick={() => onBuy(o)}
-            className="flex items-center gap-2 bg-terracotta text-white px-4 py-2 min-h-[44px] rounded-lg text-xs font-bold shadow-sm hover:bg-terracotta/90 transition-colors"
+            className="flex items-center gap-1.5 bg-terracotta text-white px-4 py-2 min-h-[40px] rounded-xl text-xs font-bold shadow-xs hover:bg-terracotta/90 transition-all active:scale-95"
           >
             <Ticket size={14} /> {purchased ? "Buy Again" : "Buy Ticket"}
           </button>
         ) : (
           <a
             href={`tel:${o.contact}`}
-            className="flex items-center gap-2 bg-terracotta text-white px-4 py-2 min-h-[44px] rounded-lg text-xs font-bold shadow-sm hover:bg-terracotta/90 transition-colors"
+            className="flex items-center gap-1.5 bg-terracotta text-white px-4 py-2 min-h-[40px] rounded-xl text-xs font-bold shadow-xs hover:bg-terracotta/90 transition-all active:scale-95"
           >
             <Phone size={14} /> Request Ride
           </a>
@@ -199,93 +211,99 @@ function FlightCard({
 }) {
   const statusMeta = {
     scheduled: {
-      dot: "bg-green-500",
-      text: "text-green-700",
+      dot: "bg-emerald-500",
+      text: "text-emerald-700 bg-emerald-50 border-emerald-200",
       label: `Scheduled · ${o.scheduledDeparture}`,
     },
-    boarding: { dot: "bg-blue-500", text: "text-blue-700", label: "Boarding" },
+    boarding: {
+      dot: "bg-blue-500",
+      text: "text-blue-700 bg-blue-50 border-blue-200",
+      label: "Boarding",
+    },
     delayed: {
       dot: "bg-amber-500",
-      text: "text-amber-700",
+      text: "text-amber-800 bg-amber-50 border-amber-200",
       label: `Delayed · ${o.cancellationReason || ""}`.replace(/ · $/, "").trim() || "Delayed",
     },
     cancelled: {
       dot: "bg-red-500",
-      text: "text-red-700",
+      text: "text-red-700 bg-red-50 border-red-200",
       label: `Cancelled · ${o.cancellationReason || ""}`.replace(/ · $/, "").trim() || "Cancelled",
     },
-    weather_hold: { dot: "bg-amber-500", text: "text-amber-700", label: "Weather hold" },
+    weather_hold: {
+      dot: "bg-amber-500",
+      text: "text-amber-800 bg-amber-50 border-amber-200",
+      label: "Weather hold",
+    },
   }[o.status];
   const canBuy = o.status === "scheduled" || o.status === "boarding";
 
   return (
-    <div className="rounded-card bg-white shadow-card border border-stone-100 overflow-hidden hover:shadow-card-md transition-shadow">
-      <div className="p-4 border-b border-stone-50 flex gap-4 items-start">
-        <div className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 text-blue-600">
-          <Plane size={24} strokeWidth={1.5} />
+    <div className="rounded-card bg-white shadow-card border border-stone-200/80 overflow-hidden hover:shadow-card-md transition-all">
+      <div className="p-4 border-b border-stone-100 flex gap-3.5 items-start">
+        <div className="h-11 w-11 rounded-xl bg-blue-50/80 border border-blue-100 flex items-center justify-center shrink-0 text-blue-600">
+          <Plane size={22} strokeWidth={1.75} />
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
-          <div className="flex justify-between items-start gap-2 mb-1">
-            <p className="font-bold text-stone-900 leading-tight">
+          <div className="flex justify-between items-start gap-2 mb-0.5">
+            <h3 className="font-bold text-stone-900 leading-tight">
               {o.airline}{" "}
               <span className="text-stone-500 font-medium text-xs">· {o.flightNumber}</span>
-            </p>
-            <span className="text-sm font-bold text-terracotta whitespace-nowrap">
+            </h3>
+            <span className="text-sm font-extrabold text-terracotta whitespace-nowrap">
               {formatPrice(o)}
             </span>
           </div>
-          <p className="text-xs font-medium text-stone-500">Domestic flight</p>
+          <p className="text-xs font-medium text-stone-500">Domestic Flight</p>
         </div>
       </div>
 
-      <div className="px-4 py-3 bg-stone-50/50 grid grid-cols-3 gap-y-3 gap-x-3 text-xs">
+      <div className="px-4 py-3 bg-stone-50/70 grid grid-cols-3 gap-y-2.5 gap-x-3 text-xs border-b border-stone-100">
         <div>
-          <p className="text-stone-500 font-medium mb-0.5">From</p>
-          <p className="font-semibold text-stone-800">{o.route.from}</p>
+          <p className="text-stone-500 font-medium mb-0.5">Origin</p>
+          <p className="font-bold text-stone-800">{o.route.from}</p>
         </div>
         <div>
-          <p className="text-stone-500 font-medium mb-0.5">To</p>
-          <p className="font-semibold text-stone-800">{o.route.to}</p>
+          <p className="text-stone-500 font-medium mb-0.5">Destination</p>
+          <p className="font-bold text-stone-800">{o.route.to}</p>
         </div>
         <div>
           <p className="text-stone-500 font-medium mb-0.5 flex items-center gap-1">
-            <CalendarClock size={10} /> Dep
+            <CalendarClock size={11} /> Departure
           </p>
-          <p className="font-semibold text-stone-800">{o.scheduledDeparture}</p>
+          <p className="font-bold text-stone-800">{o.scheduledDeparture}</p>
         </div>
       </div>
 
       {o.note && (
-        <div className="mx-4 mt-3 flex gap-2 rounded-lg bg-amber-50 border border-amber-100 p-2.5">
+        <div className="mx-4 mt-3 flex gap-2 rounded-xl bg-amber-50 border border-amber-200/80 p-2.5">
           <AlertTriangle size={14} className="text-amber-600 shrink-0 mt-0.5" />
-          <p className="text-[11px] leading-snug text-amber-900">{o.note}</p>
+          <p className="text-[11px] leading-snug font-medium text-amber-900">{o.note}</p>
         </div>
       )}
 
       {purchased && (
-        <div className="mx-4 mt-3 flex items-center gap-2 rounded-lg bg-green-50 border border-green-100 px-2.5 py-2">
-          <CheckCircle2 size={14} className="text-green-600 shrink-0" />
-          <p className="text-[11px] font-semibold text-green-800">
-            E-ticket issued — check-in 60 min before departure
+        <div className="mx-4 mt-3 flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200/80 px-3 py-2">
+          <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+          <p className="text-[11px] font-bold text-emerald-800">
+            E-ticket confirmed — check in 60 min before departure
           </p>
         </div>
       )}
 
-      <div className="p-4 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <div className={`h-2 w-2 rounded-full ${statusMeta.dot} shrink-0`} />
-          <span
-            className={`text-[11px] font-bold uppercase tracking-wider truncate ${statusMeta.text}`}
-          >
-            {statusMeta.label}
-          </span>
+      <div className="p-3.5 flex items-center justify-between gap-3">
+        <div
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider truncate ${statusMeta.text}`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${statusMeta.dot} shrink-0`} />
+          <span className="truncate">{statusMeta.label}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {o.officePhone && (
             <a
               href={`tel:${o.officePhone}`}
               title="Call airline office"
-              className="flex items-center gap-1.5 bg-stone-100 text-stone-700 px-3 py-2 min-h-[44px] rounded-lg text-xs font-bold hover:bg-stone-200 transition-colors"
+              className="flex items-center gap-1.5 bg-stone-100 text-stone-700 px-3 py-2 min-h-[40px] rounded-xl text-xs font-bold hover:bg-stone-200 transition-colors"
             >
               <Phone size={13} />
             </a>
@@ -293,14 +311,14 @@ function FlightCard({
           {canBuy ? (
             <button
               onClick={() => onBuy(o)}
-              className="flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-lg text-xs font-bold shadow-sm transition-colors bg-terracotta text-white hover:bg-terracotta/90"
+              className="flex items-center gap-1.5 px-4 py-2 min-h-[40px] rounded-xl text-xs font-bold shadow-xs transition-all bg-terracotta text-white hover:bg-terracotta/90 active:scale-95"
             >
               <Ticket size={13} /> {purchased ? "Buy Again" : "Buy Ticket"}
             </button>
           ) : (
             <button
               onClick={onFindLocal}
-              className="flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-lg text-xs font-bold shadow-sm transition-colors bg-stone-100 text-stone-700 hover:bg-stone-200"
+              className="flex items-center gap-1.5 px-4 py-2 min-h-[40px] rounded-xl text-xs font-bold shadow-xs transition-all bg-stone-100 text-stone-800 hover:bg-stone-200 active:scale-95"
             >
               <Car size={13} /> Try Local Vehicles
             </button>
@@ -610,21 +628,25 @@ export function TransportView() {
       )}
 
       {/* Mode tabs */}
-      <div className="px-4 md:px-8 mb-4">
-        <div className="flex gap-2 overflow-x-auto -mx-1 px-1 pb-1">
+      <div className="px-4 md:px-8 mb-5">
+        <div className="inline-flex p-1 bg-stone-100 rounded-2xl border border-stone-200/80 gap-1 overflow-x-auto max-w-full">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`shrink-0 px-3.5 py-1.5 min-h-[44px] rounded-full text-xs font-bold uppercase tracking-wider transition-colors border ${
+              className={`px-4 py-2 min-h-[40px] rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 ${
                 tab === t.id
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-white text-stone-600 border-stone-200 hover:border-stone-300"
+                  ? "bg-white text-stone-900 shadow-xs"
+                  : "text-stone-500 hover:text-stone-800"
               }`}
             >
-              {t.label}{" "}
+              <span>{t.label}</span>
               <span
-                className={`ml-1 font-normal ${tab === t.id ? "text-primary-foreground/70" : "text-stone-500"}`}
+                className={`text-[11px] px-1.5 py-0.2 rounded-full font-semibold ${
+                  tab === t.id
+                    ? "bg-terracotta/10 text-terracotta font-bold"
+                    : "bg-stone-200/70 text-stone-600"
+                }`}
               >
                 {counts[t.id]}
               </span>

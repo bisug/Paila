@@ -6,7 +6,6 @@ import {
   MapPin,
   Navigation,
   Loader2,
-  Search,
   X,
   Trash2,
   Plus,
@@ -122,7 +121,6 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
   const [mapLoaded, setMapLoaded] = useState(false);
   const fittedRef = useRef(false);
   const journeyFittedRef = useRef(false);
-  const searchRequestRef = useRef(0);
   const tapRequestRef = useRef(0);
 
   const [viewMode, setViewMode] = useState<"pins" | "journey">(defaultView);
@@ -700,7 +698,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
 
                   {/* Pending tap confirm popover */}
                   {pendingTap && (
-                    <div className="absolute bottom-4 left-3 right-3 z-30 mx-auto max-w-sm rounded-2xl bg-white shadow-card-md border border-stone-100 p-3">
+                    <div className="absolute bottom-20 md:bottom-4 left-3 right-3 z-30 mx-auto max-w-sm rounded-2xl bg-white shadow-float border border-stone-200 p-3.5">
                       <div className="flex items-start gap-2">
                         <MapPin size={16} className="text-terracotta shrink-0 mt-0.5" />
                         <div className="min-w-0 flex-1">
@@ -741,7 +739,7 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                   )}
 
                   {/* Floating action buttons */}
-                  <div className="absolute bottom-4 right-4 z-10 flex flex-col gap-2 items-end">
+                  <div className="absolute bottom-20 md:bottom-4 right-4 z-10 flex flex-col gap-2 items-end">
                     <button
                       type="button"
                       onClick={() => {

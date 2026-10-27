@@ -6,8 +6,28 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Added
 
-- Added `oxlint` to devDependencies for fast linting.
-- Unit tests for the in-memory rate limiter and client-key extraction (`src/lib/server/guardrails.test.ts`).
+- Mobile sticky booking dock in `HotelDetail` for quick access to nightly totals and booking requests without scrolling.
+- Direct `Impact` navigation item in desktop sidebar, mobile drawer, and active title resolution in `AppShell`.
+- Quick phrase category tabs in `TranslatorView` with horizontal scrolling and pill controls.
+- Viewfinder standby visual state in `ScannerView` with clear camera permission and upload actions.
+- Collapse/expand indicator buttons for the desktop sidebar in `AppShellNavigation`.
+
+### Changed
+
+- Modernized mobile header breadcrumb context (`Paila / <Title>`) and bottom navigation with tactile pill indicators and safe-area padding.
+- Modernized `WeatherWidget` with Himalayan trail design, consistent contrast, and stone/alpine palette.
+- Modernized `EssentialsSection` with Lucide `ChevronDown`, authentic digital pass design for TIMS and ACAP permits, and currency converter inputs.
+- Refined `TransportView` with segmented mode tabs, clear departure tags, route corridor badges, and responsive card styling.
+- Polished `ImpactDashboard` metric cards and unlocked achievement stamps with accessible contrast.
+- Polished `HotelsList` and `HotelCard` with brand terracotta pricing and responsive filters.
+- Replaced browser `alert()` in `HomeFeed` with Sonner `toast.error()`.
+- Adjusted floating map and voice controls in `FootprintMap` and `TranslatorView` to prevent overlap with mobile bottom navigation and the SOS FAB.
+
+### Fixed
+
+- Removed invalid HTML markup (`<button>` inside `<p>`) in `ScannerView` standby state.
+- Removed unused imports and variables across views (`FootprintMap`, `HomeFeed`, `AccountClient`, `SidebarGuidesGroup`, `hotels/[slug]`).
+- Cleaned up redundant spread fallbacks in `src/lib/event-preferences.ts`.
 
 ### Changed
 

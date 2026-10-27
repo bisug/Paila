@@ -385,18 +385,27 @@ export function ScannerView() {
       />
 
       {/* Page header */}
-      <div className="mb-5 shrink-0">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-terracotta mb-1">
-          Identity & Heritage Scanner
-        </p>
-        <h2 className="text-2xl font-bold text-white leading-tight">Scan Sites or Badges</h2>
-        <p className="mt-1 text-sm text-stone-500">
-          Point your camera at a heritage site to learn its history, or scan a host's QR badge.
-        </p>
+      <div className="mb-5 shrink-0 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-terracotta mb-1">
+            Identity & Heritage Scanner
+          </p>
+          <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+            Scan Sites & Badges
+          </h1>
+          <p className="mt-1 text-sm text-stone-300 max-w-xl">
+            Point camera at a temple or stupa for AI heritage context, or scan a host's village
+            council QR code.
+          </p>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-stone-300 bg-stone-800/80 rounded-full px-3 py-1.5 w-fit border border-stone-700/60 shrink-0">
+          <BadgeCheck size={14} className="text-pine" />
+          <span>Offline QR supported</span>
+        </div>
       </div>
 
       {/* Full-height Camera viewfinder */}
-      <div className="relative flex-1 min-h-[260px] xs:min-h-[340px] sm:min-h-[420px] overflow-hidden rounded-sheet bg-stone-800 shadow-float">
+      <div className="relative flex-1 min-h-[300px] xs:min-h-[380px] sm:min-h-[460px] overflow-hidden rounded-sheet bg-stone-950 shadow-float border border-stone-800">
         {/* Real video feed */}
         <video
           ref={videoRef}
@@ -417,20 +426,20 @@ export function ScannerView() {
         {cameraError && (
           <div
             role="alert"
-            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-20 gap-4 bg-stone-950/80 backdrop-blur-sm"
+            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-20 gap-4 bg-stone-950/85 backdrop-blur-sm"
           >
-            <p className="text-sm font-semibold text-red-400 max-w-[250px]">{cameraError}</p>
+            <p className="text-sm font-semibold text-red-400 max-w-[260px]">{cameraError}</p>
             <button
               type="button"
               onClick={() => startScanner()}
-              className="flex w-full max-w-[200px] items-center justify-center gap-2 rounded-xl bg-terracotta py-3 text-sm font-bold text-white shadow-sm"
+              className="flex w-full max-w-[200px] items-center justify-center gap-2 rounded-xl bg-terracotta py-3 text-sm font-bold text-white shadow-sm hover:bg-terracotta/90 active:scale-95 transition-all"
             >
               <Camera size={16} /> Allow Camera
             </button>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex w-full max-w-[200px] items-center justify-center gap-2 rounded-xl bg-stone-700 py-3 text-sm font-bold text-white shadow-sm border border-stone-600"
+              className="flex w-full max-w-[200px] items-center justify-center gap-2 rounded-xl bg-stone-800 hover:bg-stone-700 py-3 text-sm font-bold text-white shadow-sm border border-stone-700 active:scale-95 transition-all"
             >
               <ImagePlus size={16} /> Upload Image Instead
             </button>
@@ -449,23 +458,24 @@ export function ScannerView() {
 
         {/* Toolbar (Only visible when scanning) */}
         {isScanning && (
-          <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-4 z-20">
+          <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-3.5 z-20 px-4">
             {/* Main AI Capture Button */}
             <button
               onClick={handleCaptureSite}
-              className="flex items-center gap-2 bg-terracotta text-white px-6 py-3 rounded-full font-bold shadow-float active:scale-95 transition-transform"
+              className="flex items-center gap-2 bg-terracotta text-white px-6 py-3 rounded-full font-bold shadow-float hover:bg-terracotta/90 active:scale-95 transition-transform"
             >
-              <Camera size={18} /> Identify Site
+              <Camera size={18} /> Identify Landmark
             </button>
 
-            <div className="flex justify-center gap-6 px-6">
+            <div className="flex items-center justify-center gap-4 bg-black/40 backdrop-blur-md rounded-full px-4 py-2 border border-white/15">
               {/* Gallery Upload Button */}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                aria-label="Upload image"
-                className="grid h-12 w-12 place-items-center rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-float active:scale-95 transition-transform"
+                aria-label="Upload photo"
+                title="Upload photo"
+                className="grid h-10 w-10 place-items-center rounded-full text-white/90 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
               >
-                <ImagePlus size={20} />
+                <ImagePlus size={19} />
               </button>
 
               {/* Flashlight Toggle */}
@@ -474,9 +484,10 @@ export function ScannerView() {
                   onClick={toggleTorch}
                   aria-pressed={torchOn}
                   aria-label={torchOn ? "Turn off flashlight" : "Turn on flashlight"}
-                  className={`grid h-12 w-12 place-items-center rounded-full backdrop-blur-md border border-white/20 shadow-float active:scale-95 transition-transform ${torchOn ? "bg-white text-stone-900" : "bg-black/40 text-white"}`}
+                  title={torchOn ? "Turn off flashlight" : "Turn on flashlight"}
+                  className={`grid h-10 w-10 place-items-center rounded-full active:scale-95 transition-all ${torchOn ? "bg-white text-stone-900" : "text-white/90 hover:text-white hover:bg-white/10"}`}
                 >
-                  {torchOn ? <Zap size={20} className="fill-current" /> : <ZapOff size={20} />}
+                  {torchOn ? <Zap size={19} className="fill-current" /> : <ZapOff size={19} />}
                 </button>
               )}
 
@@ -484,26 +495,43 @@ export function ScannerView() {
               <button
                 onClick={toggleCamera}
                 aria-label="Switch camera"
-                className="grid h-12 w-12 place-items-center rounded-full bg-black/40 text-white backdrop-blur-md border border-white/20 shadow-float active:scale-95 transition-transform"
+                title="Switch camera"
+                className="grid h-10 w-10 place-items-center rounded-full text-white/90 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
               >
-                <SwitchCamera size={20} />
+                <SwitchCamera size={19} />
               </button>
             </div>
           </div>
         )}
 
-        {/* Loading state message */}
+        {/* Standby UI when not scanning */}
         {!isScanning && !cameraError && !isAnalyzing && (
-          <p className="absolute bottom-4 left-0 right-0 text-center text-xs font-semibold text-white/70 bg-stone-900/40 py-1 backdrop-blur-sm">
-            Camera is off. Start when you are ready to scan.
-            <button
-              type="button"
-              onClick={() => startScanner()}
-              className="mx-auto mt-3 flex min-h-11 items-center justify-center gap-2 rounded-xl bg-terracotta px-5 py-3 text-sm font-bold text-white"
-            >
-              <Camera size={16} /> Start camera
-            </button>
-          </p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-stone-950/60 backdrop-blur-xs">
+            <div className="h-16 w-16 rounded-full bg-white/10 border border-white/20 grid place-items-center mb-4 text-white shadow-float">
+              <Camera size={28} strokeWidth={1.8} />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-1.5">Viewfinder Standby</h3>
+            <p className="text-xs text-stone-300 max-w-xs mb-5 leading-relaxed">
+              Start camera to detect host QR codes or photograph temples and monuments for heritage
+              insights.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2.5 w-full max-w-xs">
+              <button
+                type="button"
+                onClick={() => startScanner()}
+                className="flex-1 flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-terracotta px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-terracotta/90 active:scale-95 transition-all"
+              >
+                <Camera size={16} /> Start camera
+              </button>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 px-4 py-2.5 text-sm font-semibold text-white active:scale-95 transition-all"
+              >
+                <ImagePlus size={16} /> Upload image
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
