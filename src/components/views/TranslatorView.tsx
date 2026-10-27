@@ -334,32 +334,50 @@ export function TranslatorView() {
       ttsLang = "en";
     }
 
-    const synthVoices = window.speechSynthesis?.getVoices?.() ?? [];
-    const hasNativeVoice =
-      !isDialect && synthVoices.some((voice) => voice.lang.toLowerCase().startsWith(ttsLang));
+    const voiceCode = isDialect ? "en-US" : TRANSLATOR_LANGUAGES[langKey].code;
 
-    if (hasNativeVoice) {
-      speakWithSynthesis(spoken, TRANSLATOR_LANGUAGES[langKey].code);
+    // Prioritize native Web Speech API (zero-latency, 100% offline, hardware TTS)
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      speakWithSynthesis(spoken, voiceCode, ttsLang);
     } else {
       playGoogleTts(spoken, ttsLang);
     }
   }
 
-  function speakWithSynthesis(text: string, voiceCode: string) {
-    if (!window.speechSynthesis) return;
+  function speakWithSynthesis(text: string, voiceCode: string, fallbackTtsLang: string) {
+    if (!window.speechSynthesis) {
+      playGoogleTts(text, fallbackTtsLang);
+      return;
+    }
+
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = voiceCode;
+      utterance.rate = 0.95;
+
+      const voices = window.speechSynthesis.getVoices() ?? [];
+      const matchedVoice =
+        voices.find((v) => v.lang.toLowerCase() === voiceCode.toLowerCase()) ||
+        voices.find((v) => v.lang.toLowerCase().startsWith(voiceCode.split("-")[0].toLowerCase()));
+
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
+      }
+
+      utterance.onerror = (e) => {
+        console.warn("Speech synthesis error, falling back", e);
+        playGoogleTts(text, fallbackTtsLang);
+      };
+
       window.speechSynthesis.speak(utterance);
     } catch (error) {
-      console.warn("Speech synthesis failed, falling back to tone playback", error);
-      playPhoneticTones(text);
+      console.warn("Speech synthesis failed, falling back", error);
+      playGoogleTts(text, fallbackTtsLang);
     }
   }
 
-  // Free, key-less speech via Google's TTS audio endpoint. Cross-browser and
-  // covers every supported language; falls back to native synthesis offline.
+  // Fallback speech via Google TTS audio endpoint with graceful phonetic tone degradation
   function playGoogleTts(text: string, ttsLang: string) {
     if (!text) {
       playPhoneticTones(text);
@@ -374,12 +392,11 @@ export function TranslatorView() {
       const audio = new Audio(url);
       audioRef.current = audio;
       audio.play().catch((err) => {
-        console.warn("Google TTS unavailable, using synthesis", err);
-        speakWithSynthesis(text, ttsLang);
+        console.warn("Google TTS audio blocked or unavailable", err);
+        playPhoneticTones(text);
       });
-    } catch (err) {
-      console.warn("Google TTS failed, using synthesis", err);
-      speakWithSynthesis(text, ttsLang);
+    } catch {
+      playPhoneticTones(text);
     }
   }
 
