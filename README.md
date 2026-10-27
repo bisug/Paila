@@ -103,11 +103,11 @@ The platform was built as a direct response to a challenge from the **[JunctionX
 
 ### Tooling
 
-| Tool                                                             | Purpose                     |
-| ---------------------------------------------------------------- | --------------------------- |
-| [Playwright](https://playwright.dev/)                            | End-to-end testing          |
-| [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) | Code quality and formatting |
-| [GitHub Actions](https://github.com/features/actions)            | CI: typecheck, lint, build  |
+| Tool                                                              | Purpose                     |
+| ----------------------------------------------------------------- | --------------------------- |
+| [Playwright](https://playwright.dev/)                             | End-to-end testing          |
+| [Oxlint](https://oxc.rs/) + [Bun Fmt](https://bun.sh/docs/format) | Code quality and formatting |
+| [GitHub Actions](https://github.com/features/actions)             | CI: typecheck, lint, build  |
 
 ---
 

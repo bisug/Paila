@@ -22,6 +22,7 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Removed
 
+- Removed `prettier`, `eslint-config-prettier`, `eslint-plugin-prettier`, `.prettierrc`, and `.prettierignore` in favor of native `bun fmt`.
 - Dead modules with no importers: `src/lib/error-capture.ts` and `src/lib/error-page.ts` (leftovers from a pre-Next h3 scaffold), `src/lib/config.server.ts` (empty placeholder).
 
 ### Fixed

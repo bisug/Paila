@@ -55,22 +55,22 @@ Open http://localhost:3000. With no `.env.local`, the app runs in **demo mode**:
 
 ## Scripts
 
-| Command                           | What it does                         |
-| --------------------------------- | ------------------------------------ |
-| `bun run dev`                     | Dev server                           |
-| `bun run build` / `bun start`     | Production build / serve             |
-| `bun run lint`                    | ESLint                               |
-| `bun run typecheck`               | `tsc --noEmit`                       |
-| `bun run format` / `format:check` | Prettier                             |
-| `bun test`                        | Unit tests                           |
-| `bun run test:e2e`                | Playwright (desktop + mobile Chrome) |
+| Command                       | What it does                         |
+| ----------------------------- | ------------------------------------ |
+| `bun run dev`                 | Dev server                           |
+| `bun run build` / `bun start` | Production build / serve             |
+| `bun run lint`                | Oxlint                               |
+| `bun check`                   | Typecheck TypeScript project         |
+| `bun fmt` / `bun fmt --check` | Bun formatter                        |
+| `bun test`                    | Unit tests                           |
+| `bun run test:e2e`            | Playwright (desktop + mobile Chrome) |
 
 ## Quality gates — run before every PR
 
 ```bash
-npx prettier --check .
+bun fmt --check
 bun run lint
-bun run typecheck
+bun check
 bun test
 bun run test:e2e
 ```

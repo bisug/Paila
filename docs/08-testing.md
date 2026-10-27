@@ -15,9 +15,9 @@
 A change is done when all five pass:
 
 ```bash
-npx prettier --check .   # formatting
-bun run lint             # eslint (incl. react-hooks, prettier integration)
-bun run typecheck        # tsc --noEmit
+bun fmt --check          # formatting
+bun run lint             # oxlint
+bun check                # typecheck
 bun test                 # unit tests
 bun run test:e2e         # playwright: desktop-chrome + mobile-chrome
 ```
