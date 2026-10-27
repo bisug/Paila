@@ -1420,10 +1420,58 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
   }, []);
 
   useEffect(() => {
-    fetch("https://open.er-api.com/v6/latest/USD")
-      .then((res) => res.json())
-      .then((data) => setRates(data.rates))
-      .catch(console.error);
+    const controller = new AbortController();
+
+    async function loadRates() {
+      // 1. Primary: open.er-api
+      try {
+        const res = await fetch("https://open.er-api.com/v6/latest/USD", {
+          signal: controller.signal,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.rates) {
+            setRates(data.rates);
+            return;
+          }
+        }
+      } catch {
+        // Continue to fallback
+      }
+
+      // 2. Fallback: FOSS Frankfurter API (ECB rates)
+      try {
+        const res = await fetch("https://api.frankfurter.dev/v1/latest?base=USD", {
+          signal: controller.signal,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const r: Record<string, number> = { ...data.rates, USD: 1 };
+          if (!r.NPR && r.INR) {
+            r.NPR = +(r.INR * 1.6).toFixed(2);
+          }
+          setRates(r);
+          return;
+        }
+      } catch {
+        // Continue to offline defaults
+      }
+
+      // 3. Offline / network failure baseline
+      setRates({
+        USD: 1,
+        NPR: 134.5,
+        EUR: 0.92,
+        GBP: 0.78,
+        INR: 84.0,
+        AUD: 1.52,
+        CAD: 1.38,
+        JPY: 153.0,
+      });
+    }
+
+    void loadRates();
+    return () => controller.abort();
   }, []);
 
   const { interests } = useUserInterests();
