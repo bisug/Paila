@@ -1,15 +1,35 @@
-import { z } from "zod";
 import { checkRateLimit, getClientKey } from "@/lib/server/guardrails";
 import { createChatCompletion, hasAiProvider } from "@/lib/server/ai";
 import { translateText } from "@/lib/server/translate";
 import { TRANSLATOR_LANGUAGES, type TranslatorLangKey } from "@/lib/translator";
 import { createAuthenticatedSupabaseClient } from "@/integrations/supabase/auth-middleware";
 
-const Body = z.object({
-  sourceText: z.string().min(1).max(2000),
-  sourceLang: z.string().min(1).max(10),
-  targetLang: z.string().min(1).max(10),
-});
+type TranslatePayload = {
+  sourceText: string;
+  sourceLang: string;
+  targetLang: string;
+};
+
+function parsePayload(json: unknown): TranslatePayload {
+  if (!json || typeof json !== "object") {
+    throw new Error("Invalid payload");
+  }
+  const { sourceText, sourceLang, targetLang } = json as Record<string, unknown>;
+  if (
+    typeof sourceText !== "string" ||
+    sourceText.length === 0 ||
+    sourceText.length > 2000 ||
+    typeof sourceLang !== "string" ||
+    sourceLang.length === 0 ||
+    sourceLang.length > 10 ||
+    typeof targetLang !== "string" ||
+    targetLang.length === 0 ||
+    targetLang.length > 10
+  ) {
+    throw new Error("Invalid payload");
+  }
+  return { sourceText, sourceLang, targetLang };
+}
 
 // Dialects without a free machine-translation engine bridge to Nepali.
 const DIALECT_BRIDGE: Record<string, string> = {
@@ -41,10 +61,10 @@ export async function POST(request: Request) {
     return Response.json({ error: "Too many translation requests." }, { status: 429 });
   }
 
-  let parsed;
+  let parsed: TranslatePayload;
   try {
-    parsed = Body.parse(await request.json());
-  } catch (err) {
+    parsed = parsePayload(await request.json());
+  } catch {
     return Response.json({ error: "Invalid payload" }, { status: 400 });
   }
   const { sourceText, sourceLang, targetLang } = parsed;
