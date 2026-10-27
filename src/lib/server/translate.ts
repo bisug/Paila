@@ -1,9 +1,10 @@
 import { fetchWithTimeout } from "@/lib/server/guardrails";
 
 /**
- * Key-less translation via Google's public translate endpoint. This is the
- * default engine so the translator works with zero configuration — no API key,
- * no paid provider required.
+ * Key-less translation engine with multi-provider fallback:
+ * 1. MyMemory API (free, official open translation memory)
+ * 2. Lingva API (free open-source translation proxy)
+ * 3. Google GTX public endpoint (graceful fallback)
  */
 export async function translateText(
   sourceLang: string,
@@ -11,10 +12,51 @@ export async function translateText(
   text: string,
   timeoutMs = 10_000,
 ): Promise<string | null> {
+  const trimmed = text.trim();
+  if (!trimmed) return "";
+
+  // 1. Try MyMemory API (Official free tier, no API key required)
+  try {
+    const pair = `${sourceLang}|${targetLang}`;
+    const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(trimmed)}&langpair=${encodeURIComponent(pair)}`;
+    const res = await fetchWithTimeout(myMemoryUrl, { method: "GET" }, Math.min(timeoutMs, 4000));
+    if (res.ok) {
+      const data = (await res.json()) as {
+        responseData?: { translatedText?: string };
+        responseStatus?: number;
+      };
+      const translated = data?.responseData?.translatedText;
+      if (
+        translated &&
+        !translated.startsWith("MYMEMORY WARNING:") &&
+        translated.trim() !== trimmed
+      ) {
+        return translated;
+      }
+    }
+  } catch {
+    // Continue to next provider
+  }
+
+  // 2. Try Lingva API (Open-source free translation engine)
+  try {
+    const lingvaUrl = `https://lingva.ml/api/v1/${encodeURIComponent(sourceLang)}/${encodeURIComponent(targetLang)}/${encodeURIComponent(trimmed)}`;
+    const res = await fetchWithTimeout(lingvaUrl, { method: "GET" }, Math.min(timeoutMs, 4000));
+    if (res.ok) {
+      const data = (await res.json()) as { translation?: string };
+      if (data?.translation && data.translation.trim()) {
+        return data.translation;
+      }
+    }
+  } catch {
+    // Continue to next provider
+  }
+
+  // 3. Fallback: Google GTX public endpoint
   const url =
     "https://translate.googleapis.com/translate_a/single" +
     `?client=gtx&sl=${encodeURIComponent(sourceLang)}` +
-    `&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(text)}`;
+    `&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(trimmed)}`;
 
   try {
     const res = await fetchWithTimeout(

@@ -296,15 +296,23 @@ export function TranslatorView() {
         return;
       }
 
-      const response = await fetch(
-        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${
-          TRANSLATOR_LANGUAGES[lang].tlCode
-        }&tl=en&dt=t&q=${encodeURIComponent(word)}`,
-      );
-      const data = await response.json();
-      setWordMeaning(
-        data?.[0]?.[0]?.[0] ? `Translates to: "${data[0][0][0]}"` : "Could not translate word.",
-      );
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sourceText: word,
+          sourceLang: TRANSLATOR_LANGUAGES[lang].tlCode,
+          targetLang: "en",
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setWordMeaning(
+          data?.translatedText ? `Translates to: "${data.translatedText}"` : "Could not translate word.",
+        );
+      } else {
+        setWordMeaning("Could not translate word.");
+      }
     } catch {
       setWordMeaning(lang === "en" ? "Could not load definition." : "Translation error.");
     } finally {
