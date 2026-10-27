@@ -19,11 +19,18 @@ function imageSrc(image: LocalEvent["image"]) {
 }
 
 export default function PreferencesPage() {
-  const [prefs, setPrefs] = useState<EventPrefs>(() => loadEventPrefs());
+  const [mounted, setMounted] = useState(false);
+  const [prefs, setPrefs] = useState<EventPrefs>({ counts: {}, lastUpdated: 0 });
   const [query, setQuery] = useState("");
   const [filterMode, setFilterMode] = useState<FilterMode>("all");
 
   useEffect(() => {
+    setMounted(true);
+    setPrefs(loadEventPrefs());
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const sync = () => setPrefs(loadEventPrefs());
     window.addEventListener("focus", sync);
     document.addEventListener("visibilitychange", sync);
@@ -31,7 +38,7 @@ export default function PreferencesPage() {
       window.removeEventListener("focus", sync);
       document.removeEventListener("visibilitychange", sync);
     };
-  }, []);
+  }, [mounted]);
 
   const dismissedEvents: LocalEvent[] = useMemo(() => {
     const ids = new Set((prefs.dismissed ?? []).map(String));
@@ -114,6 +121,33 @@ export default function PreferencesPage() {
   const restoreCategory = (cat: string) => {
     setPrefs(clearPenaltyForCategory(cat as never));
   };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-background pb-16">
+        <header className="sticky top-14 md:top-16 z-10 bg-card/95 backdrop-blur border-b border-border">
+          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
+            <Link
+              href="/"
+              className="grid place-items-center w-11 h-11 rounded-full bg-muted text-foreground hover:bg-accent"
+              aria-label="Back"
+            >
+              <ArrowLeft size={18} />
+            </Link>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-sm font-bold text-foreground truncate">Event preferences</h1>
+              <p className="text-[11px] text-muted-foreground truncate">
+                Manage what you’ve marked as “Not interested”.
+              </p>
+            </div>
+          </div>
+        </header>
+        <main className="max-w-2xl mx-auto px-4 pt-12 flex justify-center text-muted-foreground">
+          <div className="animate-pulse text-xs">Loading preferences…</div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-16">

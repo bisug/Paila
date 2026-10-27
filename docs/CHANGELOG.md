@@ -25,6 +25,13 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Fixed
 
+- Fixed Next.js client hydration mismatch on `HomeFeed` (`LocalEventsSection` returning `null` during hydration vs SSR render due to direct `localStorage` read in `useState` and past event timestamps):
+  - Deferred `localStorage` event preferences reading to post-hydration mount in `useEffect`.
+  - Added `mounted` hydration guard to keep SSR and CSR initial render trees completely aligned.
+  - Added `empty:hidden` to the events grid container so empty states don't introduce phantom layout gaps.
+  - Updated mock dates in `LOCAL_EVENTS` to late 2026 and 2027 so demo events remain active and upcoming across all categories.
+  - Added fallback resilience so expired demo events gracefully remain visible rather than disappearing.
+  - Fixed matching hydration risk on `PreferencesPage` (`/preferences`).
 - Removed invalid HTML markup (`<button>` inside `<p>`) in `ScannerView` standby state.
 - Removed unused imports and variables across views (`FootprintMap`, `HomeFeed`, `AccountClient`, `SidebarGuidesGroup`, `hotels/[slug]`).
 - Cleaned up redundant spread fallbacks in `src/lib/event-preferences.ts`.

@@ -153,8 +153,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 1,
     title: "Tamang Lhosar Festival",
-    date: "2026-02-17T09:00:00",
-    endDate: "2026-02-17T20:00:00",
+    date: "2027-02-06T09:00:00",
+    endDate: "2027-02-06T20:00:00",
     category: "Festival",
     place: "Syabrubesi Village Square",
     lat: 28.1633,
@@ -169,7 +169,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 2,
     title: "Langtang Yak Cheese Tasting",
-    date: "2026-06-08T11:00:00",
+    date: "2027-06-08T11:00:00",
     category: "Market",
     place: "Kyanjin Gompa Dairy",
     lat: 28.2103,
@@ -184,7 +184,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 3,
     title: "Full-Moon Mani Rimdu Prayer",
-    date: "2026-05-22T17:30:00",
+    date: "2026-11-24T17:30:00",
     category: "Religious",
     place: "Kyanjin Gompa Monastery",
     lat: 28.211,
@@ -199,7 +199,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 4,
     title: "Sunrise Hike to Tserko Ri",
-    date: "2026-04-12T04:00:00",
+    date: "2026-11-15T04:00:00",
     category: "Adventure",
     place: "Kyanjin Gompa Trailhead",
     lat: 28.212,
@@ -214,8 +214,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 5,
     title: "Saturday Farmers' Market",
-    date: "2026-03-07T08:00:00",
-    endDate: "2026-03-07T13:00:00",
+    date: "2026-11-07T08:00:00",
+    endDate: "2026-11-07T13:00:00",
     category: "Market",
     place: "Dhunche Bazaar",
     lat: 28.11,
@@ -230,7 +230,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 6,
     title: "Himalayan Folk Music Night",
-    date: "2026-03-21T19:00:00",
+    date: "2026-11-14T19:00:00",
     category: "Music",
     place: "Lama Hotel Common House",
     lat: 28.188,
@@ -245,8 +245,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 7,
     title: "Indra Jatra — Chariot of the Living Goddess",
-    date: "2026-09-26T14:00:00",
-    endDate: "2026-09-26T22:00:00",
+    date: "2027-09-15T14:00:00",
+    endDate: "2027-09-15T22:00:00",
     category: "Festival",
     place: "Kathmandu Durbar Square",
     lat: 27.7045,
@@ -261,8 +261,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 8,
     title: "Bisket Jatra — New Year Chariot Pull",
-    date: "2026-04-13T11:00:00",
-    endDate: "2026-04-17T20:00:00",
+    date: "2027-04-14T11:00:00",
+    endDate: "2027-04-18T20:00:00",
     category: "Festival",
     place: "Bhaktapur Durbar Square",
     lat: 27.6722,
@@ -277,8 +277,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 9,
     title: "Holi / Fagu Purnima Color Festival",
-    date: "2026-03-03T11:00:00",
-    endDate: "2026-03-03T18:00:00",
+    date: "2027-03-22T11:00:00",
+    endDate: "2027-03-22T18:00:00",
     category: "Festival",
     place: "Thamel & Basantapur Square",
     lat: 27.7151,
@@ -293,7 +293,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 10,
     title: "Gai Jatra — Cow Procession & Satire",
-    date: "2026-08-29T10:00:00",
+    date: "2027-08-25T10:00:00",
     category: "Festival",
     place: "Patan Durbar Square",
     lat: 27.6727,
@@ -321,7 +321,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 12,
     title: "Full-Moon Puja at Boudhanath",
-    date: "2026-05-31T17:00:00",
+    date: "2026-11-24T17:00:00",
     category: "Religious",
     place: "Boudhanath Stupa",
     lat: 27.7215,
@@ -336,7 +336,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 13,
     title: "Pashupatinath Evening Bagmati Aarti",
-    date: "2026-02-28T18:00:00",
+    date: "2026-11-01T18:00:00",
     category: "Religious",
     place: "Pashupatinath Temple Ghats",
     lat: 27.7106,
@@ -351,8 +351,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 14,
     title: "Intro to Thangka Painting",
-    date: "2026-03-15T10:00:00",
-    endDate: "2026-03-15T14:00:00",
+    date: "2026-11-08T10:00:00",
+    endDate: "2026-11-08T14:00:00",
     category: "Workshop",
     place: "Patan Thangka Atelier",
     lat: 27.6794,
@@ -367,8 +367,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 15,
     title: "Momo-Making Class with a Newar Family",
-    date: "2026-04-05T16:00:00",
-    endDate: "2026-04-05T19:00:00",
+    date: "2026-11-12T16:00:00",
+    endDate: "2026-11-12T19:00:00",
     category: "Workshop",
     place: "Thamel Home Kitchen",
     lat: 27.7155,
@@ -383,7 +383,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 16,
     title: "Samay Baji — Newari Feast Evening",
-    date: "2026-03-28T19:00:00",
+    date: "2026-11-20T19:00:00",
     category: "Food",
     place: "Bhaktapur Pottery Square",
     lat: 27.6701,
@@ -398,7 +398,7 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 17,
     title: "Sarangkot Paragliding Meetup",
-    date: "2026-04-19T09:00:00",
+    date: "2026-11-05T09:00:00",
     category: "Sports",
     place: "Sarangkot Launch Site",
     lat: 28.2439,
@@ -413,8 +413,8 @@ export const LOCAL_EVENTS: LocalEvent[] = [
   {
     id: 18,
     title: "Patan Street-Art & Courtyard Walk",
-    date: "2026-03-14T15:00:00",
-    endDate: "2026-03-14T17:30:00",
+    date: "2026-11-03T15:00:00",
+    endDate: "2026-11-03T17:30:00",
     category: "Art",
     place: "Patan Bahals & Backstreets",
     lat: 27.675,
@@ -859,18 +859,26 @@ function LocalEventsSection({
 }: {
   currentLocation: { lat: number; lng: number };
 }) {
+  const [mounted, setMounted] = useState(false);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState<EventCategory | "All">("All");
   const { interests } = useUserInterests();
-  const [prefs, setPrefs] = useState<EventPrefs>(() => loadEventPrefs());
+  const [prefs, setPrefs] = useState<EventPrefs>({ counts: {}, lastUpdated: 0 });
   const [lastDismissed, setLastDismissed] = useState<{
     id: number;
     category: EventCategory;
     title: string;
   } | null>(null);
 
+  // Initialize preferences after mount to keep SSR and CSR initial render identical (prevents hydration mismatch)
+  useEffect(() => {
+    setMounted(true);
+    setPrefs(loadEventPrefs());
+  }, []);
+
   // Re-sync prefs when tab regains focus (so cross-tab interactions reflect)
   useEffect(() => {
+    if (!mounted) return;
     const sync = () => setPrefs(loadEventPrefs());
     window.addEventListener("focus", sync);
     document.addEventListener("visibilitychange", sync);
@@ -878,22 +886,32 @@ function LocalEventsSection({
       window.removeEventListener("focus", sync);
       document.removeEventListener("visibilitychange", sync);
     };
-  }, []);
+  }, [mounted]);
 
   const now = Date.now();
-  const upcoming = useMemo(
-    () =>
-      LOCAL_EVENTS.map((e) => ({
+  const upcoming = useMemo(() => {
+    if (!mounted) return [];
+    const list = LOCAL_EVENTS.map((e) => ({
+      ...e,
+      distanceKm: calculateDistance(currentLocation, { lat: e.lat, lng: e.lng }),
+      startsAt: new Date(e.date).getTime(),
+    }))
+      .filter(
+        (e) => (e.endDate ? new Date(e.endDate).getTime() : e.startsAt + 6 * 3600 * 1000) >= now,
+      )
+      .filter((e) => !isDismissed(prefs, e.id));
+
+    // Resilience: if all static events are in the past, fallback to all non-dismissed events so showcase remains active
+    if (list.length === 0) {
+      return LOCAL_EVENTS.map((e) => ({
         ...e,
         distanceKm: calculateDistance(currentLocation, { lat: e.lat, lng: e.lng }),
         startsAt: new Date(e.date).getTime(),
-      }))
-        .filter(
-          (e) => (e.endDate ? new Date(e.endDate).getTime() : e.startsAt + 6 * 3600 * 1000) >= now,
-        )
-        .filter((e) => !isDismissed(prefs, e.id)),
-    [currentLocation.lat, currentLocation.lng, now, prefs],
-  );
+      })).filter((e) => !isDismissed(prefs, e.id));
+    }
+
+    return list;
+  }, [currentLocation.lat, currentLocation.lng, now, prefs, mounted]);
 
   const availableCategories = useMemo(() => {
     const set = new Set<EventCategory>();
@@ -946,7 +964,7 @@ function LocalEventsSection({
     setLastDismissed(null);
   };
 
-  if (upcoming.length === 0) return null;
+  if (!mounted || upcoming.length === 0) return null;
 
   return (
     <div className="mt-6 mb-2">
@@ -1656,7 +1674,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
               <EssentialsSection rates={rates} />
             </div>
 
-            <div className="min-w-0 xl:col-span-2">
+            <div className="min-w-0 xl:col-span-2 empty:hidden">
               <LocalEventsSection currentLocation={currentLocation} />
             </div>
           </div>
