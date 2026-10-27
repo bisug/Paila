@@ -1,6 +1,8 @@
 import { useEffect as useScriptEffect } from "react";
 function Script({ src }: { src: string; strategy?: string }) {
   useScriptEffect(() => {
+    // Skip loading external CDN script if browser natively supports BarcodeDetector
+    if (typeof window !== "undefined" && "BarcodeDetector" in window) return;
     if (document.querySelector(`script[src="${src}"]`)) return;
     const s = document.createElement("script");
     s.src = src;
@@ -15,7 +17,6 @@ import {
   BadgeCheck,
   Camera,
   CheckCircle2,
-  QrCode,
   X,
   SwitchCamera,
   Zap,
@@ -131,12 +132,27 @@ export function ScannerView() {
   const cameraRequestRef = useRef(0);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const lastScanAtRef = useRef(0);
+  const barcodeDetectorRef = useRef<any>(null);
+  const isDetectingRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "BarcodeDetector" in window) {
+      try {
+        barcodeDetectorRef.current = new (window as any).BarcodeDetector({
+          formats: ["qr_code"],
+        });
+      } catch {
+        barcodeDetectorRef.current = null;
+      }
+    }
+  }, []);
 
   // Stop camera function
   function stopCamera() {
     cameraRequestRef.current += 1;
     if (requestRef.current) cancelAnimationFrame(requestRef.current);
     requestRef.current = null;
+    isDetectingRef.current = false;
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach((track) => track.stop());
@@ -148,48 +164,75 @@ export function ScannerView() {
     contextRef.current = null;
   }
 
-  function tick() {
-    if (!videoRef.current || !canvasRef.current) return;
+  async function tick() {
+    if (!videoRef.current) return;
 
     const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const ctx = contextRef.current ?? canvas.getContext("2d", { willReadFrequently: true });
-
-    if (!ctx || !(window as any).jsQR) {
-      setCameraError("QR scanner is still loading. Please try again.");
-      return;
-    }
-    contextRef.current = ctx;
-
     const now = performance.now();
     if (now - lastScanAtRef.current < 80) {
-      requestRef.current = requestAnimationFrame(tick);
+      requestRef.current = requestAnimationFrame(() => {
+        void tick();
+      });
       return;
     }
     lastScanAtRef.current = now;
 
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-      if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
-        canvas.height = video.videoHeight;
-        canvas.width = video.videoWidth;
+    if (video.readyState >= video.HAVE_CURRENT_DATA) {
+      // 1. Native BarcodeDetector (hardware-accelerated, zero-dependency, works offline)
+      if (barcodeDetectorRef.current && !isDetectingRef.current) {
+        isDetectingRef.current = true;
+        try {
+          const barcodes = await barcodeDetectorRef.current.detect(video);
+          if (barcodes && barcodes.length > 0 && barcodes[0]?.rawValue) {
+            stopCamera();
+            setSheetOpen(true);
+            setAiResult(null);
+            setQrData(barcodes[0].rawValue);
+            isDetectingRef.current = false;
+            return;
+          }
+        } catch (e) {
+          console.warn("BarcodeDetector error", e);
+        } finally {
+          isDetectingRef.current = false;
+        }
       }
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      const code = (window as any).jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: "dontInvert",
-      });
+      // 2. Fallback to jsQR via canvas if BarcodeDetector is unavailable
+      if (!barcodeDetectorRef.current && canvasRef.current) {
+        const canvas = canvasRef.current;
+        const ctx = contextRef.current ?? canvas.getContext("2d", { willReadFrequently: true });
 
-      if (code && code.data) {
-        stopCamera();
-        setSheetOpen(true);
-        setAiResult(null);
-        setQrData(code.data);
-        return;
+        if (ctx && (window as any).jsQR) {
+          contextRef.current = ctx;
+          if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth;
+          }
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+          const code = (window as any).jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+          });
+
+          if (code && code.data) {
+            stopCamera();
+            setSheetOpen(true);
+            setAiResult(null);
+            setQrData(code.data);
+            return;
+          }
+        } else if (!ctx || !(window as any).jsQR) {
+          setCameraError("QR scanner is still loading. Please try again.");
+          return;
+        }
       }
     }
 
-    requestRef.current = requestAnimationFrame(tick);
+    requestRef.current = requestAnimationFrame(() => {
+      void tick();
+    });
   }
 
   function startScanner(mode: "environment" | "user" = facingMode) {
@@ -227,7 +270,9 @@ export function ScannerView() {
           }
         }
 
-        requestRef.current = requestAnimationFrame(() => tick());
+        requestRef.current = requestAnimationFrame(() => {
+          void tick();
+        });
       })
       .catch((err) => {
         console.error("Error accessing camera", err);
