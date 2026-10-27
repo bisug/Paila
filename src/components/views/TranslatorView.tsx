@@ -253,11 +253,46 @@ export function TranslatorView() {
 
     try {
       if (lang === "en") {
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-        const data = await response.json();
-        setWordMeaning(
-          data?.[0]?.meanings?.[0]?.definitions?.[0]?.definition ?? "No definition found.",
+        // High-reliability, free definition lookup via Datamuse with Wiktionary fallback
+        try {
+          const res = await fetch(
+            `https://api.datamuse.com/words?sp=${encodeURIComponent(word.toLowerCase())}&md=d&max=1`,
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const rawDef = data?.[0]?.defs?.[0];
+            if (rawDef) {
+              const cleanDef = rawDef.replace(/^[a-z]+\t/, "").trim();
+              if (cleanDef) {
+                setWordMeaning(cleanDef.charAt(0).toUpperCase() + cleanDef.slice(1));
+                return;
+              }
+            }
+          }
+        } catch {
+          // Fallback to Wiktionary
+        }
+
+        const wikRes = await fetch(
+          `https://en.wiktionary.org/api/rest_v1/page/definition/${encodeURIComponent(word.toLowerCase())}`,
         );
+        if (wikRes.ok) {
+          const data = (await wikRes.json()) as Record<
+            string,
+            Array<{ definitions?: Array<{ definition?: string }> }>
+          >;
+          const firstSection = data?.en?.[0] ?? Object.values(data)?.[0]?.[0];
+          const rawHtml = firstSection?.definitions?.[0]?.definition;
+          if (rawHtml) {
+            const plainText = rawHtml.replace(/<[^>]+>/g, "").trim();
+            if (plainText) {
+              setWordMeaning(plainText);
+              return;
+            }
+          }
+        }
+
+        setWordMeaning("No definition found.");
         return;
       }
 
