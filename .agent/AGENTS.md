@@ -13,18 +13,18 @@ All project docs live in `docs/`:
 
 ## Commands
 
-Package manager is **Bun** (pinned `bun@1.4.0` via `packageManager`). Never use npm/yarn/pnpm.
+Package manager is **Bun** (pinned `bun@1.4.4` via `packageManager`). Never use npm/yarn/pnpm.
 
-| Command                           | Purpose                                                     |
-| --------------------------------- | ----------------------------------------------------------- |
-| `bun run dev`                     | Dev server (Turbopack, port 3000)                           |
-| `bun run build`                   | Production build                                            |
-| `bun run typecheck`               | `tsc --noEmit`                                              |
-| `bun run lint`                    | ESLint                                                      |
-| `bun run format` / `format:check` | Prettier write / check (CI enforces check)                  |
-| `bun run test:e2e`                | Playwright smoke suite (38 tests, desktop + mobile Pixel 5) |
+| Command                       | Purpose                                                     |
+| ----------------------------- | ----------------------------------------------------------- |
+| `bun run dev`                 | Dev server (Turbopack, port 3000)                           |
+| `bun run build`               | Production build                                            |
+| `bun check`                   | Typecheck TypeScript project                                |
+| `bun run lint`                | Oxlint (`oxlint`)                                           |
+| `bun fmt` / `bun fmt --check` | Bun formatter (replaces Prettier)                           |
+| `bun run test:e2e`            | Playwright smoke suite (38 tests, desktop + mobile Pixel 5) |
 
-Run `typecheck`, `lint`, and `test:e2e` before committing. CI runs all plus `format:check` and `build`.
+Run `bun check`, `bun run lint` (`oxlint`), and `bun run test:e2e` before committing. CI runs all plus `bun fmt --check` and `build`.
 
 ## Demo mode
 

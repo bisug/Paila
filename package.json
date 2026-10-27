@@ -8,10 +8,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "oxlint",
+    "typecheck": "bun check",
+    "format": "bun fmt",
+    "format:check": "bun fmt --check",
     "test": "bun test",
     "test:e2e": "playwright test"
   },
@@ -52,6 +52,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
+    "oxlint": "^1.90.0",
     "prettier": "^3.9.10",
     "typescript": "^7.0.2"
   }

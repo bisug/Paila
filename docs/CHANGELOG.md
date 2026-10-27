@@ -6,10 +6,12 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Added
 
+- Added `oxlint` to devDependencies for fast linting.
 - Unit tests for the in-memory rate limiter and client-key extraction (`src/lib/server/guardrails.test.ts`).
 
 ### Changed
 
+- Updated development workflows and package scripts: formatting uses `bun fmt`, typechecking uses `bun check`, and linting uses `oxlint`.
 - Bumped `next` 16.3.2 → 16.3.5 and `sharp` → 0.35.4 (`bun audit` was failing with 2 critical Next.js RCE advisories and 1 high sharp/libheif advisory; now clean).
 - API routes (`/api/scan`, `/api/translate`) now verify sessions with `supabase.auth.getUser()` instead of `getSession()`, per Supabase guidance (cookie session data is not re-validated server-side).
 - `createSupabaseServerClient()` (auth callback route) and `supabaseAdmin` (admin guide verifications) now build real Supabase clients when env vars are configured instead of always returning the demo mock — production auth-code exchange and signed ID-card URLs would previously have hit the mock.
