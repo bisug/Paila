@@ -25,6 +25,9 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Fixed
 
+- Fixed MapLibre GL background web worker resolution in Next.js Turbopack (`src/lib/maps.ts`, `next.config.ts`):
+  - Resolved `[browser] Error: Worker failed to load. Check that the worker URL is correct.` on `/map` by placing `maplibre-gl-worker.mjs` into `public/` and configuring `setWorkerUrl("/maplibre-gl-worker.mjs")`.
+  - Added `worker-src 'self' blob:` to the Content Security Policy in `next.config.ts` to authorize local web worker script execution.
 - Fixed landscape navigation breakdown across mobile and compact viewports (`AppShellNavigation.tsx`, `AppShell.tsx`, `styles.css`):
   - Resolved dual-sidebar collision on mobile landscape: added `.landscape-hide` to `DesktopSidebar` so the 256px desktop sidebar is suppressed on short landscape screens (height <= 550px) where Tailwind's `md:` breakpoint (width >= 768px) previously caused both `DesktopSidebar` and `LandscapeRail` to render simultaneously and overlap page content.
   - Expanded landscape media query breakpoint in `styles.css` from `max-width: 900px` to `max-width: 1080px`, ensuring modern large landscape phones (iPhone 14/15/16 Pro Max at 932px, Galaxy Ultra at 915px) properly activate landscape mode rather than breaking into desktop layout.

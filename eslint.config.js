@@ -13,6 +13,7 @@ export default [
       "coverage",
       ".output",
       ".vinxi",
+      "public/**",
       "**/*.{ts,tsx}",
     ],
   },

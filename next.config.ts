@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
           "style-src 'self' 'unsafe-inline'",
           "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://tiles.openfreemap.org",
           "media-src 'self' blob:",
+          "worker-src 'self' blob:",
           "connect-src 'self' https://*.supabase.co https://tiles.openfreemap.org https://api.open-meteo.com https://open.er-api.com https://api.frankfurter.dev https://api.datamuse.com https://en.wiktionary.org https://translate.googleapis.com https://router.project-osrm.org https://nominatim.openstreetmap.org",
           "frame-ancestors 'none'",
           "base-uri 'self'",

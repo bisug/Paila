@@ -1,3 +1,10 @@
+import { setWorkerUrl } from "maplibre-gl";
+
+// Configure local worker URL for MapLibre GL in Next.js bundler environment
+if (typeof window !== "undefined") {
+  setWorkerUrl("/maplibre-gl-worker.mjs");
+}
+
 // Free/OpenStreetMap map stack (client-safe): MapLibre + OpenFreeMap tiles.
 // Polyline decoding matches the Google/OSRM encoded-polyline format.
 export const MAP_STYLE_LIGHT = "https://tiles.openfreemap.org/styles/liberty";

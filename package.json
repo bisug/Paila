@@ -8,7 +8,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "oxlint",
+    "lint": "oxlint --ignore-pattern \"public/**\"",
     "typecheck": "bun check",
     "format": "bun fmt",
     "format:check": "bun fmt --check",
