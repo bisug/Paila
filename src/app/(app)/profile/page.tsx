@@ -23,6 +23,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUserRoles } from "@/hooks/use-user-roles";
 import { RoleBadge } from "@/components/layout/RoleBadge";
 import { RoleSwitcher } from "@/components/layout/RoleSwitcher";
+import { PermitQrModal } from "@/components/modals/PermitQrModal";
+import { SEED_PERMITS, type TrekkingPermit } from "@/lib/permits";
 
 export default function ProfileMenu() {
   const router = useRouter();
@@ -41,6 +43,7 @@ export default function ProfileMenu() {
 
   const [unread, setUnread] = useState(0);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [selectedPermit, setSelectedPermit] = useState<TrekkingPermit | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -88,6 +91,9 @@ export default function ProfileMenu() {
 
   return (
     <div className="min-h-screen bg-background px-4 pt-5 pb-28 md:max-w-2xl md:mx-auto">
+      {selectedPermit && (
+        <PermitQrModal permit={selectedPermit} open onClose={() => setSelectedPermit(null)} />
+      )}
       {isProfileIncomplete && (
         <Link
           href="/profile/account"
@@ -281,6 +287,27 @@ export default function ProfileMenu() {
               </div>
               <ChevronRight size={18} className="text-stone-300" />
             </Link>
+            <button
+              type="button"
+              onClick={() => setSelectedPermit(SEED_PERMITS[0])}
+              className="w-full flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border text-left"
+            >
+              <div className="h-10 w-10 rounded-xl bg-pine/10 text-pine grid place-items-center shrink-0">
+                <QrCode size={18} />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-bold text-foreground">Digital Permits (TIMS / ACAP)</p>
+                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-pine/10 text-pine border border-pine/30">
+                    Offline Valid
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Show cryptographic QR pass for trail checkpoints
+                </p>
+              </div>
+              <ChevronRight size={18} className="text-stone-300" />
+            </button>
             <Link
               href="/profile/bookings"
               className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"

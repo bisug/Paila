@@ -22,9 +22,18 @@ import {
   Zap,
   ZapOff,
   ImagePlus,
+  ShieldCheck,
+  ShieldAlert,
+  AlertCircle,
+  PhoneCall,
 } from "lucide-react";
 import { toast } from "sonner";
 import { type LedgerTab, pine } from "@/lib/data";
+import {
+  verifyPermitQrPayload,
+  logCheckpointPassage,
+  type PermitVerificationResult,
+} from "@/lib/permits";
 
 // ── Verified host profile tab ──────────────────────────────────────────────
 function VerifiedProfile() {
@@ -120,6 +129,8 @@ export function ScannerView() {
   const [hasTorch, setHasTorch] = useState(false);
   const [torchOn, setTorchOn] = useState(false);
   const [qrData, setQrData] = useState<string | null>(null);
+  const [permitResult, setPermitResult] = useState<PermitVerificationResult | null>(null);
+  const [loggedPassage, setLoggedPassage] = useState(false);
 
   // AI Scan state
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -164,6 +175,23 @@ export function ScannerView() {
     contextRef.current = null;
   }
 
+  async function handleDetectedQr(data: string) {
+    stopCamera();
+    setSheetOpen(true);
+    setAiResult(null);
+    setQrData(data);
+    setLoggedPassage(false);
+
+    try {
+      const res = await verifyPermitQrPayload(data);
+      if (res.permit) {
+        setPermitResult(res);
+        return;
+      }
+    } catch {}
+    setPermitResult(null);
+  }
+
   async function tick() {
     if (!videoRef.current) return;
 
@@ -184,10 +212,7 @@ export function ScannerView() {
         try {
           const barcodes = await barcodeDetectorRef.current.detect(video);
           if (barcodes && barcodes.length > 0 && barcodes[0]?.rawValue) {
-            stopCamera();
-            setSheetOpen(true);
-            setAiResult(null);
-            setQrData(barcodes[0].rawValue);
+            void handleDetectedQr(barcodes[0].rawValue);
             isDetectingRef.current = false;
             return;
           }
@@ -217,10 +242,7 @@ export function ScannerView() {
           });
 
           if (code && code.data) {
-            stopCamera();
-            setSheetOpen(true);
-            setAiResult(null);
-            setQrData(code.data);
+            void handleDetectedQr(code.data);
             return;
           }
         } else if (!ctx || !(window as any).jsQR) {
@@ -241,6 +263,8 @@ export function ScannerView() {
     setSheetOpen(false);
     setAiResult(null);
     setQrData(null);
+    setPermitResult(null);
+    setLoggedPassage(false);
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setCameraError("Camera API not supported in this browser.");
@@ -563,10 +587,18 @@ export function ScannerView() {
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-widest text-pine mb-1">
-                    {aiResult ? "Heritage Identified" : "Village Council Match"}
+                    {permitResult?.permit
+                      ? "Checkpoint Verification"
+                      : aiResult
+                        ? "Heritage Identified"
+                        : "Village Council Match"}
                   </p>
                   <h3 className="text-xl font-bold text-stone-900">
-                    {aiResult ? aiResult.name : "QR code scanned"}
+                    {permitResult?.permit
+                      ? permitResult.permit.title
+                      : aiResult
+                        ? aiResult.name
+                        : "QR code scanned"}
                   </h3>
                 </div>
                 <Dialog.Close asChild>
@@ -618,6 +650,142 @@ export function ScannerView() {
                       <p className="px-1 text-sm text-stone-500">No quick facts available.</p>
                     )}
                   </div>
+                </div>
+              ) : permitResult?.permit ? (
+                <div className="space-y-4 pb-4">
+                  {/* Status Banner */}
+                  {permitResult.valid ? (
+                    <div className="flex items-center gap-3 p-3.5 rounded-xl bg-pine/10 border border-pine/30 text-pine">
+                      <CheckCircle2 size={24} className="shrink-0 text-pine" />
+                      <div>
+                        <p className="font-bold text-xs uppercase tracking-wider">
+                          OFFLINE PERMIT AUTHENTICATED
+                        </p>
+                        <p className="text-xs text-pine/80 font-medium">
+                          Signed by {permitResult.permit.issuedBy}
+                        </p>
+                      </div>
+                    </div>
+                  ) : permitResult.isExpired ? (
+                    <div className="flex items-center gap-3 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700">
+                      <AlertCircle size={24} className="shrink-0 text-red-600" />
+                      <div>
+                        <p className="font-bold text-xs uppercase tracking-wider">PERMIT EXPIRED</p>
+                        <p className="text-xs text-red-600">{permitResult.reason}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700">
+                      <ShieldAlert size={24} className="shrink-0 text-red-600" />
+                      <div>
+                        <p className="font-bold text-xs uppercase tracking-wider">
+                          INVALID / SIGNATURE MISMATCH
+                        </p>
+                        <p className="text-xs text-red-600">{permitResult.reason}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Permit Info */}
+                  <div className="rounded-xl border border-stone-200 bg-stone-50 p-4 space-y-2.5 text-xs">
+                    <div className="flex justify-between items-center pb-2 border-b border-stone-200">
+                      <div>
+                        <h4 className="font-bold text-sm text-stone-900">
+                          {permitResult.permit.title}
+                        </h4>
+                        <p className="font-mono text-[11px] text-stone-500">
+                          {permitResult.permit.permitNumber}
+                        </p>
+                      </div>
+                      <span className="font-bold text-[10px] uppercase px-2 py-0.5 rounded-full bg-pine/10 text-pine border border-pine/30">
+                        {permitResult.permit.permitType}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                          Trekker
+                        </span>
+                        <p className="font-semibold text-stone-900">
+                          {permitResult.permit.trekkerName}
+                        </p>
+                        <p className="text-[10px] text-stone-500 font-mono">
+                          {permitResult.permit.passportOrId}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                          Validity
+                        </span>
+                        <p className="font-semibold text-stone-900">
+                          {permitResult.permit.validFrom} → {permitResult.permit.validTo}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-stone-200">
+                      <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                        Approved Trail Route
+                      </span>
+                      <p className="font-medium text-stone-800 leading-snug">
+                        {permitResult.permit.route}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-stone-200 flex justify-between items-center">
+                      <span className="text-[10px] uppercase font-bold text-stone-400">
+                        Emergency Contact
+                      </span>
+                      <a
+                        href={`tel:${permitResult.permit.emergencyContact.phone}`}
+                        className="font-bold text-pine flex items-center gap-1 hover:underline"
+                      >
+                        <PhoneCall size={12} /> {permitResult.permit.emergencyContact.name} (
+                        {permitResult.permit.emergencyContact.phone})
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Verifier Action: Log passage */}
+                  {permitResult.valid && (
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        disabled={loggedPassage}
+                        onClick={() => {
+                          if (permitResult?.permit) {
+                            logCheckpointPassage({
+                              permitId: permitResult.permit.id,
+                              permitNumber: permitResult.permit.permitNumber,
+                              checkpointName: permitResult.permit.entryCheckpoint,
+                              altitudeMeters: 1070,
+                              verifierRole: "Nayapul ACAP Checkpoint Officer",
+                            });
+                            setLoggedPassage(true);
+                            toast.success(
+                              `Check-in recorded for ${permitResult.permit.trekkerName}`,
+                            );
+                          }
+                        }}
+                        className={`w-full py-3 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                          loggedPassage
+                            ? "bg-pine-tint text-pine border border-pine/30"
+                            : "bg-pine text-white hover:bg-pine/90 shadow-xs active:scale-[0.98]"
+                        }`}
+                      >
+                        {loggedPassage ? (
+                          <>
+                            <CheckCircle2 size={15} /> Checkpoint Entry Logged
+                          </>
+                        ) : (
+                          <>
+                            <ShieldCheck size={15} /> Log Checkpoint Passage (1,070m)
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : qrData ? (
                 <>

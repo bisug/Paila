@@ -6,6 +6,9 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Added
 
+- Cryptographic trekking permit engine in `src/lib/permits.ts` with offline HMAC-SHA256 digital signature validation, checkpoint passage logging, and pre-seeded ACAP/TIMS permits.
+- Checkpoint verification flow in `src/components/views/ScannerView.tsx` validating scanned permit QR codes completely offline with instant authentic/expired/tampered status and passage logging.
+- Digital permit pass modal `PermitQrModal` (`src/components/modals/PermitQrModal.tsx`) and pure SVG QR generator (`src/components/ui/QrCodeSvg.tsx`) for high-contrast offline presentation at trail checkpoints.
 - Role-adaptive interface hook `useUserRoles` in `src/hooks/use-user-roles.ts` supporting reactive multi-role evaluation (`admin`, `host`, `guide`, `verifier`, `traveller`) with pending count aggregates.
 - Role badge component `RoleBadge` in `src/components/layout/RoleBadge.tsx` with distinct iconographies and semantic color tokens for each platform role.
 - Interactive role perspective switcher `RoleSwitcher` in `src/components/layout/RoleSwitcher.tsx` to preview and test the UI across multiple user roles.
@@ -26,6 +29,7 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Changed
 
+- Integrated interactive digital permit QR passes into `HomeFeed.tsx` and `ProfileMenu` (`src/app/(app)/profile/page.tsx`).
 - Refactored `useGuideNav` in `src/hooks/use-guide-nav.ts` and `SidebarGuidesGroup` in `src/components/layout/SidebarGuidesGroup.tsx` to synchronize with unified `useUserRoles`.
 - Updated `AccountClient` in `src/components/views/AccountClient.tsx` to surface assigned system roles and verified permission badges.
 - Optimized edge middleware in `src/proxy.ts` with zero-DB-roundtrip fast-path verifying admin access from JWT `app_metadata.roles` with database query fallback.

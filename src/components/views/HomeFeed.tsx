@@ -48,6 +48,8 @@ import tiharDeusiImg from "@/assets/events/tihar-deusi.jpg";
 
 import { calculateDistance, getUserLocation } from "@/lib/location";
 import { emergencyContacts, sanitizePhoneNumber } from "@/lib/sos";
+import { PermitQrModal } from "@/components/modals/PermitQrModal";
+import { SEED_PERMITS, type TrekkingPermit } from "@/lib/permits";
 import {
   LOCAL_ALERTS,
   type AlertSeverity,
@@ -609,12 +611,16 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
 
 function EssentialsSection({ rates }: { rates: Record<string, number> | null }) {
   const [openId, setOpenId] = useState<string | null>(null);
+  const [selectedPermit, setSelectedPermit] = useState<TrekkingPermit | null>(null);
   const toggle = (id: string) => setOpenId((prev) => (prev === id ? null : id));
 
   const liveRate = rates?.["NPR"] || null;
 
   return (
     <div className="space-y-2.5">
+      {selectedPermit && (
+        <PermitQrModal permit={selectedPermit} open onClose={() => setSelectedPermit(null)} />
+      )}
       {/* Currency */}
       <div className="rounded-2xl bg-white border border-stone-200/90 shadow-card overflow-hidden transition-all">
         <button
@@ -698,14 +704,25 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
         {openId === "permit" && (
           <div className="px-3 pb-3 space-y-2.5">
             {/* TIMS Card */}
-            <div className="rounded-xl bg-linear-to-br from-stone-900 to-stone-800 text-white p-4 shadow-sm relative overflow-hidden border border-stone-700">
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setSelectedPermit(SEED_PERMITS[1])}
+              onKeyDown={(e) => e.key === "Enter" && setSelectedPermit(SEED_PERMITS[1])}
+              className="rounded-xl bg-linear-to-br from-stone-900 to-stone-800 text-white p-4 shadow-sm relative overflow-hidden border border-stone-700 cursor-pointer hover:border-stone-500 active:scale-[0.99] transition-all"
+            >
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <MapPin size={70} aria-hidden="true" />
               </div>
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-2.5">
                   <div>
-                    <h4 className="font-bold text-sm tracking-tight">TIMS Card</h4>
+                    <h4 className="font-bold text-sm tracking-tight flex items-center gap-1.5">
+                      <span>TIMS Card</span>
+                      <span className="text-[10px] text-stone-400 font-normal">
+                        · Tap to show QR
+                      </span>
+                    </h4>
                     <p className="text-[10px] uppercase font-bold tracking-wider text-stone-300">
                       Trekkers' Information Management
                     </p>
@@ -716,32 +733,43 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
                 </div>
                 <div className="space-y-0.5 mb-2.5">
                   <p className="text-[10px] text-stone-400 uppercase font-semibold">Trekker</p>
-                  <p className="font-semibold text-sm">Alex Traveler</p>
+                  <p className="font-semibold text-sm">Aarav Sharma</p>
                 </div>
                 <div className="flex justify-between items-end pt-1 border-t border-stone-700/60">
                   <div>
                     <p className="text-[10px] text-stone-400 uppercase font-semibold">Permit ID</p>
                     <p className="font-mono font-bold tracking-wider text-xs text-stone-200">
-                      NPT-2026-8890
+                      {SEED_PERMITS[1].permitNumber}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-white/10 px-2 py-1 rounded-lg border border-white/15">
+                  <div className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 rounded-lg border border-white/15">
                     <QrCode size={16} className="text-white" />
-                    <span className="text-[10px] font-mono font-bold">QR VERIFIED</span>
+                    <span className="text-[10px] font-mono font-bold">VIEW PASS</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* ACAP Card */}
-            <div className="rounded-xl bg-linear-to-br from-pine to-emerald-950 text-white p-4 shadow-sm relative overflow-hidden border border-emerald-800/60">
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setSelectedPermit(SEED_PERMITS[0])}
+              onKeyDown={(e) => e.key === "Enter" && setSelectedPermit(SEED_PERMITS[0])}
+              className="rounded-xl bg-linear-to-br from-pine to-emerald-950 text-white p-4 shadow-sm relative overflow-hidden border border-emerald-800/60 cursor-pointer hover:border-emerald-500 active:scale-[0.99] transition-all"
+            >
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Mountain size={70} />
               </div>
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-2.5">
                   <div>
-                    <h4 className="font-bold text-sm tracking-tight">ACAP Entry Permit</h4>
+                    <h4 className="font-bold text-sm tracking-tight flex items-center gap-1.5">
+                      <span>ACAP Entry Permit</span>
+                      <span className="text-[10px] text-emerald-200 font-normal">
+                        · Tap to show QR
+                      </span>
+                    </h4>
                     <p className="text-[10px] uppercase font-bold tracking-wider text-emerald-200">
                       Annapurna Conservation Area
                     </p>
@@ -755,11 +783,13 @@ function EssentialsSection({ rates }: { rates: Record<string, number> | null }) 
                     <p className="text-[10px] text-emerald-200/80 uppercase font-semibold">
                       Expiry Date
                     </p>
-                    <p className="font-mono font-bold tracking-wider text-xs">30 JUN 2026</p>
+                    <p className="font-mono font-bold tracking-wider text-xs">
+                      {SEED_PERMITS[0].validTo}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-emerald-900/60 px-2 py-1 rounded-lg border border-emerald-600/40">
-                    <BadgeCheck size={16} className="text-emerald-300" />
-                    <span className="text-[10px] font-bold text-emerald-100">SEALED</span>
+                  <div className="flex items-center gap-1.5 bg-emerald-900/60 px-2.5 py-1 rounded-lg border border-emerald-600/40">
+                    <QrCode size={16} className="text-emerald-300" />
+                    <span className="text-[10px] font-bold text-emerald-100">VIEW PASS</span>
                   </div>
                 </div>
               </div>
