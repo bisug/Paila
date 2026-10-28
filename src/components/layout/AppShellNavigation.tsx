@@ -264,14 +264,14 @@ export function DesktopSidebar({
         flex-col
         ${minimized ? "md:w-20" : "md:w-64 lg:w-72"}
         md:min-h-screen
-        bg-white border-r border-stone-200
+        bg-card border-r border-border
         md:sticky md:top-0 md:h-screen md:overflow-y-auto
         z-40 shrink-0
         transition-all duration-300
       `}
     >
       <div
-        className={`flex items-center ${minimized ? "justify-center px-0 flex-col gap-2 pt-3" : "gap-3 px-5"} h-16 border-b border-stone-100 shrink-0`}
+        className={`flex items-center ${minimized ? "justify-center px-0 flex-col gap-2 pt-3" : "gap-3 px-5"} h-16 border-b border-border shrink-0`}
       >
         <button
           onClick={onToggleMinimized}
@@ -284,10 +284,10 @@ export function DesktopSidebar({
         {!minimized ? (
           <>
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-stone-900 tracking-tight leading-none">
+              <span className="text-lg font-bold text-foreground tracking-tight leading-none">
                 Paila
               </span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-stone-600 mt-0.5">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground mt-0.5">
                 Nepal
               </span>
             </div>
@@ -457,20 +457,20 @@ export function MobileHeader({
   onToggleDrawer,
 }: MobileHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 flex items-center px-4 h-14 landscape-header md:h-16 md:px-6">
+    <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border flex items-center px-4 h-14 landscape-header md:h-16 md:px-6">
       {/* Mobile portrait brand & title */}
       <div className="flex items-center gap-2 md:hidden min-w-0 landscape-hide">
         <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-terracotta shadow-xs">
           <Footprints size={14} className="text-white" />
         </div>
         <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-[15px] font-bold text-stone-900 tracking-tight shrink-0">
+          <span className="text-[15px] font-bold text-foreground tracking-tight shrink-0">
             Paila
           </span>
           {title && title !== "Home" && (
             <>
-              <span className="text-stone-300">/</span>
-              <span className="text-xs font-semibold text-stone-600 truncate">{title}</span>
+              <span className="text-muted-foreground/40">/</span>
+              <span className="text-xs font-semibold text-muted-foreground truncate">{title}</span>
             </>
           )}
         </div>
@@ -484,7 +484,7 @@ export function MobileHeader({
 
       {/* Landscape mobile & standard desktop title */}
       <div className="hidden md:flex landscape-show-flex items-center gap-2 min-w-0">
-        <span className="text-sm md:text-base font-bold text-stone-900 truncate">
+        <span className="text-sm md:text-base font-bold text-foreground truncate">
           {title || "Paila"}
         </span>
         <div className="md:hidden landscape-show-flex">
@@ -539,7 +539,7 @@ export function MobileSosFab({
 export function MobileBottomNav({ pathname, t }: ShellNavProps) {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-stone-200/80 md:hidden landscape-hide"
+      className="fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border md:hidden landscape-hide"
       style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom))" }}
     >
       <div
@@ -554,20 +554,20 @@ export function MobileBottomNav({ pathname, t }: ShellNavProps) {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center justify-center gap-0.5 py-1 px-1 transition-all ${
-                active ? "text-terracotta" : "text-stone-500 hover:text-stone-800"
+                active ? "text-terracotta" : "text-muted-foreground hover:text-foreground"
               }`}
               aria-current={active ? "page" : undefined}
             >
               <div
                 className={`flex items-center justify-center w-10 h-7 rounded-full transition-all ${
-                  active ? "bg-terracotta/12 text-terracotta" : "text-stone-500"
+                  active ? "bg-terracotta/12 text-terracotta" : "text-muted-foreground"
                 }`}
               >
                 <Icon size={19} strokeWidth={active ? 2.4 : 1.8} />
               </div>
               <span
-                className={`text-[11px] font-semibold leading-tight tracking-tight ${
-                  active ? "text-terracotta font-bold" : "text-stone-500"
+                className={`text-[11px] font-semibold leading-tight tracking-tight truncate max-w-full px-0.5 ${
+                  active ? "text-terracotta font-bold" : "text-muted-foreground"
                 }`}
               >
                 {navLabel(t, item.href, item.label)}
@@ -593,16 +593,16 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
         <Dialog.Content
           aria-describedby={undefined}
           onInteractOutside={(e) => e.preventDefault()}
-          className="fixed right-0 top-0 z-50 h-full w-68 max-w-[85vw] bg-white shadow-tactile flex flex-col"
+          className="fixed right-0 top-0 z-50 h-full w-68 max-w-[85vw] bg-card shadow-tactile flex flex-col"
         >
-          <div className="flex items-center gap-3 px-5 h-16 border-b border-stone-100">
+          <div className="flex items-center gap-3 px-5 h-16 border-b border-border">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-terracotta shadow-xs">
               <Footprints size={16} className="text-white" />
             </div>
             <Dialog.Title asChild>
               <div className="flex flex-col">
-                <span className="font-bold text-stone-900 tracking-tight leading-none">Paila</span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-stone-600 mt-0.5">
+                <span className="font-bold text-foreground tracking-tight leading-none">Paila</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground mt-0.5">
                   Nepal
                 </span>
               </div>
@@ -674,7 +674,7 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
             </Link>
             <SidebarGuidesGroup variant="drawer" onNavigate={onClose} />
           </nav>
-          <div className="px-3 py-4 border-t border-stone-100 space-y-2">
+          <div className="px-3 py-4 border-t border-border space-y-2">
             <button
               onClick={() => {
                 onOpenSos();

@@ -6,6 +6,8 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Added
 
+- Mobile filter reset button in header and actionable recovery in `HotelsList` empty state.
+- Actionable "Clear search" recovery button in `HomeFeed` empty search state.
 - Mobile sticky booking dock in `HotelDetail` for quick access to nightly totals and booking requests without scrolling.
 - Direct `Impact` navigation item in desktop sidebar, mobile drawer, and active title resolution in `AppShell`.
 - Quick phrase category tabs in `TranslatorView` with horizontal scrolling and pill controls.
@@ -14,6 +16,12 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Changed
 
+- Modernized typography system in `src/styles.css` with balanced system and Devanagari font fallbacks, `-webkit-font-smoothing: antialiased`, `text-rendering: optimizeLegibility`, and calibrated letter-spacing tracking for body (`-0.011em`) and headings (`-0.02em`).
+- Applied `tabular-nums` across numeric elements (experience prices, hotel pricing and nightly totals, currency exchange rates, elevation, weather metrics, transit distances, and impact statistics) to prevent number jitter and ensure consistent vertical tabular alignment.
+- Refined `PageHeader`, `SectionHeader`, and `Surface` in `page-primitives.tsx` to adopt semantic theme tokens (`text-foreground`, `text-muted-foreground`, `bg-card`, `border-border`) and balanced eyebrow tracking.
+- Replaced raw arrow characters (`→`) with styled Lucide `ChevronRight` and `ExternalLink` icons across `GuidesSection`, `TransportView`, `HomeFeed`, and admin verification views.
+- Replaced decorative emojis in `HomeFeed` empty search state and `BookingModal` passport stamp with styled Lucide icons (`Search`, `Award`).
+- Corrected stale "Leaflet" map tile descriptor and heading semantics in `OfflineSyncModal`.
 - Modernized mobile header breadcrumb context (`Paila / <Title>`) and bottom navigation with tactile pill indicators and safe-area padding.
 - Modernized `WeatherWidget` with Himalayan trail design, consistent contrast, and stone/alpine palette.
 - Modernized `EssentialsSection` with Lucide `ChevronDown`, authentic digital pass design for TIMS and ACAP permits, and currency converter inputs.

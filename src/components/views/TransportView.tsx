@@ -17,6 +17,7 @@ import {
   CalendarClock,
   Ticket,
   CheckCircle2,
+  ChevronRight,
   X,
   Minus,
   Plus,
@@ -494,15 +495,18 @@ export function TransportView() {
             See all 5 transport legs in order on the map
           </p>
         </div>
-        <span className="shrink-0 text-[11px] font-bold text-terracotta">Open map →</span>
+        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-bold text-terracotta">
+          <span>Open map</span>
+          <ChevronRight size={13} />
+        </span>
       </a>
 
       {/* Search */}
-      <div className="mx-4 md:mx-8 bg-white rounded-card shadow-card border border-stone-100 p-4 mb-4 relative">
-        <div className="absolute left-7 top-9 bottom-16 w-0.5 bg-stone-100 rounded-full" />
+      <div className="mx-4 md:mx-8 bg-card rounded-card shadow-card border border-border p-4 mb-4 relative">
+        <div className="absolute left-7 top-9 bottom-16 w-0.5 bg-border rounded-full" />
         <div className="flex gap-3 mb-3 relative z-10">
-          <div className="mt-2 text-stone-500 shrink-0">
-            <div className="h-3 w-3 rounded-full border-2 border-current bg-white" />
+          <div className="mt-2 text-muted-foreground shrink-0">
+            <div className="h-3 w-3 rounded-full border-2 border-current bg-card" />
           </div>
           <div className="flex-1">
             <input
@@ -511,7 +515,7 @@ export function TransportView() {
               placeholder="From (e.g. Kathmandu)"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
-              className="w-full min-h-[44px] text-sm font-semibold text-stone-900 placeholder-stone-500 outline-none border-b-2 border-stone-100 focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/30 transition-colors bg-transparent rounded-t-md"
+              className="w-full min-h-[44px] text-sm font-semibold text-foreground placeholder:text-muted-foreground outline-none border-b-2 border-border focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/30 transition-colors bg-transparent rounded-t-md"
             />
           </div>
         </div>
@@ -527,7 +531,7 @@ export function TransportView() {
               value={to}
               onChange={(e) => setTo(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && searchRoute()}
-              className="w-full min-h-[44px] text-sm font-semibold text-stone-900 placeholder-stone-500 outline-none border-b-2 border-stone-100 focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/30 transition-colors bg-transparent rounded-t-md"
+              className="w-full min-h-[44px] text-sm font-semibold text-foreground placeholder:text-muted-foreground outline-none border-b-2 border-border focus:border-terracotta focus-visible:ring-2 focus-visible:ring-terracotta/30 transition-colors bg-transparent rounded-t-md"
             />
           </div>
         </div>

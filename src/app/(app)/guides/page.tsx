@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Compass, MapPin, BadgeCheck, Loader2, Bookmark, BookmarkCheck } from "lucide-react";
+import {
+  Compass,
+  MapPin,
+  BadgeCheck,
+  Loader2,
+  Bookmark,
+  BookmarkCheck,
+  ChevronRight,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { guides as mockGuides } from "@/lib/data";
 import { useGuideBookmarks } from "@/hooks/use-guide-bookmarks";
@@ -121,9 +129,10 @@ export default function GuidesIndex() {
           <p className="text-stone-600 mb-2">Submit your guide ID to appear here.</p>
           <Link
             href="/guide/verify"
-            className="inline-flex items-center gap-1.5 min-h-[44px] text-xs font-bold text-terracotta hover:underline"
+            className="inline-flex items-center gap-1 min-h-[44px] text-xs font-bold text-terracotta hover:underline"
           >
-            Get verified →
+            <span>Get verified</span>
+            <ChevronRight size={13} />
           </Link>
         </div>
       </Surface>

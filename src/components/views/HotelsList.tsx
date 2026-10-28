@@ -91,11 +91,22 @@ export function HotelsList() {
 
       {/* Filters */}
       <div className="mb-5 rounded-card bg-card border border-border shadow-card p-3 md:p-3.5">
-        <div className="mb-3 flex items-center gap-2 border-b border-border pb-2 md:hidden">
-          <SlidersHorizontal size={15} className="text-terracotta" />
-          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            Filters
-          </span>
+        <div className="mb-3 flex items-center justify-between border-b border-border pb-2 md:hidden">
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal size={15} className="text-terracotta" />
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Filters
+            </span>
+          </div>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="text-xs font-bold text-terracotta hover:underline"
+            >
+              Reset filters
+            </button>
+          )}
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.8fr_0.8fr_0.8fr_auto] lg:items-end">
           <div className="flex min-w-0 flex-col gap-1">
@@ -217,13 +228,22 @@ export function HotelsList() {
           <HotelCard key={h.id} hotel={h} />
         ))}
         {filtered.length === 0 && (
-          <div className="col-span-full rounded-card border border-dashed border-stone-200 bg-white p-6 text-center">
+          <div className="col-span-full rounded-card border border-dashed border-border bg-card p-8 text-center flex flex-col items-center">
             <p className="text-sm font-semibold text-foreground">
               {t("hotels.empty", "No stays match these filters.")}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               Try widening the price range or rating.
             </p>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-terracotta/30 bg-terracotta/10 px-4 py-2 text-xs font-bold text-terracotta hover:bg-terracotta/20 transition-colors active:scale-95"
+              >
+                Reset filters
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -278,7 +298,7 @@ function HotelCard({ hotel }: { hotel: Hotel }) {
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground">
             <Users size={11} /> {hotel.maxGuests} max
           </span>
-          <p className="text-right text-sm font-extrabold text-terracotta">
+          <p className="text-right text-sm font-extrabold text-terracotta tabular-nums">
             NPR {hotel.pricePerNight.toLocaleString()}
             <span className="block text-[10px] font-semibold text-muted-foreground">
               / {t("hotels.night", "night")}

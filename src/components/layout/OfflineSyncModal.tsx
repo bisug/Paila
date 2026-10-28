@@ -14,7 +14,7 @@ type OfflineSyncModalProps = {
 
 const cachedItems = [
   {
-    label: "Leaflet Topographical Map Tiles",
+    label: "Topographical Map Tiles & Styles",
     desc: "Cached Syabrubesi-Langtang sector",
     size: "18.4 MB",
   },
@@ -93,7 +93,7 @@ export function OfflineSyncModal({
                   <Wifi className="text-pine shrink-0" size={20} />
                 )}
                 <div className="min-w-0">
-                  <h3 className="text-sm font-bold text-stone-900">Simulate Offline Mode</h3>
+                  <p className="text-sm font-bold text-stone-900">Simulate Offline Mode</p>
                   <p className="text-[11px] text-stone-500 mt-0.5 truncate">
                     Force local caching in mountains
                   </p>

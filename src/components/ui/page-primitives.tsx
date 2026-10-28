@@ -50,12 +50,14 @@ export function PageHeader({
         )}
         <div className="min-w-0">
           {eyebrow && (
-            <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-terracotta">
+            <p className="mb-1 text-xs font-bold uppercase tracking-wider text-terracotta">
               {eyebrow}
             </p>
           )}
-          <h1 className="text-2xl font-bold tracking-tight text-stone-900">{title}</h1>
-          {description && <p className="mt-1 text-sm leading-6 text-stone-500">{description}</p>}
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">{title}</h1>
+          {description && (
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
+          )}
         </div>
       </div>
       {action && <div className="shrink-0">{action}</div>}
@@ -67,8 +69,8 @@ export function SectionHeader({ title, description, action, className }: Section
   return (
     <div className={cn("mb-4 flex items-end justify-between gap-4", className)}>
       <div className="min-w-0">
-        <h2 className="text-lg font-bold text-stone-900">{title}</h2>
-        {description && <p className="mt-0.5 text-sm text-stone-500">{description}</p>}
+        <h2 className="text-lg md:text-xl font-bold tracking-tight text-foreground">{title}</h2>
+        {description && <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>
@@ -77,9 +79,9 @@ export function SectionHeader({ title, description, action, className }: Section
 
 export function Surface({ children, className, tone = "default" }: SurfaceProps) {
   const toneClass = {
-    default: "border-stone-100 bg-white shadow-card",
-    subtle: "border-stone-200 bg-stone-50",
-    brand: "border-terracotta/20 bg-terracotta/5",
+    default: "border-border bg-card shadow-card text-card-foreground",
+    subtle: "border-border bg-muted/40 text-foreground",
+    brand: "border-terracotta/20 bg-terracotta/5 text-foreground",
   }[tone];
 
   return <div className={cn("rounded-card border p-4", toneClass, className)}>{children}</div>;

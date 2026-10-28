@@ -1,4 +1,4 @@
-import { BadgeCheck, MessageCircle, Phone, Star } from "lucide-react";
+import { BadgeCheck, ChevronRight, MessageCircle, Phone, Star } from "lucide-react";
 import Link from "next/link";
 import { guides, milestones } from "@/lib/data";
 import { calculateDistance } from "@/lib/location";
@@ -28,9 +28,10 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
         </h2>
         <Link
           href="/guide/verify"
-          className="inline-flex items-center min-h-[44px] text-[11px] font-semibold text-pine hover:underline"
+          className="inline-flex items-center gap-1 min-h-[44px] text-xs font-semibold text-pine hover:underline"
         >
-          Are you a guide? Get verified →
+          <span>Are you a guide? Get verified</span>
+          <ChevronRight size={13} />
         </Link>
       </div>
       <div
@@ -76,7 +77,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
                   </div>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="text-[11px] text-stone-500 truncate">{g.place}</span>
-                    <span className="text-[11px] font-bold text-terracotta bg-terracotta/10 px-1.5 py-0.5 rounded-full shrink-0">
+                    <span className="text-[11px] font-bold text-terracotta bg-terracotta/10 px-1.5 py-0.5 rounded-full shrink-0 tabular-nums">
                       {distanceLabel}
                     </span>
                   </div>
@@ -112,7 +113,7 @@ export function GuidesSection({ currentLocation }: GuidesSectionProps) {
                 ))}
               </div>
 
-              <div className="mt-2 flex items-center justify-between text-[11px] text-stone-500">
+              <div className="mt-2 flex items-center justify-between text-[11px] text-stone-500 tabular-nums">
                 <span className="inline-flex items-center gap-1">
                   <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                   <span className="font-semibold text-stone-700">{g.rating}</span>

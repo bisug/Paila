@@ -56,15 +56,13 @@ function SectionHeader({ icon: Icon, label }: { icon: typeof Mountain; label: st
   return (
     <div className="flex items-center gap-2 mb-2.5">
       <Icon size={14} className="text-terracotta" />
-      <h3 className="text-[11px] font-bold uppercase tracking-widest text-stone-500">{label}</h3>
+      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{label}</h3>
     </div>
   );
 }
 
 function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl bg-white border border-stone-100 shadow-card p-4">{children}</div>
-  );
+  return <div className="rounded-2xl bg-card border border-border shadow-card p-4">{children}</div>;
 }
 
 function PlacePill({

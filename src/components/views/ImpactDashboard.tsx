@@ -57,7 +57,7 @@ export function ImpactDashboard() {
                 <Icon size={22} className={m.color} />
               </div>
               <div className="min-w-0">
-                <p className="text-2xl font-extrabold text-stone-900 tracking-tight leading-none">
+                <p className="text-2xl font-extrabold text-stone-900 tracking-tight leading-none tabular-nums">
                   {m.value}
                 </p>
                 <p className="mt-1.5 text-xs text-stone-600 leading-snug">{m.label}</p>
@@ -71,7 +71,7 @@ export function ImpactDashboard() {
       <div className="mb-6 md:mb-8 rounded-card bg-white border border-stone-200/80 px-5 md:px-6 py-5 shadow-card">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm md:text-base font-bold text-stone-900">Trail Stamps & Passport</h3>
-          <span className="text-xs md:text-sm font-bold text-pine bg-pine-tint px-2.5 py-0.5 rounded-full border border-pine/20">
+          <span className="text-xs md:text-sm font-bold text-pine bg-pine-tint px-2.5 py-0.5 rounded-full border border-pine/20 tabular-nums">
             {UNLOCKED} of {TOTAL_BADGES} unlocked
           </span>
         </div>

@@ -25,6 +25,7 @@ import {
   HeartPulse,
   Info,
   ChevronDown,
+  ChevronRight,
   QrCode,
 } from "lucide-react";
 import {
@@ -546,7 +547,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
             <span className="text-[11px] font-bold uppercase tracking-wider">{location.name}</span>
           </div>
           <div className="flex items-baseline gap-2.5">
-            <h3 className="text-4xl font-extrabold text-stone-900 tracking-tight">
+            <h3 className="text-4xl font-extrabold text-stone-900 tracking-tight tabular-nums">
               {weather ? `${weather.temp}°` : error ? "—" : "..."}
             </h3>
             <span className="text-sm font-bold text-stone-700">
@@ -554,7 +555,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
             </span>
           </div>
           {weather && (
-            <div className="text-[11px] font-medium text-stone-500 mt-0.5">
+            <div className="text-[11px] font-medium text-stone-500 mt-0.5 tabular-nums">
               Feels like {weather.feelsLike}° · Humidity {weather.humidity}%
             </div>
           )}
@@ -576,12 +577,12 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
         <div className="flex flex-col items-center justify-center p-1 text-center">
           <Mountain size={13} className="text-stone-500 mb-0.5" />
           <span className="text-[10px] text-stone-500 font-bold uppercase">Elev</span>
-          <span className="text-xs font-bold text-stone-900">{elevation}</span>
+          <span className="text-xs font-bold text-stone-900 tabular-nums">{elevation}</span>
         </div>
         <div className="flex flex-col items-center justify-center p-1 text-center">
           <Wind size={13} className="text-stone-500 mb-0.5" />
           <span className="text-[10px] text-stone-500 font-bold uppercase">Wind</span>
-          <span className="text-xs font-bold text-stone-900">
+          <span className="text-xs font-bold text-stone-900 tabular-nums">
             {weather ? `${weather.wind} km/h` : "..."}
           </span>
         </div>
@@ -589,7 +590,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
           <Sun size={13} className="text-stone-500 mb-0.5" />
           <span className="text-[10px] text-stone-500 font-bold uppercase">UV</span>
           <span
-            className={`text-xs font-bold ${weather && weather.uv > 7 ? "text-red-600" : "text-stone-900"}`}
+            className={`text-xs font-bold tabular-nums ${weather && weather.uv > 7 ? "text-red-600" : "text-stone-900"}`}
           >
             {weather ? `${weather.uv}${weather.uv > 7 ? " High" : ""}` : "..."}
           </span>
@@ -597,7 +598,7 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
         <div className="flex flex-col items-center justify-center p-1 text-center">
           <Sunset size={13} className="text-stone-500 mb-0.5" />
           <span className="text-[10px] text-stone-500 font-bold uppercase">Sunset</span>
-          <span className="text-xs font-bold text-stone-900">
+          <span className="text-xs font-bold text-stone-900 tabular-nums">
             {weather ? weather.sunset : "..."}
           </span>
         </div>
@@ -784,7 +785,7 @@ function CurrencyConverter({ rates }: { rates: Record<string, number> | null }) 
           <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
             Live Rate (Nepal Rastra Bank)
           </p>
-          <p className="text-lg font-bold text-emerald-950 mt-0.5">
+          <p className="text-lg font-bold text-emerald-950 mt-0.5 tabular-nums">
             1 {sourceCode} = {currentRate ? currentRate.toFixed(2) : "..."} NPR
           </p>
         </div>
@@ -814,14 +815,14 @@ function CurrencyConverter({ rates }: { rates: Record<string, number> | null }) 
             min="0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="w-full text-lg font-bold bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 outline-none focus:border-terracotta focus:bg-white focus:ring-2 focus:ring-terracotta/20 transition-all"
+            className="w-full text-lg font-bold bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-stone-900 outline-none focus:border-terracotta focus:bg-white focus:ring-2 focus:ring-terracotta/20 transition-all tabular-nums"
           />
         </div>
         <div>
           <label className="text-[11px] font-bold uppercase tracking-wide text-stone-500 mb-1 block">
             You Receive in Nepal
           </label>
-          <div className="w-full text-lg font-bold bg-stone-100/80 text-stone-900 border border-stone-200 rounded-xl px-3 py-2">
+          <div className="w-full text-lg font-bold bg-stone-100/80 text-stone-900 border border-stone-200 rounded-xl px-3 py-2 tabular-nums">
             Rs. {npr}
           </div>
         </div>
@@ -1105,9 +1106,10 @@ function LocalEventsSection({
             )}
             <Link
               href="/preferences"
-              className="text-[11px] font-bold text-terracotta hover:underline"
+              className="inline-flex items-center gap-1 text-xs font-bold text-terracotta hover:underline"
             >
-              Manage hidden events →
+              <span>Manage hidden events</span>
+              <ChevronRight size={13} />
             </Link>
           </div>
         </div>
@@ -1299,7 +1301,9 @@ function FeaturedCard({
         </div>
         <div className="mt-4 md:mt-6 flex items-center justify-between">
           <div className="leading-none">
-            <span className="text-xl md:text-2xl font-bold text-stone-900">{experience.price}</span>
+            <span className="text-xl md:text-2xl font-bold text-stone-900 tabular-nums">
+              {experience.price}
+            </span>
             <span className="ml-1 text-xs md:text-sm text-stone-500">NPR / person</span>
           </div>
           <button
@@ -1362,7 +1366,7 @@ function ExperienceCard({
         </p>
         <div className="mt-2 flex items-center justify-between">
           <Rating rating={experience.rating} reviews={experience.reviews} />
-          <span className="text-[12px] font-bold text-terracotta">
+          <span className="text-[12px] font-bold text-terracotta tabular-nums">
             {experience.price} <span className="font-normal text-stone-500">NPR</span>
           </span>
         </div>
@@ -1371,19 +1375,31 @@ function ExperienceCard({
   );
 }
 
-function EmptyState({ query }: { query: string }) {
+function EmptyState({ query, onClear }: { query: string; onClear?: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center px-8">
-      <span className="text-4xl mb-4" role="img" aria-label="Search">
-        🔍
-      </span>
-      <p className="text-base font-semibold text-stone-700">No experiences found</p>
+    <div className="flex flex-col items-center justify-center py-16 text-center px-8 rounded-2xl bg-white border border-stone-200/80 shadow-xs my-4">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-stone-100 text-stone-500 mb-3 border border-stone-200">
+        <Search size={22} />
+      </div>
+      <p className="text-base font-bold text-stone-900">No experiences found</p>
       {query ? (
-        <p className="mt-1 text-sm text-stone-500">
-          No results for "<span className="font-medium">{query}</span>". Try a different search.
-        </p>
+        <>
+          <p className="mt-1 text-sm text-stone-500 max-w-sm">
+            No results for "<span className="font-semibold text-stone-700">{query}</span>". Try
+            searching another destination or activity.
+          </p>
+          {onClear && (
+            <button
+              type="button"
+              onClick={onClear}
+              className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-stone-100 px-4 py-2 text-xs font-bold text-stone-700 hover:bg-stone-200 transition-colors"
+            >
+              Clear search
+            </button>
+          )}
+        </>
       ) : (
-        <p className="mt-1 text-sm text-stone-500">Try a different category.</p>
+        <p className="mt-1 text-sm text-stone-500">Try a different category or destination.</p>
       )}
     </div>
   );
@@ -1733,7 +1749,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
                               ? "Deeper cut"
                               : "Insider"}
                         </span>
-                        <span className="text-[11px] font-bold text-terracotta">
+                        <span className="text-[11px] font-bold text-terracotta tabular-nums">
                           {rec.experience.price}
                           <span className="font-normal text-stone-500"> NPR</span>
                         </span>
@@ -1758,7 +1774,7 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
         <GuidesSection currentLocation={currentLocation} />
 
         {filtered.length === 0 ? (
-          <EmptyState query={search} />
+          <EmptyState query={search} onClear={() => setSearch("")} />
         ) : (
           <>
             <div>

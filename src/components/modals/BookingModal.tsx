@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   Loader2,
   Sparkles,
+  Award,
 } from "lucide-react";
 import { type Experience } from "@/lib/data";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -138,10 +139,12 @@ export function BookingModal({
           </div>
 
           {/* Stamp Notification */}
-          <div className="mt-4 p-3 bg-terracotta-tint rounded-xl border border-terracotta/10 flex items-center gap-3 text-left">
-            <span className="text-2xl">🏆</span>
+          <div className="mt-4 p-3 bg-terracotta-tint rounded-xl border border-terracotta/15 flex items-center gap-3 text-left">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-terracotta/15 text-terracotta border border-terracotta/25">
+              <Award size={20} />
+            </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-terracotta">
+              <p className="text-xs font-bold uppercase tracking-wider text-terracotta">
                 Stamp Unlocked
               </p>
               <p className="text-xs font-bold text-stone-900 leading-snug">

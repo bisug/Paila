@@ -192,7 +192,7 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
         {/* Booking card */}
         <aside className="mt-6 md:mt-0">
           <div className="md:sticky md:top-20 rounded-card border border-border bg-card shadow-card-md p-5">
-            <p className="text-2xl font-bold text-foreground">
+            <p className="text-2xl font-bold text-foreground tabular-nums">
               NPR {hotel.pricePerNight.toLocaleString()}
               <span className="text-sm font-medium text-muted-foreground">
                 {" "}
@@ -309,7 +309,7 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
           <p className="text-[11px] text-muted-foreground font-semibold">
             {nights > 0 ? `${nights} ${nights === 1 ? "night" : "nights"}` : "Per night"}
           </p>
-          <p className="text-base font-extrabold text-foreground leading-tight">
+          <p className="text-base font-extrabold text-foreground leading-tight tabular-nums">
             NPR {(nights > 0 ? totalNpr : hotel.pricePerNight).toLocaleString()}
           </p>
         </div>

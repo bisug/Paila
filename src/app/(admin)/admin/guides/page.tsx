@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { ShieldCheck, AlertCircle, Loader2, Check, X, ArrowLeft } from "lucide-react";
+import { ShieldCheck, AlertCircle, Loader2, Check, X, ArrowLeft, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   listGuideVerificationReviewData,
@@ -256,9 +256,10 @@ function SubCard({
             href={url}
             target="_blank"
             rel="noreferrer"
-            className="text-xs font-semibold text-terracotta"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-terracotta hover:underline"
           >
-            View ID card →
+            <span>View ID card</span>
+            <ExternalLink size={12} />
           </a>
         )}
         {sub.review_note && (
