@@ -33,11 +33,14 @@ export type Database = {
           created_at: string;
           currency: string;
           guests: number;
+          host_user_id: string | null;
           hotel_image: string | null;
           hotel_location: string;
           hotel_name: string;
           hotel_slug: string;
           id: string;
+          listing_id: string | null;
+          listing_type: string;
           nights: number;
           price_per_night_npr: number;
           status: string;
@@ -54,11 +57,14 @@ export type Database = {
           created_at?: string;
           currency?: string;
           guests: number;
+          host_user_id?: string | null;
           hotel_image?: string | null;
           hotel_location: string;
           hotel_name: string;
           hotel_slug: string;
           id?: string;
+          listing_id?: string | null;
+          listing_type?: string;
           nights: number;
           price_per_night_npr: number;
           status?: string;
@@ -75,11 +81,14 @@ export type Database = {
           created_at?: string;
           currency?: string;
           guests?: number;
+          host_user_id?: string | null;
           hotel_image?: string | null;
           hotel_location?: string;
           hotel_name?: string;
           hotel_slug?: string;
           id?: string;
+          listing_id?: string | null;
+          listing_type?: string;
           nights?: number;
           price_per_night_npr?: number;
           status?: string;
@@ -295,7 +304,7 @@ export type Database = {
       };
     };
     Enums: {
-      app_role: "admin";
+      app_role: "admin" | "host" | "guide" | "verifier";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -417,7 +426,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin"],
+      app_role: ["admin", "host", "guide", "verifier"],
     },
   },
 } as const;

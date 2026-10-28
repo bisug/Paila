@@ -65,6 +65,14 @@ export async function proxy(request: NextRequest) {
     if (!user) {
       return NextResponse.redirect(new URL("/", request.url));
     }
+
+    // Fast-path: check JWT app_metadata claims (zero database roundtrip at the edge)
+    const appRoles = (user.app_metadata?.roles as string[] | undefined) ?? [];
+    if (appRoles.includes("admin")) {
+      return response;
+    }
+
+    // Fallback: check user_roles table in case JWT claim has not refreshed yet
     const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
     const isAdmin = roles?.some((r: { role: string }) => r.role === "admin");
     if (!isAdmin) {

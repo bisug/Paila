@@ -6,6 +6,10 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Added
 
+- Migration `20261028094000_auth_rbac_and_bilateral_bookings.sql`: expanded `app_role` enum to support `'admin'`, `'host'`, `'guide'`, and `'verifier'`.
+- Bilateral booking ownership: added `host_user_id`, `listing_id`, and `listing_type` to `public.bookings` with two-sided RLS policies for traveler, host, and admin operational visibility.
+- Host and merchant booking actions (`listHostBookings`, `respondToBooking`) in `src/lib/actions/bookings.ts` with host-ownership and status transition guards.
+- PostgreSQL trigger `sync_user_roles_to_jwt()` to automatically synchronize `user_roles` into `auth.users.raw_app_meta_data.roles` for zero-roundtrip edge claims.
 - Mobile filter reset button in header and actionable recovery in `HotelsList` empty state.
 - Actionable "Clear search" recovery button in `HomeFeed` empty search state.
 - Mobile sticky booking dock in `HotelDetail` for quick access to nightly totals and booking requests without scrolling.
@@ -16,6 +20,8 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Changed
 
+- Optimized edge middleware in `src/proxy.ts` with zero-DB-roundtrip fast-path verifying admin access from JWT `app_metadata.roles` with database query fallback.
+- Updated Supabase TypeScript definitions in `src/integrations/supabase/types.ts` and in-memory demo mock client (`src/integrations/supabase/client.ts`) with bilateral booking fields and multi-role claims.
 - Modernized typography system in `src/styles.css` with balanced system and Devanagari font fallbacks, `-webkit-font-smoothing: antialiased`, `text-rendering: optimizeLegibility`, and calibrated letter-spacing tracking for body (`-0.011em`) and headings (`-0.02em`).
 - Applied `tabular-nums` across numeric elements (experience prices, hotel pricing and nightly totals, currency exchange rates, elevation, weather metrics, transit distances, and impact statistics) to prevent number jitter and ensure consistent vertical tabular alignment.
 - Refined `PageHeader`, `SectionHeader`, and `Surface` in `page-primitives.tsx` to adopt semantic theme tokens (`text-foreground`, `text-muted-foreground`, `bg-card`, `border-border`) and balanced eyebrow tracking.

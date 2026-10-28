@@ -32,7 +32,7 @@ const demoUser = {
   role: "authenticated",
   email: "aarav.sharma@example.com",
   phone: "",
-  app_metadata: { provider: "email" },
+  app_metadata: { provider: "email", roles: ["admin"] },
   user_metadata: {
     first_name: "Aarav",
     last_name: "Sharma",

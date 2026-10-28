@@ -65,6 +65,8 @@ export async function checkoutHotel({
       total_usd_cents: totalUsdCents,
       currency: "USD",
       status: "pending",
+      listing_id: hotel.id,
+      listing_type: "hotel",
     })
     .select("id")
     .single();
@@ -128,4 +130,46 @@ export async function cancelBooking({ data }: { data: { id: string; token?: stri
   if (error) throw new Error(error.message);
   if (!updated) throw new Error("This booking can no longer be cancelled.");
   return { ok: true as const };
+}
+
+export async function listHostBookings({ data }: { data?: { token?: string } } = {}) {
+  if (!data?.token) throw new Error("Unauthorized");
+
+  const { supabase, userId } = await createAuthenticatedSupabaseClient(data.token);
+
+  const { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(
+      "id, hotel_slug, hotel_name, hotel_location, hotel_image, check_in, check_out, guests, nights, total_npr, total_usd_cents, currency, status, created_at, listing_id, listing_type",
+    )
+    .eq("host_user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return bookings ?? [];
+}
+
+export async function respondToBooking({
+  data,
+}: {
+  data: { id: string; status: "confirmed" | "cancelled"; token?: string };
+}) {
+  if (!data.token) throw new Error("Unauthorized");
+
+  const { supabase, userId } = await createAuthenticatedSupabaseClient(data.token);
+
+  // Host can only confirm or reject pending booking requests that belong to their property:
+  const { data: updated, error } = await supabase
+    .from("bookings")
+    .update({ status: data.status })
+    .eq("id", data.id)
+    .eq("host_user_id", userId)
+    .eq("status", "pending")
+    .select("id, status")
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!updated)
+    throw new Error("Unable to update booking status. Request may already be resolved.");
+  return { ok: true as const, booking: updated };
 }
