@@ -6,6 +6,9 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Added
 
+- Himalayan altitude safety and acclimatization engine (`src/lib/altitude-safety.ts`) implementing UIAA/WMS clinical guidelines, ascent velocity calculations, and effective oxygen modeling.
+- Altitude advisory badge `AltitudeAdvisoryBadge` (`src/components/safety/AltitudeAdvisoryBadge.tsx`) embedded in transit and trek views (`TransportView.tsx`) with direct launcher into the Lake Louise AMS self-assessment test.
+- High-altitude Everest Trailhead flight option to Lukla (2,860m) in `src/lib/data/transport.ts`.
 - Cryptographic trekking permit engine in `src/lib/permits.ts` with offline HMAC-SHA256 digital signature validation, checkpoint passage logging, and pre-seeded ACAP/TIMS permits.
 - Checkpoint verification flow in `src/components/views/ScannerView.tsx` validating scanned permit QR codes completely offline with instant authentic/expired/tampered status and passage logging.
 - Digital permit pass modal `PermitQrModal` (`src/components/modals/PermitQrModal.tsx`) and pure SVG QR generator (`src/components/ui/QrCodeSvg.tsx`) for high-contrast offline presentation at trail checkpoints.
@@ -29,6 +32,7 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Changed
 
+- Connected Lake Louise AMS diagnostic sheet in `SosPanel.tsx` with global high-altitude advisory dispatchers and `AppShell`.
 - Integrated interactive digital permit QR passes into `HomeFeed.tsx` and `ProfileMenu` (`src/app/(app)/profile/page.tsx`).
 - Refactored `useGuideNav` in `src/hooks/use-guide-nav.ts` and `SidebarGuidesGroup` in `src/components/layout/SidebarGuidesGroup.tsx` to synchronize with unified `useUserRoles`.
 - Updated `AccountClient` in `src/components/views/AccountClient.tsx` to surface assigned system roles and verified permission badges.

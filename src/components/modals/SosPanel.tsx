@@ -35,6 +35,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 type SosPanelProps = {
   isOffline: boolean;
   onClose: () => void;
+  initialAmsOpen?: boolean;
 };
 
 const DEFAULT_LOCATION: SosLocation = { label: "Location not shared" };
@@ -62,7 +63,7 @@ function loadInitialIncidents() {
   }
 }
 
-export function SosPanel({ isOffline, onClose }: SosPanelProps) {
+export function SosPanel({ isOffline, onClose, initialAmsOpen = false }: SosPanelProps) {
   const [now, setNow] = useState(() => Date.now());
   const [checkIn, setCheckIn] = useState<SafetyCheckIn>(() => loadInitialCheckIn());
   const [incidents, setIncidents] = useState<SosIncident[]>(() => loadInitialIncidents());
@@ -70,7 +71,7 @@ export function SosPanel({ isOffline, onClose }: SosPanelProps) {
   const [location, setLocation] = useState<SosLocation>(DEFAULT_LOCATION);
   const [isLocating, setIsLocating] = useState(false);
   const [actionNote, setActionNote] = useState<string | null>(null);
-  const [amsOpen, setAmsOpen] = useState(false);
+  const [amsOpen, setAmsOpen] = useState(initialAmsOpen);
 
   const [headache, setHeadache] = useState<number>(0);
   const [gi, setGi] = useState<number>(0);

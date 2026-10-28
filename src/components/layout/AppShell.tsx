@@ -19,6 +19,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const pathname = usePathname();
   const [sosOpen, setSosOpen] = useState(false);
+  const [sosInitialAms, setSosInitialAms] = useState(false);
   const [syncModalOpen, setSyncModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarMinimized, setSidebarMinimized] = useState(false);
@@ -38,11 +39,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setForceOffline(savedForce);
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
+    const handleOpenSos = () => {
+      setSosInitialAms(false);
+      setSosOpen(true);
+    };
+    const handleOpenAms = () => {
+      setSosInitialAms(true);
+      setSosOpen(true);
+    };
+
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
+    window.addEventListener("paila_open_sos", handleOpenSos);
+    window.addEventListener("paila_open_sos_ams", handleOpenAms);
+
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("paila_open_sos", handleOpenSos);
+      window.removeEventListener("paila_open_sos_ams", handleOpenAms);
     };
   }, []);
 
@@ -122,7 +137,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      {sosOpen && <SosPanel isOffline={isOffline} onClose={() => setSosOpen(false)} />}
+      {sosOpen && (
+        <SosPanel
+          isOffline={isOffline}
+          initialAmsOpen={sosInitialAms}
+          onClose={() => {
+            setSosOpen(false);
+            setSosInitialAms(false);
+          }}
+        />
+      )}
 
       {syncModalOpen && (
         <OfflineSyncModal

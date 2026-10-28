@@ -197,6 +197,23 @@ export const transportOptions: TransportOption[] = [
     cancellationReason: "Jomsom wind window closed",
     note: "Jomsom's wind window closes by 11 AM. Morning flights only — expect cascading delays.",
   },
+  {
+    id: "flight-tara-lukla",
+    mode: "flight",
+    iconType: "plane",
+    operator: "Tara Air",
+    airline: "Tara Air",
+    flightNumber: "TA 101",
+    route: { from: "KTM", to: "Lukla (LUA)" },
+    scheduledDeparture: "06:30 AM",
+    duration: "35 mins",
+    status: "scheduled",
+    bookingUrl: "https://www.taraair.com",
+    officePhone: "+977-1-4491073",
+    price: 24500,
+    priceUnit: "NPR",
+    note: "Everest Trailhead (2,860m). High mountain airstrip — morning flights only. Baggage limit: 15kg.",
+  },
 
   // ── Treks ────────────────────────────────────────────────────────────
   {
