@@ -25,6 +25,8 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Fixed
 
+- Added graceful transient tile error handling to `FootprintMap` (`FootprintMap.tsx`):
+  - Handled transient vector tile network hiccups, aborted requests during rapid map zooming/panning, and status 0 network drops via `onError`, eliminating uncaught `AJAXError` terminal traces while preserving automatic MapLibre retry behavior.
 - Fixed MapLibre GL background web worker resolution in Next.js Turbopack (`src/lib/maps.ts`, `next.config.ts`):
   - Resolved `[browser] Error: Worker failed to load. Check that the worker URL is correct.` on `/map` by placing `maplibre-gl-worker.mjs` into `public/` and configuring `setWorkerUrl("/maplibre-gl-worker.mjs")`.
   - Added `worker-src 'self' blob:` to the Content Security Policy in `next.config.ts` to authorize local web worker script execution.

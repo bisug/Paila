@@ -533,6 +533,18 @@ export function FootprintMap({ defaultView = "pins" }: { defaultView?: "pins" | 
                     style={mapContainerStyle}
                     onClick={handleMapClick}
                     onLoad={() => setMapLoaded(true)}
+                    onError={(e) => {
+                      // Transient tile fetch failures (e.g., aborted tile requests during fast zoom/pan
+                      // or intermittent network drops) are automatically retried by MapLibre.
+                      const err = e.error as Error & { status?: number };
+                      const isTransient =
+                        err?.message?.includes("Failed to fetch") || err?.status === 0;
+                      if (isTransient) {
+                        console.warn("Map tile transient notice (retrying):", err?.message);
+                        return;
+                      }
+                      console.error("Map rendering error:", err);
+                    }}
                   >
                     {viewMode === "journey" && todoPath.length > 1 && (
                       <Source id="journey-todo" type="geojson" data={toLineFeature(todoPath)}>
