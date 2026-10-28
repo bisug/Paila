@@ -246,7 +246,7 @@ export const milestones = [
   },
   {
     id: "pokhara-return",
-    label: "Pokhara Lakeside (Return)",
+    label: "Pokhara Lakeside",
     altitude: "820 m",
     lat: 28.2096,
     lng: 83.9586,

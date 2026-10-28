@@ -83,7 +83,7 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-28 md:pb-10">
+    <div className="min-h-screen bg-background pb-40 md:pb-10">
       {/* Gallery */}
       <div className="relative">
         <div className="aspect-[16/10] md:aspect-[16/7] overflow-hidden bg-muted">
@@ -304,10 +304,7 @@ export function HotelDetail({ hotel }: { hotel: Hotel }) {
       </div>
 
       {/* Mobile Sticky Booking Dock */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border p-3.5 px-4 flex items-center justify-between md:hidden shadow-float"
-        style={{ paddingBottom: "max(0.875rem, env(safe-area-inset-bottom))" }}
-      >
+      <div className="fixed bottom-[calc(4rem+max(0px,env(safe-area-inset-bottom)))] left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border p-3.5 px-4 flex items-center justify-between md:hidden shadow-float">
         <div>
           <p className="text-[11px] text-muted-foreground font-semibold">
             {nights > 0 ? `${nights} ${nights === 1 ? "night" : "nights"}` : "Per night"}

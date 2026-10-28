@@ -629,12 +629,12 @@ export function TransportView() {
 
       {/* Mode tabs */}
       <div className="px-4 md:px-8 mb-5">
-        <div className="inline-flex p-1 bg-stone-100 rounded-2xl border border-stone-200/80 gap-1 overflow-x-auto max-w-full">
+        <div className="flex p-1 bg-stone-100 rounded-2xl border border-stone-200/80 gap-1 overflow-x-auto no-scrollbar scroll-smooth max-w-full">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-4 py-2 min-h-[40px] rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 min-h-[40px] rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 ${
                 tab === t.id
                   ? "bg-white text-stone-900 shadow-xs"
                   : "text-stone-500 hover:text-stone-800"
@@ -642,7 +642,7 @@ export function TransportView() {
             >
               <span>{t.label}</span>
               <span
-                className={`text-[11px] px-1.5 py-0.2 rounded-full font-semibold ${
+                className={`text-[11px] px-1.5 py-0.5 rounded-full font-semibold ${
                   tab === t.id
                     ? "bg-terracotta/10 text-terracotta font-bold"
                     : "bg-stone-200/70 text-stone-600"

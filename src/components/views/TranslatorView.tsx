@@ -404,7 +404,7 @@ export function TranslatorView() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-stone-50 pb-24 md:pb-8">
+    <div className="flex min-h-screen flex-col bg-stone-50 pb-44 md:pb-24">
       <section className="border-b border-stone-200 bg-white px-4 py-5 md:px-8 md:py-7">
         <div className="max-w-3xl">
           <p className="text-xs font-bold uppercase tracking-widest text-terracotta">
@@ -656,7 +656,7 @@ function VoiceBar({
   onToggleListen: () => void;
 }) {
   return (
-    <div className="fixed bottom-20 md:bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-full border border-stone-200/90 bg-white/95 px-4 py-2 shadow-float backdrop-blur-md max-w-[calc(100vw-2rem)] w-auto">
+    <div className="fixed bottom-[calc(8.75rem+max(0px,env(safe-area-inset-bottom)))] md:bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-full border border-stone-200/90 bg-white/95 px-4 py-2 shadow-float backdrop-blur-md max-w-[calc(100vw-2rem)] w-auto">
       <button
         type="button"
         onClick={onToggleAutoSpeak}

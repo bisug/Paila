@@ -122,10 +122,10 @@ function SyncStatusBadge({
         onClick={onOpenSync}
         aria-label={label}
         title={label}
-        className="grid h-6 w-6 place-items-center rounded-full transition-colors hover:bg-stone-100"
+        className="grid h-10 w-10 place-items-center rounded-xl transition-colors hover:bg-stone-100 text-stone-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta"
       >
         <span
-          className={`h-2 w-2 rounded-full ${isOffline ? "bg-amber-500 animate-pulse" : "bg-pine"}`}
+          className={`h-2.5 w-2.5 rounded-full ${isOffline ? "bg-amber-500 animate-pulse" : "bg-pine"}`}
         />
       </button>
     );
@@ -260,7 +260,7 @@ export function DesktopSidebar({
   return (
     <aside
       className={`
-        hidden md:flex
+        hidden md:flex landscape-hide
         flex-col
         ${minimized ? "md:w-20" : "md:w-64 lg:w-72"}
         md:min-h-screen
@@ -291,8 +291,7 @@ export function DesktopSidebar({
                 Nepal
               </span>
             </div>
-            <div className="ml-auto flex items-center gap-1">
-              <NotificationsBell t={t} />
+            <div className="ml-auto flex items-center gap-1.5">
               <SyncStatusBadge
                 isOffline={isOffline}
                 label={isOffline ? t("status.offline") : t("status.online")}
@@ -300,7 +299,7 @@ export function DesktopSidebar({
               />
               <button
                 onClick={onToggleMinimized}
-                className="grid h-8 w-8 place-items-center rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors ml-0.5"
+                className="grid h-8 w-8 place-items-center rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors"
                 aria-label="Collapse sidebar"
                 title="Collapse sidebar"
               >
@@ -370,20 +369,27 @@ export function LandscapeRail({
   return (
     <aside className="landscape-rail hidden flex-col w-14 bg-white border-r border-stone-200 z-40 fixed top-0 left-0 h-full shrink-0">
       <div className="flex items-center justify-center h-11 border-b border-stone-100 shrink-0">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta">
-          <Footprints size={13} className="text-white" />
-        </div>
+        <Link
+          href="/"
+          className="flex h-7 w-7 items-center justify-center rounded-lg bg-terracotta hover:bg-terracotta/90 transition-all shadow-xs"
+          title="Paila Home"
+          aria-label="Paila Home"
+        >
+          <Footprints size={14} className="text-white" />
+        </Link>
       </div>
-      <nav className="flex-1 flex flex-col items-center py-2 gap-1 overflow-y-auto">
+      <nav className="flex-1 flex flex-col items-center py-1.5 gap-1 overflow-y-auto no-scrollbar">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = routeActive(pathname, item.href);
+          const label = navLabel(t, item.href, item.label);
           return (
             <Link
               key={item.href}
               href={item.href}
-              title={navLabel(t, item.href, item.label)}
-              className={`flex flex-col items-center justify-center w-10 h-10 rounded-xl transition-colors ${
+              title={label}
+              aria-label={label}
+              className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${
                 active ? "bg-terracotta/10 text-terracotta" : "text-stone-500 hover:bg-stone-100"
               }`}
             >
@@ -391,15 +397,52 @@ export function LandscapeRail({
             </Link>
           );
         })}
+        <Link
+          href="/hotels"
+          title={t("nav.hotels", "Hotels")}
+          aria-label={t("nav.hotels", "Hotels")}
+          className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${
+            hotelActive(pathname)
+              ? "bg-terracotta/10 text-terracotta"
+              : "text-stone-500 hover:bg-stone-100"
+          }`}
+        >
+          <HotelIcon size={18} strokeWidth={hotelActive(pathname) ? 2.5 : 1.8} />
+        </Link>
+        <Link
+          href="/impact"
+          title={t("nav.impact", "Impact")}
+          aria-label={t("nav.impact", "Impact")}
+          className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${
+            impactActive(pathname)
+              ? "bg-terracotta/10 text-terracotta"
+              : "text-stone-500 hover:bg-stone-100"
+          }`}
+        >
+          <HeartHandshake size={18} strokeWidth={impactActive(pathname) ? 2.5 : 1.8} />
+        </Link>
         <SidebarGuidesGroup variant="rail" />
       </nav>
-      <div className="flex flex-col items-center pb-2 gap-1 shrink-0">
+      <div className="flex flex-col items-center pb-2 gap-1 shrink-0 border-t border-stone-100 pt-1.5">
+        <Link
+          href="/profile"
+          title={t("nav.profile", "Profile")}
+          aria-label={t("nav.profile", "Profile")}
+          className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${
+            routeActive(pathname, "/profile")
+              ? "bg-terracotta/10 text-terracotta"
+              : "text-stone-500 hover:bg-stone-100"
+          }`}
+        >
+          <User size={18} strokeWidth={routeActive(pathname, "/profile") ? 2.5 : 1.8} />
+        </Link>
         <button
           onClick={onOpenSos}
-          title="SOS"
-          className="flex items-center justify-center w-10 h-10 rounded-xl text-red-500 hover:bg-red-50 transition-colors"
+          title={t("actions.sos", "Emergency SOS")}
+          aria-label={t("actions.sos", "Emergency SOS")}
+          className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 ring-1 ring-red-200 transition-colors"
         >
-          <Shield size={18} strokeWidth={2} />
+          <Shield size={18} strokeWidth={2.2} />
         </button>
       </div>
     </aside>
@@ -415,7 +458,8 @@ export function MobileHeader({
 }: MobileHeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 flex items-center px-4 h-14 landscape-header md:h-16 md:px-6">
-      <div className="flex items-center gap-2 md:hidden min-w-0">
+      {/* Mobile portrait brand & title */}
+      <div className="flex items-center gap-2 md:hidden min-w-0 landscape-hide">
         <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-terracotta shadow-xs">
           <Footprints size={14} className="text-white" />
         </div>
@@ -438,13 +482,26 @@ export function MobileHeader({
         />
       </div>
 
-      {title && <span className="hidden md:block text-base font-bold text-stone-900">{title}</span>}
+      {/* Landscape mobile & standard desktop title */}
+      <div className="hidden md:flex landscape-show-flex items-center gap-2 min-w-0">
+        <span className="text-sm md:text-base font-bold text-stone-900 truncate">
+          {title || "Paila"}
+        </span>
+        <div className="md:hidden landscape-show-flex">
+          <SyncStatusBadge
+            isOffline={isOffline}
+            label={isOffline ? t("status.offline") : t("status.online")}
+            onOpenSync={onOpenSync}
+            compact
+          />
+        </div>
+      </div>
 
       <div className="ml-auto flex items-center gap-1">
         <NotificationsBell t={t} />
         <button
           onClick={onToggleDrawer}
-          className="md:hidden h-10 w-10 flex items-center justify-center rounded-xl text-stone-600 hover:bg-stone-100 transition-colors"
+          className="md:hidden landscape-show-flex h-9 w-9 md:h-10 md:w-10 flex items-center justify-center rounded-xl text-stone-600 hover:bg-stone-100 transition-colors"
           aria-label={t("actions.menu")}
         >
           <Menu size={20} />
@@ -454,13 +511,25 @@ export function MobileHeader({
   );
 }
 
-export function MobileSosFab({ t, onOpenSos }: { t: TFunction; onOpenSos: () => void }) {
+export function MobileSosFab({
+  t,
+  onOpenSos,
+  isDetail = false,
+}: {
+  t: TFunction;
+  onOpenSos: () => void;
+  isDetail?: boolean;
+}) {
   return (
     <button
       onClick={onOpenSos}
       className="md:hidden landscape-hide fixed right-4 z-40 h-13 w-13 grid place-items-center rounded-full bg-red-600 text-white shadow-float ring-2 ring-red-100 hover:bg-red-700 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-red-400"
       aria-label={t("actions.sos")}
-      style={{ bottom: "calc(4.75rem + max(0px, env(safe-area-inset-bottom)))" }}
+      style={{
+        bottom: isDetail
+          ? "calc(9.5rem + max(0px, env(safe-area-inset-bottom)))"
+          : "calc(4.75rem + max(0px, env(safe-area-inset-bottom)))",
+      }}
     >
       <Shield size={20} strokeWidth={2.4} />
     </button>

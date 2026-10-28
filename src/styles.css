@@ -241,18 +241,31 @@ select {
   font: inherit;
 }
 
-@media (orientation: landscape) and (max-height: 500px) and (max-width: 900px) {
+@media (orientation: landscape) and (max-height: 550px) and (max-width: 1080px) {
   .landscape-hide {
     display: none !important;
   }
   .landscape-rail {
     display: flex !important;
+    width: calc(3.5rem + max(0px, env(safe-area-inset-left))) !important;
+    padding-left: max(0px, env(safe-area-inset-left)) !important;
+    padding-bottom: max(0.25rem, env(safe-area-inset-bottom)) !important;
   }
   .landscape-content-offset {
-    padding-left: 3.5rem;
+    padding-left: calc(3.5rem + max(0px, env(safe-area-inset-left))) !important;
+    padding-right: max(0px, env(safe-area-inset-right)) !important;
   }
   .landscape-header {
     height: 2.75rem !important;
+  }
+  .landscape-logo-hide {
+    display: none !important;
+  }
+  .landscape-show-flex {
+    display: flex !important;
+  }
+  .landscape-show-block {
+    display: block !important;
   }
 }
 

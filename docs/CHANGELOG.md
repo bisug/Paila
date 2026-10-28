@@ -25,6 +25,29 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Fixed
 
+- Fixed landscape navigation breakdown across mobile and compact viewports (`AppShellNavigation.tsx`, `AppShell.tsx`, `styles.css`):
+  - Resolved dual-sidebar collision on mobile landscape: added `.landscape-hide` to `DesktopSidebar` so the 256px desktop sidebar is suppressed on short landscape screens (height <= 550px) where Tailwind's `md:` breakpoint (width >= 768px) previously caused both `DesktopSidebar` and `LandscapeRail` to render simultaneously and overlap page content.
+  - Expanded landscape media query breakpoint in `styles.css` from `max-width: 900px` to `max-width: 1080px`, ensuring modern large landscape phones (iPhone 14/15/16 Pro Max at 932px, Galaxy Ultra at 915px) properly activate landscape mode rather than breaking into desktop layout.
+  - Added full navigation parity to `LandscapeRail`: added `Hotels` (`/hotels`), `Impact` (`/impact`), and `Profile` (`/profile`) routes alongside `SidebarGuidesGroup` and the emergency SOS button.
+  - Wrapped `LandscapeRail` top brand icon in a home link and added `no-scrollbar` with smooth overflow scrolling for compact landscape devices.
+  - Fixed duplicate branding and header alignment in `MobileHeader` during landscape orientation: hid duplicate logo and breadcrumbs when the rail is active, showing the clean page title and compact online status badge on the left, and preserving drawer menu access on the right.
+  - Integrated safe-area insets (`env(safe-area-inset-left)`, `env(safe-area-inset-right)`, `env(safe-area-inset-bottom)`) into `LandscapeRail` and content offset for phones with display notches and dynamic islands.
+- Resolved mobile layout and fixed-element collisions between the SOS FAB, bottom navigation, and action docks:
+  - Elevated `MobileSosFab` above the sticky booking dock on `/hotels/[slug]` to prevent obstructing "Request Booking".
+  - Docked the `HotelDetail` mobile booking bar above `MobileBottomNav` with `pb-40` content padding to ensure all information and actions are reachable.
+  - Positioned `VoiceBar` on `/talk` above `MobileSosFab` and `MobileBottomNav` with `pb-44` scroll clearance, eliminating speech text and microphone tap overlaps.
+  - Added bottom padding `pb-36` to `ImpactDashboard` and `pb-32` to `ScannerView` so cards and camera controls never tuck under the mobile navigation dock.
+- Fixed desktop sidebar header overflow and clipped collapse toggle button:
+  - Removed duplicate notification bell from the desktop sidebar (already present in the top desktop header).
+  - Ensured `PanelLeftClose` toggle button fits comfortably with full visibility and zero border clipping.
+- Fixed network status button touch target accessibility:
+  - Enlarged `NetworkStatusButton` to `h-10 w-10` (40x40px touch box) meeting WCAG 2.5.5 / 2.5.8 touch target standards on mobile while maintaining the sleek 10px status dot.
+- Fixed itinerary label formatting and elevation lookup:
+  - Cleaned internal `(Return)` milestone suffix from `Pokhara Lakeside`, fixing the hero heading typography ("Plan the next step around Pokhara Lakeside") and weather widget elevation lookup (`822 m`).
+- Fixed mobile horizontal clipping in `TransportView` mode tabs:
+  - Replaced rigid `inline-flex` with responsive smooth-scrolling `flex no-scrollbar` container so all travel mode tabs (including "Trek" and "Shared") remain fully legible.
+- Added smooth horizontal gradient edge fade to `HomeFeed` local alerts marquee.
+- Replaced duplicate "6 stays" count badge in `HotelsList` with an active "Reset filters" action button.
 - Fixed Next.js client hydration mismatch on `HomeFeed` (`LocalEventsSection` returning `null` during hydration vs SSR render due to direct `localStorage` read in `useState` and past event timestamps):
   - Deferred `localStorage` event preferences reading to post-hydration mount in `useEffect`.
   - Added `mounted` hydration guard to keep SSR and CSR initial render trees completely aligned.

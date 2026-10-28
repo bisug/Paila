@@ -371,7 +371,7 @@ export function ScannerView() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-900 px-4 pt-6 pb-24 flex flex-col">
+    <div className="min-h-screen bg-stone-900 px-4 pt-6 pb-32 md:pb-12 flex flex-col">
       <Script
         src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"
         strategy="lazyOnload"

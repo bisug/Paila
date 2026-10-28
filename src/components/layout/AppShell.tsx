@@ -107,7 +107,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <MobileBottomNav pathname={pathname} t={t} />
 
-      <MobileSosFab t={t} onOpenSos={() => setSosOpen(true)} />
+      <MobileSosFab
+        t={t}
+        onOpenSos={() => setSosOpen(true)}
+        isDetail={pathname.startsWith("/hotels/") && pathname !== "/hotels"}
+      />
 
       {sidebarOpen && (
         <MobileDrawer

@@ -31,7 +31,7 @@ const UNLOCKED = impactBadges.filter((b) => b.unlocked).length;
 
 export function ImpactDashboard() {
   return (
-    <div className="min-h-screen bg-stone-50 px-4 md:px-8 pt-5 pb-28 md:py-8">
+    <div className="min-h-screen bg-stone-50 px-4 md:px-8 pt-5 pb-36 md:py-8">
       {/* ── Page heading ──────────────────────────────────────────────── */}
       <div className="mb-5 md:mb-8">
         <p className="text-[11px] font-bold uppercase tracking-widest text-terracotta mb-1">

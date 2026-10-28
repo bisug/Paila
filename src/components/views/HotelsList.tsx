@@ -23,6 +23,14 @@ export function HotelsList() {
   const [minRating, setMinRating] = useState<number>(0);
 
   const priceError = minPrice !== "" && maxPrice !== "" && minPrice > maxPrice;
+  const hasActiveFilters =
+    district !== "all" || minPrice !== "" || maxPrice !== "" || minRating > 0;
+  const resetFilters = () => {
+    setDistrict("all");
+    setMinPrice("");
+    setMaxPrice("");
+    setMinRating(0);
+  };
 
   const districts = useMemo(
     () => ["all", ...Array.from(new Set(hotels.map((h) => h.district)))],
@@ -185,12 +193,22 @@ export function HotelsList() {
             </select>
           </div>
 
-          <span
-            className="hidden lg:block whitespace-nowrap rounded-xl bg-muted px-3 py-2 text-xs font-bold text-muted-foreground"
-            aria-hidden="true"
-          >
-            {filtered.length} {t("hotels.results", "stays")}
-          </span>
+          {hasActiveFilters ? (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="hidden lg:inline-flex items-center justify-center rounded-xl border border-terracotta/30 bg-terracotta/5 px-3 py-2 text-xs font-bold text-terracotta hover:bg-terracotta/10 transition-colors"
+            >
+              Reset filters
+            </button>
+          ) : (
+            <span
+              className="hidden lg:block whitespace-nowrap rounded-xl bg-muted px-3 py-2 text-xs font-bold text-muted-foreground"
+              aria-hidden="true"
+            >
+              {filtered.length} {t("hotels.results", "stays")}
+            </span>
+          )}
         </div>
       </div>
 

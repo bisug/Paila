@@ -523,7 +523,9 @@ function WeatherWidget({ location }: { location: { name: string; lat: number; ln
     return () => controller.abort();
   }, [location.lat, location.lng]);
 
-  const elevation = ELEVATION_BY_LOCATION[location.name] ?? "—";
+  const cleanLocationName = location.name.replace(/\s*\(Return\)$/i, "").trim();
+  const elevation =
+    ELEVATION_BY_LOCATION[cleanLocationName] ?? ELEVATION_BY_LOCATION[location.name] ?? "—";
   const isWet = weather?.condition.includes("Rain") || weather?.condition.includes("Thunder");
 
   return (
@@ -1419,8 +1421,9 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
       return a.index - b.index;
     });
     const closest = tied[0].milestone;
+    const cleanLabel = closest.label.replace(/\s*\(Return\)$/i, "").trim();
     setCurrentLocation({
-      name: minDistance < NEAREST_MILESTONE_MAX_KM ? closest.label : "Your Location",
+      name: minDistance < NEAREST_MILESTONE_MAX_KM ? cleanLabel : "Your Location",
       lat: coords.lat,
       lng: coords.lng,
     });
@@ -1596,13 +1599,14 @@ export function HomeFeed({ onBook }: { onBook: (experience: Experience) => void 
             role="region"
             aria-label="Local alerts"
           >
-            <div className="flex items-center whitespace-nowrap gap-2 pl-2">
+            <div className="flex items-center whitespace-nowrap gap-2 pl-2 pr-6">
               {LOCAL_ALERTS.map((alert) => (
                 <AlertChip key={alert.id} alert={alert} onOpen={setOpenAlert} />
               ))}
             </div>
           </div>
         </div>
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-linear-to-l from-white to-transparent" />
       </div>
 
       <Sheet open={!!openAlert} onOpenChange={(o) => !o && setOpenAlert(null)}>
