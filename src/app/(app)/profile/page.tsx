@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
 import {
   User as UserIcon,
   Settings,
@@ -16,55 +15,51 @@ import {
   Bell,
   ShieldAlert,
   Hotel as HotelIcon,
+  Building2,
+  Compass,
+  QrCode,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useUserRoles } from "@/hooks/use-user-roles";
+import { RoleBadge } from "@/components/layout/RoleBadge";
+import { RoleSwitcher } from "@/components/layout/RoleSwitcher";
 
 export default function ProfileMenu() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    user,
+    loading: rolesLoading,
+    roles,
+    isAdmin,
+    isHost,
+    isGuide,
+    isVerifier,
+    pendingHostBookingsCount,
+    pendingGuideReviewsCount,
+    verificationStatus,
+  } = useUserRoles();
+
   const [unread, setUnread] = useState(0);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const { data, error } = await supabase.auth.getUser();
-        if (error || !data?.user) {
-          router.push("/login");
-          return;
-        }
-        if (!mounted) return;
-        setUser(data.user);
+        const { count } = await supabase
+          .from("notifications")
+          .select("id", { count: "exact", head: true })
+          .eq("read", false);
 
-        const [notificationsRes, rolesRes] = await Promise.all([
-          supabase
-            .from("notifications")
-            .select("id", { count: "exact", head: true })
-            .eq("read", false),
-          supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", data.user.id)
-            .eq("role", "admin")
-            .maybeSingle(),
-        ]);
-
-        if (!mounted) return;
-        setUnread(notificationsRes.count ?? 0);
-        setIsAdmin(!!rolesRes.data);
+        if (mounted) setUnread(count ?? 0);
       } catch (err) {
-        console.error("Profile load error:", err);
-      } finally {
-        if (mounted) setLoading(false);
+        console.error("Notifications count error:", err);
       }
     })();
     return () => {
       mounted = false;
     };
-  }, [router]);
+  }, []);
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -78,10 +73,10 @@ export default function ProfileMenu() {
     }
   }
 
-  if (loading) {
+  if (rolesLoading) {
     return (
       <div className="min-h-screen grid place-items-center">
-        <Loader2 className="animate-spin text-stone-500" />
+        <Loader2 className="animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -92,7 +87,7 @@ export default function ProfileMenu() {
   const isProfileIncomplete = !meta.first_name;
 
   return (
-    <div className="min-h-screen bg-background px-4 pt-5 pb-28">
+    <div className="min-h-screen bg-background px-4 pt-5 pb-28 md:max-w-2xl md:mx-auto">
       {isProfileIncomplete && (
         <Link
           href="/profile/account"
@@ -111,15 +106,164 @@ export default function ProfileMenu() {
         </Link>
       )}
 
-      <div className="mb-8">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">Menu</h1>
-        <p className="text-sm text-muted-foreground mt-1">Signed in as {identifier}</p>
+        <p className="text-sm text-muted-foreground mt-0.5">Signed in as {identifier}</p>
+        <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
+          {roles.map((r) => (
+            <RoleBadge key={r} role={r} size="sm" />
+          ))}
+        </div>
       </div>
 
+      {/* Role Switcher (Preview perspectives) */}
+      <RoleSwitcher className="mb-6" />
+
       <div className="space-y-6">
+        {/* ── Host Portal Section ────────────────────────────── */}
+        {isHost && (
+          <div>
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3 ml-2 flex items-center justify-between">
+              <span>Host Management</span>
+              {pendingHostBookingsCount > 0 && (
+                <span className="text-terracotta text-[10px] font-bold">
+                  {pendingHostBookingsCount} action required
+                </span>
+              )}
+            </h2>
+            <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
+              <Link
+                href="/profile/bookings?tab=host"
+                className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
+              >
+                <div className="h-10 w-10 rounded-xl bg-pine/10 text-pine grid place-items-center shrink-0">
+                  <Building2 size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold text-foreground">Host Reservations</p>
+                    {pendingHostBookingsCount > 0 && (
+                      <span className="rounded-full bg-terracotta text-white text-[10px] font-extrabold px-1.5 py-0.2">
+                        {pendingHostBookingsCount} pending
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Review and confirm guest stays at your lodge
+                  </p>
+                </div>
+                <ChevronRight size={18} className="text-stone-300" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* ── Guide Center Section ────────────────────────────── */}
+        {isGuide && (
+          <div>
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3 ml-2">
+              Guide Center
+            </h2>
+            <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
+              <Link
+                href="/guide/verify"
+                className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
+              >
+                <div className="h-10 w-10 rounded-xl bg-sky-50 text-sky-700 grid place-items-center shrink-0">
+                  <Compass size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold text-foreground">Verification & License</p>
+                    {verificationStatus && (
+                      <span
+                        className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
+                          verificationStatus === "approved"
+                            ? "bg-pine/10 text-pine border-pine/30"
+                            : verificationStatus === "pending"
+                              ? "bg-amber-50 text-amber-700 border-amber-200"
+                              : "bg-red-50 text-red-700 border-red-200"
+                        }`}
+                      >
+                        {verificationStatus}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    NTB credentials, guiding regions and status
+                  </p>
+                </div>
+                <ChevronRight size={18} className="text-stone-300" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* ── Verifier Tools Section ────────────────────────────── */}
+        {isVerifier && (
+          <div>
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3 ml-2">
+              Checkpoint Tools
+            </h2>
+            <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
+              <Link
+                href="/scan"
+                className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
+              >
+                <div className="h-10 w-10 rounded-xl bg-purple-50 text-purple-700 grid place-items-center shrink-0">
+                  <QrCode size={18} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-foreground">Checkpoint Permit Scanner</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Scan trekker permits & NTB guide QR codes offline
+                  </p>
+                </div>
+                <ChevronRight size={18} className="text-stone-300" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* ── Admin Oversight Section ─────────────────────────── */}
+        {isAdmin && (
+          <div>
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3 ml-2">
+              Platform Administration
+            </h2>
+            <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
+              <Link
+                href="/admin/guides"
+                className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
+              >
+                <div className="h-10 w-10 rounded-xl bg-amber-100 text-amber-700 grid place-items-center shrink-0">
+                  <ShieldAlert size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold text-foreground">
+                      Guide Reviews & Verification
+                    </p>
+                    {pendingGuideReviewsCount > 0 && (
+                      <span className="rounded-full bg-terracotta text-white text-[10px] font-extrabold px-1.5 py-0.2">
+                        {pendingGuideReviewsCount} pending
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Approve or reject guide license submissions
+                  </p>
+                </div>
+                <ChevronRight size={18} className="text-stone-300" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* ── General Account Section ─────────────────────────── */}
         <div>
           <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3 ml-2">
-            Account
+            Account & Trips
           </h2>
           <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
             <Link
@@ -131,7 +275,9 @@ export default function ProfileMenu() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-bold text-foreground">Profile & Details</p>
-                <p className="text-xs text-muted-foreground mt-0.5">View your impact and info</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  View your impact, roles and info
+                </p>
               </div>
               <ChevronRight size={18} className="text-stone-300" />
             </Link>
@@ -144,7 +290,7 @@ export default function ProfileMenu() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-bold text-foreground">My bookings</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Your hotel stays</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Your booked hotel stays</p>
               </div>
               <ChevronRight size={18} className="text-stone-300" />
             </Link>
@@ -168,23 +314,6 @@ export default function ProfileMenu() {
               )}
               <ChevronRight size={18} className="text-stone-300" />
             </Link>
-            {isAdmin && (
-              <Link
-                href="/admin/guides"
-                className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
-              >
-                <div className="h-10 w-10 rounded-xl bg-amber-100 text-amber-700 grid place-items-center shrink-0">
-                  <ShieldAlert size={18} />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold text-foreground">Admin · Guide reviews</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Approve or reject submissions
-                  </p>
-                </div>
-                <ChevronRight size={18} className="text-stone-300" />
-              </Link>
-            )}
             <Link
               href="/profile/settings"
               className="flex items-center gap-3 p-4 hover:bg-muted transition-colors"
@@ -201,9 +330,10 @@ export default function ProfileMenu() {
           </div>
         </div>
 
+        {/* ── Resources Section ──────────────────────────────── */}
         <div>
           <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3 ml-2">
-            Resources
+            Safety & Offline
           </h2>
           <div className="rounded-card bg-card border border-border shadow-card overflow-hidden">
             <div className="flex items-start gap-3 p-4 border-b border-border">

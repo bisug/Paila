@@ -4,8 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { BadgeCheck, Mail, Mountain, Trophy, ArrowLeft, Edit2, Check, X } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
+import { useUserRoles } from "@/hooks/use-user-roles";
+import { RoleBadge } from "@/components/layout/RoleBadge";
 
 export function AccountClient({ user }: { user: User }) {
+  const { roles } = useUserRoles();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -123,6 +126,13 @@ export function AccountClient({ user }: { user: User }) {
                 {meta.age} years old
               </span>
             )}
+          </div>
+        )}
+        {!isEditing && roles.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
+            {roles.map((r) => (
+              <RoleBadge key={r} role={r} size="sm" />
+            ))}
           </div>
         )}
       </div>
@@ -310,6 +320,20 @@ export function AccountClient({ user }: { user: User }) {
               <div className="rounded-card bg-card border border-border shadow-card px-3 py-4 text-center">
                 <p className="text-xl font-bold text-terracotta truncate">Rs 14,500</p>
                 <p className="text-xs text-muted-foreground mt-0.5">Sent to hosts</p>
+              </div>
+            </div>
+
+            {/* ── System Roles & Access ────────────────────────────────────── */}
+            <div className="rounded-card bg-card border border-border p-4 shadow-card mb-6">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
+                Assigned Roles & Permissions
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {roles.length > 0 ? (
+                  roles.map((r) => <RoleBadge key={r} role={r} size="md" />)
+                ) : (
+                  <RoleBadge role="traveller" size="md" />
+                )}
               </div>
             </div>
 

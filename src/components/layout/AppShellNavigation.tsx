@@ -16,9 +16,12 @@ import {
   Shield,
   User,
   X,
+  Building2,
 } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SidebarGuidesGroup } from "@/components/layout/SidebarGuidesGroup";
+import { RoleBadge } from "@/components/layout/RoleBadge";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import { supabase } from "@/integrations/supabase/client";
 import { navItems, navKeyFor } from "@/lib/data";
 import { NOTIFICATIONS_CHANGED_EVENT } from "@/lib/notifications";
@@ -148,6 +151,9 @@ function SyncStatusBadge({
 }
 
 function DesktopNavItems({ pathname, t, minimized }: ShellNavProps & { minimized: boolean }) {
+  const { isHost, pendingHostBookingsCount } = useUserRoles();
+  const isHostBookingsActive = pathname.startsWith("/profile/bookings");
+
   return (
     <>
       {navItems.map((item) => {
@@ -244,6 +250,42 @@ function DesktopNavItems({ pathname, t, minimized }: ShellNavProps & { minimized
           </>
         )}
       </Link>
+      {isHost && (
+        <Link
+          href="/profile/bookings?tab=host"
+          title={minimized ? "Host Reservations" : undefined}
+          className={`relative flex items-center ${
+            minimized ? "justify-center w-11 h-11 mx-auto" : "gap-3 px-3.5"
+          } py-2.5 rounded-xl text-sm font-semibold transition-all group ${
+            isHostBookingsActive
+              ? "bg-pine/10 text-pine font-bold"
+              : "text-stone-600 hover:bg-stone-100/80 hover:text-stone-900"
+          }`}
+        >
+          {isHostBookingsActive && !minimized && (
+            <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-pine" />
+          )}
+          <Building2
+            size={20}
+            strokeWidth={isHostBookingsActive ? 2.5 : 1.8}
+            className={
+              isHostBookingsActive ? "text-pine" : "text-stone-500 group-hover:text-stone-700"
+            }
+          />
+          {!minimized && (
+            <>
+              <span className="truncate">Host Stays</span>
+              {pendingHostBookingsCount > 0 ? (
+                <span className="ml-auto rounded-full bg-terracotta text-white text-[10px] font-bold px-1.5 py-0.5">
+                  {pendingHostBookingsCount}
+                </span>
+              ) : isHostBookingsActive ? (
+                <ChevronRight size={14} className="ml-auto text-pine/60" />
+              ) : null}
+            </>
+          )}
+        </Link>
+      )}
     </>
   );
 }
@@ -257,6 +299,9 @@ export function DesktopSidebar({
   onOpenSync,
   onOpenSos,
 }: DesktopSidebarProps) {
+  const { roles, activeRole } = useUserRoles();
+  const currentRole = activeRole === "all" ? roles[0] || "traveller" : activeRole;
+
   return (
     <aside
       className={`
@@ -352,7 +397,15 @@ export function DesktopSidebar({
           {!minimized && <span>Profile</span>}
         </Link>
         {!minimized && (
-          <div className="px-3 py-1.5 pt-2">
+          <div className="px-3 py-1 flex items-center justify-between border-t border-border/50 pt-2">
+            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+              Role
+            </span>
+            <RoleBadge role={currentRole} size="sm" />
+          </div>
+        )}
+        {!minimized && (
+          <div className="px-3 py-1.5 pt-1">
             <LanguageSwitcher />
           </div>
         )}
@@ -581,6 +634,9 @@ export function MobileBottomNav({ pathname, t }: ShellNavProps) {
 }
 
 export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerProps) {
+  const { roles, activeRole, isHost, pendingHostBookingsCount } = useUserRoles();
+  const currentRole = activeRole === "all" ? roles[0] || "traveller" : activeRole;
+
   return (
     <Dialog.Root
       open
@@ -672,9 +728,30 @@ export function MobileDrawer({ pathname, t, onClose, onOpenSos }: MobileDrawerPr
               />
               {t("nav.impact", "Impact")}
             </Link>
+            {isHost && (
+              <Link
+                href="/profile/bookings?tab=host"
+                onClick={onClose}
+                className="flex items-center gap-3 px-3.5 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold text-stone-600 hover:bg-stone-100"
+              >
+                <Building2 size={19} className="text-stone-500" />
+                <span>Host Stays</span>
+                {pendingHostBookingsCount > 0 && (
+                  <span className="ml-auto rounded-full bg-terracotta text-white text-[10px] font-bold px-1.5 py-0.5">
+                    {pendingHostBookingsCount}
+                  </span>
+                )}
+              </Link>
+            )}
             <SidebarGuidesGroup variant="drawer" onNavigate={onClose} />
           </nav>
           <div className="px-3 py-4 border-t border-border space-y-2">
+            <div className="px-3 py-1 flex items-center justify-between pb-2 border-b border-border/50">
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+                Active Role
+              </span>
+              <RoleBadge role={currentRole} size="sm" />
+            </div>
             <button
               onClick={() => {
                 onOpenSos();

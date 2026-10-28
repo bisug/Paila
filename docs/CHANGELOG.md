@@ -6,6 +6,12 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Added
 
+- Role-adaptive interface hook `useUserRoles` in `src/hooks/use-user-roles.ts` supporting reactive multi-role evaluation (`admin`, `host`, `guide`, `verifier`, `traveller`) with pending count aggregates.
+- Role badge component `RoleBadge` in `src/components/layout/RoleBadge.tsx` with distinct iconographies and semantic color tokens for each platform role.
+- Interactive role perspective switcher `RoleSwitcher` in `src/components/layout/RoleSwitcher.tsx` to preview and test the UI across multiple user roles.
+- Bilateral bookings interface in `src/app/(app)/profile/bookings/page.tsx` featuring segmented views for "My Trips" (traveler) and "Host Reservations" (lodge host) with pending requests counter, status filtering, and one-click "Accept" / "Decline" booking actions.
+- Role-specific management sections in `ProfileMenu` (`src/app/(app)/profile/page.tsx`) for Host Reservations, Guide Center & Credentials, Checkpoint Permit Scanner, and Platform Administration.
+- Role indicators in `DesktopSidebar` and `MobileDrawer` navigation footers with Host Reservations navigation shortcuts.
 - Migration `20261028094000_auth_rbac_and_bilateral_bookings.sql`: expanded `app_role` enum to support `'admin'`, `'host'`, `'guide'`, and `'verifier'`.
 - Bilateral booking ownership: added `host_user_id`, `listing_id`, and `listing_type` to `public.bookings` with two-sided RLS policies for traveler, host, and admin operational visibility.
 - Host and merchant booking actions (`listHostBookings`, `respondToBooking`) in `src/lib/actions/bookings.ts` with host-ownership and status transition guards.
@@ -20,6 +26,8 @@ All notable changes to Paila. Format follows [Keep a Changelog](https://keepacha
 
 ### Changed
 
+- Refactored `useGuideNav` in `src/hooks/use-guide-nav.ts` and `SidebarGuidesGroup` in `src/components/layout/SidebarGuidesGroup.tsx` to synchronize with unified `useUserRoles`.
+- Updated `AccountClient` in `src/components/views/AccountClient.tsx` to surface assigned system roles and verified permission badges.
 - Optimized edge middleware in `src/proxy.ts` with zero-DB-roundtrip fast-path verifying admin access from JWT `app_metadata.roles` with database query fallback.
 - Updated Supabase TypeScript definitions in `src/integrations/supabase/types.ts` and in-memory demo mock client (`src/integrations/supabase/client.ts`) with bilateral booking fields and multi-role claims.
 - Modernized typography system in `src/styles.css` with balanced system and Devanagari font fallbacks, `-webkit-font-smoothing: antialiased`, `text-rendering: optimizeLegibility`, and calibrated letter-spacing tracking for body (`-0.011em`) and headings (`-0.02em`).

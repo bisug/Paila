@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Map, BadgeCheck, ShieldCheck } from "lucide-react";
-import { useGuideNav } from "@/hooks/use-guide-nav";
+import { useUserRoles } from "@/hooks/use-user-roles";
 
 type Variant = "full" | "rail" | "drawer";
 
@@ -36,7 +36,8 @@ export function SidebarGuidesGroup({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
-  const { signedIn, isGuide, isAdmin, verificationStatus, pendingReviewCount } = useGuideNav();
+  const { signedIn, isGuide, isAdmin, isVerifier, verificationStatus, pendingGuideReviewsCount } =
+    useUserRoles();
 
   const verifBadge: Item["badge"] | undefined =
     verificationStatus === "pending"
@@ -60,10 +61,10 @@ export function SidebarGuidesGroup({
       href: "/admin/guides",
       label: "Review Submissions",
       icon: ShieldCheck,
-      show: isAdmin,
+      show: isAdmin || isVerifier,
       badge:
-        pendingReviewCount > 0
-          ? { text: String(pendingReviewCount), tone: "terracotta" as const }
+        pendingGuideReviewsCount > 0
+          ? { text: String(pendingGuideReviewsCount), tone: "terracotta" as const }
           : undefined,
     },
   ].filter((i) => i.show);
